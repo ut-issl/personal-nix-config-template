@@ -2,11 +2,34 @@
 default_stages: [pre-commit]
 
 repos:
+  - repo: https://github.com/NixOS/nixfmt
+    rev: 3245f221e4d9ab7e12ebe31fd193cb7a8c4b14f9  # frozen: v1.3.1
+    hooks:
+      - id: nixfmt-nix
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: 77039ccbba72c8aede339c5f8ae29b42aced0a2e  # frozen: v0.15.18
+    hooks:
+      - id: ruff-check
+        args: ["--fix"]
+      - id: ruff-format
+
   - repo: https://github.com/crate-ci/typos
-    rev: aca895bf05aec0cb7dffa6f94495e923224d9f17  # frozen: v1.46.2
+    rev: 7b04f660f4ee4f048d18fd341887cf28dfbedfe2  # frozen: v1.46.3
     hooks:
       - id: typos
         args: ["--force-exclude"]
+
+  - repo: https://github.com/scop/pre-commit-shfmt
+    rev: 05c1426671b9237fb5e1444dd63aa5731bec0dfb  # frozen: v3.13.1-1
+    hooks:
+      - id: shfmt
+        args: ["-w", "-s", "-i", "2"]
+
+  - repo: https://github.com/koalaman/shellcheck-precommit
+    rev: 99470f5e12208ff0fb17ab81c3c494f7620a1d8d  # frozen: v0.11.0
+    hooks:
+      - id: shellcheck
 
   - repo: https://github.com/DavidAnson/markdownlint-cli2
     rev: 996abf60411a8d954288ac9856aae7602b80cbda  # frozen: v0.22.1
@@ -14,7 +37,7 @@ repos:
       - id: markdownlint-cli2
 
   - repo: https://github.com/tombi-toml/tombi-pre-commit
-    rev: 2d5dc3580d14ebb2abf2e2f50380e573418b68d8  # frozen: v1.1.2
+    rev: d79e45f9eb9b14030dbb1fdeb400a044de9d164c  # frozen: v1.1.3
     hooks:
       - id: tombi-format
       - id: tombi-lint
@@ -53,7 +76,7 @@ repos:
       - id: no-commit-to-branch
 
   # - repo: https://github.com/commitizen-tools/commitizen
-  #   rev: 953e1ba4599cc3143122ed5c3e8de3d6dfd5524d  # frozen: v4.16.2
+  #   rev: 286da5488db79f4cf5261e14a3c8976d89b5aa70  # frozen: v4.16.3
   #   hooks:
   #     - id: commitizen
   #     - id: commitizen-branch
