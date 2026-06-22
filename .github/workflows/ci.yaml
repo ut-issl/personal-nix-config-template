@@ -23,15 +23,18 @@ jobs:
       github_actions: ${{ steps.changed-files.outputs.github_actions_any_changed }}
       github_actions_ci: ${{ steps.changed-files.outputs.github_actions_ci_any_changed }}
       renovate_config: ${{ steps.changed-files.outputs.renovate_config_any_changed }}
+      nix: ${{ steps.changed-files.outputs.nix_any_changed }}
+      shell: ${{ steps.changed-files.outputs.shell_any_changed }}
       md: ${{ steps.changed-files.outputs.md_any_changed }}
       json5: ${{ steps.changed-files.outputs.json5_any_changed }}
       json5_files: ${{ steps.changed-files.outputs.json5_all_changed_files }}
       toml: ${{ steps.changed-files.outputs.toml_any_changed }}
       yaml: ${{ steps.changed-files.outputs.yaml_any_changed }}
+      python: ${{ steps.changed-files.outputs.python_any_changed }}
 
     steps:
       - name: Checkout the main repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           fetch-depth: 0
           persist-credentials: false
@@ -47,6 +50,13 @@ jobs:
               - .github/workflows/ci.yaml
             renovate_config:
               - .github/renovate.json5
+            nix:
+              - '**/*.nix'
+              - flake.lock
+            shell:
+              - '**/*.sh'
+              - '**/*.bash'
+              - '**/*.zsh'
             md:
               - '**/*.md'
               - .markdownlint-cli2.yaml
@@ -59,6 +69,12 @@ jobs:
               - '**/*.yml'
               - '**/*.yaml'
               - .yamllint.yaml
+            python:
+              - '**/*.py'
+              - pyproject.toml
+              - .python-version
+              - uv.lock
+              - .ruff.toml
 
   lint-gh-actions:
     name: Lint GitHub Actions
@@ -72,7 +88,7 @@ jobs:
 
     steps:
       - name: Checkout the main repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
 
@@ -94,7 +110,6 @@ jobs:
         uses: zizmorcore/zizmor-action@5f14fd08f7cf1cb1609c1e344975f152c7ee938d # v0.5.6
         with:
           version: 'v1.24.1'
-          online-audits: false
           advanced-security: >-
             ${{
               github.event.repository.private == false &&
@@ -114,7 +129,7 @@ jobs:
 
   #   steps:
   #     - name: Checkout the main repository
-  #       uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+  #       uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
   #       with:
   #         persist-credentials: false
 
@@ -125,55 +140,179 @@ jobs:
 
   #     - name: Validate Renovate config
   #       run: |
-  #         npx --yes --package renovate@43.150.0 \
+  #         npx --yes --package renovate@43.220.0 \
   #           renovate-config-validator .github/renovate.json5
 
-  # lint-markdown:
-  #   name: Lint Markdown
-  #   needs: determine-changes
-  #   if: >-
-  #     ${{ needs.determine-changes.outputs.md == 'true' ||
-  #     needs.determine-changes.outputs.github_actions_ci == 'true' }}
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     contents: read
-  #     pull-requests: write
+  lint-nix:
+    name: Lint Nix
+    needs: determine-changes
+    if: >-
+      ${{ needs.determine-changes.outputs.nix == 'true' ||
+      needs.determine-changes.outputs.github_actions_ci == 'true' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
-  #   steps:
-  #     - name: Checkout the main repository
-  #       uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-  #       with:
-  #         persist-credentials: false
+    steps:
+      - name: Checkout the main repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
 
-  #     - name: Lint Markdown
-  #       if: github.event_name != 'pull_request'
-  #       run: npx --yes markdownlint-cli2@0.22.1 .
+      - name: Install Nix
+        uses: cachix/install-nix-action@8aa03977d8d733052d78f4e008a241fd1dbf36b3 # v31.10.6
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
 
-  #     - name: Set up reviewdog
-  #       if: github.event_name == 'pull_request'
-  #       uses: reviewdog/action-setup@d8a7baabd7f3e8544ee4dbde3ee41d0011c3a93f # v1.5.0
-  #       with:
-  #         reviewdog_version: 'v0.21.0'
+      - name: Collect Nix files
+        id: nix-files
+        shell: bash
+        run: |
+          nix_files_path="$(mktemp)"
+          find . -type f -name '*.nix' -not -path './.git/*' -print0 > "${nix_files_path}"
+          echo "nix_files=${nix_files_path}" >> "$GITHUB_OUTPUT"
+          if [ ! -s "${nix_files_path}" ]; then
+            echo "No Nix files found."
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "found=true" >> "$GITHUB_OUTPUT"
+          fi
 
-  #     - name: Lint Markdown (reviewdog)
-  #       if: github.event_name == 'pull_request'
-  #       env:
-  #         REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #       run: |
-  #         markdownlint_rc=0
-  #         npx --yes markdownlint-cli2@0.22.1 . > /tmp/markdownlint-report.txt 2>&1 || markdownlint_rc=$?
-  #         reviewdog_rc=0
-  #         reviewdog < /tmp/markdownlint-report.txt \
-  #             -efm="%f:%l:%c %m" \
-  #             -efm="%f:%l %m" \
-  #             -name=markdownlint \
-  #             -reporter=github-pr-review \
-  #             -fail-level=error || reviewdog_rc=$?
-  #         if [ $markdownlint_rc -ne 0 ] && ! grep -Eq '^[^:]+:[0-9]+(:[0-9]+)? ' /tmp/markdownlint-report.txt; then
-  #           echo "::error title=markdownlint::markdownlint failed before producing parseable diagnostics"
-  #           exit $markdownlint_rc
-  #         fi
-  #         exit $reviewdog_rc
+      - name: Check Nix format
+        if: steps.nix-files.outputs.found == 'true'
+        shell: bash
+        env:
+          NIX_FILES: ${{ steps.nix-files.outputs.nix_files }}
+        run: xargs -0 nix fmt -- --check < "${NIX_FILES}"
+
+      - name: Run statix
+        run: nix run nixpkgs#statix -- check .
+
+      - name: Run deadnix
+        run: nix run nixpkgs#deadnix -- --fail .
+
+      - name: Run flake check
+        run: |
+          if [ -f flake.nix ]; then
+            nix flake check --show-trace
+          else
+            echo "No flake.nix found. Skipping flake check."
+          fi
+
+  lint-shell-scripts:
+    name: Lint Shell Scripts
+    needs: determine-changes
+    if: >-
+      ${{ needs.determine-changes.outputs.shell == 'true' ||
+      needs.determine-changes.outputs.github_actions_ci == 'true' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout the main repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Install shell tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shfmt
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            sudo apt-get install -y shellcheck
+          fi
+
+      - name: Collect shell scripts
+        id: shell-files
+        shell: bash
+        run: |
+          shell_files_path="$(mktemp)"
+          find . -type f \( \
+            -name '*.sh' -o \
+            -name '*.bash' -o \
+            -name '*.zsh' \
+          \) -not -path './.git/*' -print0 > "${shell_files_path}"
+          echo "shell_files=${shell_files_path}" >> "$GITHUB_OUTPUT"
+          if [ ! -s "${shell_files_path}" ]; then
+            echo "No shell scripts found."
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "found=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run shfmt
+        if: steps.shell-files.outputs.found == 'true'
+        shell: bash
+        env:
+          SHELL_FILES: ${{ steps.shell-files.outputs.shell_files }}
+        run: |
+          xargs -0 shfmt --diff --simplify -i 2 < "${SHELL_FILES}"
+
+      - name: Run shellcheck
+        if: github.event_name != 'pull_request' && steps.shell-files.outputs.found == 'true'
+        shell: bash
+        env:
+          SHELL_FILES: ${{ steps.shell-files.outputs.shell_files }}
+        run: |
+          xargs -0 shellcheck --external-sources < "${SHELL_FILES}"
+
+      - name: Run shellcheck (reviewdog)
+        if: github.event_name == 'pull_request'
+        uses: reviewdog/action-shellcheck@4c07458293ac342d477251099501a718ae5ef86e # v1.32.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
+          fail_level: error
+
+  lint-markdown:
+    name: Lint Markdown
+    needs: determine-changes
+    if: >-
+      ${{ needs.determine-changes.outputs.md == 'true' ||
+      needs.determine-changes.outputs.github_actions_ci == 'true' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout the main repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Lint Markdown
+        if: github.event_name != 'pull_request'
+        run: npx --yes markdownlint-cli2@0.22.1 .
+
+      - name: Set up reviewdog
+        if: github.event_name == 'pull_request'
+        uses: reviewdog/action-setup@d8a7baabd7f3e8544ee4dbde3ee41d0011c3a93f # v1.5.0
+        with:
+          reviewdog_version: 'v0.21.0'
+
+      - name: Lint Markdown (reviewdog)
+        if: github.event_name == 'pull_request'
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          markdownlint_rc=0
+          npx --yes markdownlint-cli2@0.22.1 . > /tmp/markdownlint-report.txt 2>&1 || markdownlint_rc=$?
+          reviewdog_rc=0
+          reviewdog < /tmp/markdownlint-report.txt \
+              -efm="%f:%l:%c %m" \
+              -efm="%f:%l %m" \
+              -name=markdownlint \
+              -reporter=github-pr-review \
+              -fail-level=error || reviewdog_rc=$?
+          if [ $markdownlint_rc -ne 0 ] && ! grep -Eq '^[^:]+:[0-9]+(:[0-9]+)? ' /tmp/markdownlint-report.txt; then
+            echo "::error title=markdownlint::markdownlint failed before producing parseable diagnostics"
+            exit $markdownlint_rc
+          fi
+          exit $reviewdog_rc
 
   # lint-json5:
   #   name: Lint JSON5
@@ -187,7 +326,7 @@ jobs:
 
   #   steps:
   #     - name: Checkout the main repository
-  #       uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+  #       uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
   #       with:
   #         persist-credentials: false
 
@@ -213,116 +352,187 @@ jobs:
   #         done
   #         exit $exit_code
 
-  # lint-toml:
-  #   name: Lint TOML
-  #   needs: determine-changes
-  #   if: >-
-  #     ${{ needs.determine-changes.outputs.toml == 'true' ||
-  #     needs.determine-changes.outputs.github_actions_ci == 'true' }}
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     contents: read
-  #     pull-requests: write
+  lint-toml:
+    name: Lint TOML
+    needs: determine-changes
+    if: >-
+      ${{ needs.determine-changes.outputs.toml == 'true' ||
+      needs.determine-changes.outputs.github_actions_ci == 'true' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
 
-  #   steps:
-  #     - name: Checkout the main repository
-  #       uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-  #       with:
-  #         persist-credentials: false
+    steps:
+      - name: Checkout the main repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
 
-  #     - name: Install Tombi
-  #       uses: tombi-toml/setup-tombi@df24458044353545055a12fe0d0742df9d3c5bea # v1.1.2
-  #       with:
-  #         version: '1.1.2'
+      - name: Install Tombi
+        uses: tombi-toml/setup-tombi@af12994358821d8b3dc91a00288a9360606e545d # v1.1.3
+        with:
+          version: '1.1.3'
 
-  #     - name: Lint TOML
-  #       if: github.event_name != 'pull_request'
-  #       run: tombi lint
+      - name: Lint TOML
+        if: github.event_name != 'pull_request'
+        run: tombi lint
 
-  #     - name: Set up reviewdog
-  #       if: github.event_name == 'pull_request'
-  #       uses: reviewdog/action-setup@d8a7baabd7f3e8544ee4dbde3ee41d0011c3a93f # v1.5.0
-  #       with:
-  #         reviewdog_version: 'v0.21.0'
+      - name: Set up reviewdog
+        if: github.event_name == 'pull_request'
+        uses: reviewdog/action-setup@d8a7baabd7f3e8544ee4dbde3ee41d0011c3a93f # v1.5.0
+        with:
+          reviewdog_version: 'v0.21.0'
 
-  #     - name: Lint TOML (reviewdog)
-  #       if: github.event_name == 'pull_request'
-  #       env:
-  #         REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #         NO_COLOR: '1'
-  #       run: |
-  #         lint_rc=0
-  #         tombi lint --quiet > /tmp/tombi-lint-report.txt 2>&1 || lint_rc=$?
-  #         gawk '
-  #           match($0, /^[[:space:]]*(Warning|Error):[[:space:]]*(.*)$/, m) {
-  #             severity = m[1]; message = m[2]; next
-  #           }
-  #           match($0, /^[[:space:]]*at[[:space:]]+(.*):([0-9]+):([0-9]+)/, m) {
-  #             printf "%s:%s:%s: %s: %s\n", m[1], m[2], m[3], substr(severity, 1, 1), message
-  #           }
-  #         ' /tmp/tombi-lint-report.txt > /tmp/tombi-lint-report.efm.txt
-  #         reviewdog_rc=0
-  #         reviewdog < /tmp/tombi-lint-report.efm.txt \
-  #             -efm="%f:%l:%c: %t: %m" \
-  #             -name=tombi-lint \
-  #             -reporter=github-pr-review \
-  #             -fail-level=error || reviewdog_rc=$?
-  #         if [ $lint_rc -ne 0 ] && [ ! -s /tmp/tombi-lint-report.efm.txt ]; then
-  #           echo "::error title=tombi::tombi lint failed before producing parseable diagnostics"
-  #           cat /tmp/tombi-lint-report.txt
-  #           exit $lint_rc
-  #         fi
-  #         exit $reviewdog_rc
+      - name: Lint TOML (reviewdog)
+        if: github.event_name == 'pull_request'
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NO_COLOR: '1'
+        run: |
+          lint_rc=0
+          tombi lint --quiet > /tmp/tombi-lint-report.txt 2>&1 || lint_rc=$?
+          gawk '
+            match($0, /^[[:space:]]*(Warning|Error):[[:space:]]*(.*)$/, m) {
+              severity = m[1]; message = m[2]; next
+            }
+            match($0, /^[[:space:]]*at[[:space:]]+(.*):([0-9]+):([0-9]+)/, m) {
+              printf "%s:%s:%s: %s: %s\n", m[1], m[2], m[3], substr(severity, 1, 1), message
+            }
+          ' /tmp/tombi-lint-report.txt > /tmp/tombi-lint-report.efm.txt
+          reviewdog_rc=0
+          reviewdog < /tmp/tombi-lint-report.efm.txt \
+              -efm="%f:%l:%c: %t: %m" \
+              -name=tombi-lint \
+              -reporter=github-pr-review \
+              -fail-level=error || reviewdog_rc=$?
+          if [ $lint_rc -ne 0 ] && [ ! -s /tmp/tombi-lint-report.efm.txt ]; then
+            echo "::error title=tombi::tombi lint failed before producing parseable diagnostics"
+            cat /tmp/tombi-lint-report.txt
+            exit $lint_rc
+          fi
+          exit $reviewdog_rc
 
-  #     - name: Format TOML
-  #       run: tombi format
+      - name: Format TOML
+        run: tombi format
 
-  #     - name: Suggest TOML format changes (reviewdog)
-  #       if: github.event_name == 'pull_request'
-  #       uses: reviewdog/action-suggester@aa38384ceb608d00f84b4690cacc83a5aba307ff # v1.24.0
-  #       with:
-  #         github_token: ${{ secrets.GITHUB_TOKEN }}
-  #         tool_name: tombi-format
-  #         cleanup: 'false'
+      - name: Suggest TOML format changes (reviewdog)
+        if: github.event_name == 'pull_request'
+        uses: reviewdog/action-suggester@aa38384ceb608d00f84b4690cacc83a5aba307ff # v1.24.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tool_name: tombi-format
+          cleanup: 'false'
 
-  #     - name: Check TOML format
-  #       run: git diff --exit-code
+      - name: Check TOML format
+        run: git diff --exit-code
 
-  # lint-yaml:
-  #   name: Lint YAML
-  #   needs: determine-changes
-  #   if: >-
-  #     ${{ needs.determine-changes.outputs.yaml == 'true' ||
-  #     needs.determine-changes.outputs.github_actions_ci == 'true' }}
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     contents: read
-  #     pull-requests: write
+  lint-yaml:
+    name: Lint YAML
+    needs: determine-changes
+    if: >-
+      ${{ needs.determine-changes.outputs.yaml == 'true' ||
+      needs.determine-changes.outputs.github_actions_ci == 'true' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
 
-  #   steps:
-  #     - name: Checkout the main repository
-  #       uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-  #       with:
-  #         persist-credentials: false
+    steps:
+      - name: Checkout the main repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
 
-  #     - name: Install uv
-  #       if: github.event_name != 'pull_request'
-  #       uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
-  #       with:
-  #         version: '0.11.16'
+      - name: Install uv
+        if: github.event_name != 'pull_request'
+        uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
+        with:
+          version: '0.11.22'
 
-  #     - name: Lint YAML
-  #       if: github.event_name != 'pull_request'
-  #       run: uvx --from "yamllint==1.38.0" yamllint .
+      - name: Lint YAML
+        if: github.event_name != 'pull_request'
+        run: uvx --from "yamllint==1.38.0" yamllint .
 
-  #     - name: Lint YAML (reviewdog)
-  #       if: github.event_name == 'pull_request'
-  #       uses: reviewdog/action-yamllint@f01d8a48fd8d89f89895499fca2cff09f9e9e8c0 # v1.21.0
-  #       with:
-  #         github_token: ${{ secrets.GITHUB_TOKEN }}
-  #         reporter: github-pr-review
-  #         fail_level: error
-  #         yamllint_flags: .
+      - name: Lint YAML (reviewdog)
+        if: github.event_name == 'pull_request'
+        uses: reviewdog/action-yamllint@f01d8a48fd8d89f89895499fca2cff09f9e9e8c0 # v1.21.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
+          fail_level: error
+          yamllint_flags: .
+
+  lint-python:
+    name: Lint Python
+    needs: determine-changes
+    if: >-
+      ${{ needs.determine-changes.outputs.python == 'true' ||
+      needs.determine-changes.outputs.github_actions_ci == 'true' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout the main repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
+        with:
+          version: '0.11.22'
+
+      - name: Lint with Ruff
+        if: github.event_name != 'pull_request'
+        run: uvx --from "ruff==0.15.18" ruff check . --output-format=github
+
+      - name: Set up reviewdog
+        if: github.event_name == 'pull_request'
+        uses: reviewdog/action-setup@d8a7baabd7f3e8544ee4dbde3ee41d0011c3a93f # v1.5.0
+        with:
+          reviewdog_version: 'v0.21.0'
+
+      - name: Lint with Ruff (reviewdog)
+        if: github.event_name == 'pull_request'
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ruff_rc=0
+          uvx --from "ruff==0.15.18" ruff check . --output-format=json > /tmp/ruff-report.json || ruff_rc=$?
+          reviewdog_rc=0
+          jq -c '
+            .[] |
+            {
+              source: {name: "ruff"},
+              severity: "ERROR",
+              message: (.message + " (" + .code + ")"),
+              location: {
+                path: .filename,
+                range: {
+                  start: {line: .location.row, column: .location.column},
+                  end: {
+                    line: (.end_location.row // .location.row),
+                    column: (.end_location.column // .location.column)
+                  }
+                }
+              }
+            }
+          ' /tmp/ruff-report.json > /tmp/ruff-rdjsonl.txt || true
+          reviewdog < /tmp/ruff-rdjsonl.txt \
+              -f=rdjsonl \
+              -name=ruff \
+              -reporter=github-pr-review \
+              -fail-level=error \
+              -tee || reviewdog_rc=$?
+          if [ $ruff_rc -ne 0 ] && [ ! -s /tmp/ruff-rdjsonl.txt ]; then
+            echo "::error title=ruff::ruff failed before producing diagnostics for reviewdog"
+            exit $ruff_rc
+          fi
+          exit $reviewdog_rc
 
   check-prek:
     name: Check prek
@@ -330,46 +540,51 @@ jobs:
 
     steps:
       - name: Checkout the main repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@8aa03977d8d733052d78f4e008a241fd1dbf36b3 # v31.10.6
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Check prek
         uses: j178/prek-action@bdca6f102f98e2b4c7029491a53dfd366469e33d # v2.0.4
         with:
-          prek-version: 'v0.4.1'
+          prek-version: 'v0.4.5'
           extra-args: '--all-files --skip no-commit-to-branch'
 
-  # check-typos:
-  #   name: Check typos
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     contents: read
-  #     checks: write
-  #     pull-requests: write
+  check-typos:
+    name: Check typos
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
 
-  #   steps:
-  #     - name: Checkout the main repository
-  #       uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-  #       with:
-  #         persist-credentials: false
+    steps:
+      - name: Checkout the main repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
 
-  #     - name: Check spelling
-  #       if: github.event_name != 'pull_request'
-  #       uses: crate-ci/typos@aca895bf05aec0cb7dffa6f94495e923224d9f17 # v1.46.2
-  #       with:
-  #         files: |
-  #           .
-  #           .github/**
+      - name: Check spelling
+        if: github.event_name != 'pull_request'
+        uses: crate-ci/typos@37bb98842b0d8c4ffebdb75301a13db0267cef89 # v1.47.2
+        with:
+          files: |
+            .
+            .github/**
 
-  #     - name: Check spelling (reviewdog)
-  #       if: github.event_name == 'pull_request'
-  #       uses: reviewdog/action-typos@d5eb1bbcd1b3bfde596f6eeb470322727862fe98 # v1.19.0
-  #       with:
-  #         github_token: ${{ secrets.GITHUB_TOKEN }}
-  #         reporter: github-pr-review
-  #         fail_level: error
-  #         typos_flags: --hidden .
+      - name: Check spelling (reviewdog)
+        if: github.event_name == 'pull_request'
+        uses: reviewdog/action-typos@d5eb1bbcd1b3bfde596f6eeb470322727862fe98 # v1.19.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
+          fail_level: error
+          typos_flags: --hidden .
 
   # lint-commit-messages:
   #   name: Lint commit messages
@@ -377,7 +592,7 @@ jobs:
 
   #   steps:
   #     - name: Checkout the main repository
-  #       uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+  #       uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
   #       with:
   #         fetch-depth: 0
   #         persist-credentials: false
@@ -386,7 +601,7 @@ jobs:
   #       uses: commitizen-tools/setup-cz@96c75e6ae9632047f2c9b4025b9dd1624b40de8f # v0.9.1
   #       with:
   #         python-version: '3.x'
-  #         version: '4.16.2'
+  #         version: '4.16.3'
 
   #     - name: Lint commit messages on push
   #       if: github.event_name == 'push'
