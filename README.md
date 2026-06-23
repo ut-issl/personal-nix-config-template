@@ -1,75 +1,218 @@
-# repository-template
+# personal-nix-config-template
 
-General-purpose repository template for the ISSL organization.
+[![prek](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/j178/prek/master/docs/assets/badge-v0.json)](https://github.com/j178/prek)
+[![CI](https://github.com/ut-issl/personal-nix-config-template/actions/workflows/ci.yaml/badge.svg)](https://github.com/ut-issl/personal-nix-config-template/actions/workflows/ci.yaml)
 
-## [Required] Configure CODEOWNERS
+Personal Home Manager configuration template for the ISSL Ubuntu environment.
 
-You must update [.github/CODEOWNERS](.github/CODEOWNERS) right after creating a repository from this template.
+This template imports the shared configuration from [`ut-issl/issl-ubuntu-environment-setup`](https://github.com/ut-issl/issl-ubuntu-environment-setup)
+and lets each user manage personal startup files and additional settings declaratively.
 
-- Uncomment the default `*` line and replace `@your-username` with the actual owner —
-  a real user (`@person`) or a team (`@ut-issl/<team-slug>`).
-- Add path-specific overrides as needed, for example:
+The ISSL shared files are deployed under `~/.config/issl` by the imported shared module.
+The personal modules source or include those files from the Home Manager-managed user files.
 
-  ```text
-  .github/        @infra-manager
-  docs/           @docs-manager
-  ```
+## How to Use
 
-See the [GitHub docs](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners)
-for the full syntax.
+### Create Your Personal Repository
 
-## Pre-commit Setup
-
-This template uses [prek](https://prek.j178.dev), a faster drop-in replacement for [pre-commit](https://pre-commit.com).
+Create a new repository from this template, then clone your repository:
 
 ```console
-prek install --hook-type pre-commit --hook-type pre-push
+git clone git@github.com:<your-account>/<your-repository>.git
+cd <your-repository>
 ```
 
-If you prefer `pre-commit`, substitute `pre-commit` for `prek` in the command above.
+After creating the repository, update [`.github/CODEOWNERS`](.github/CODEOWNERS) so it points to the responsible user.
 
-## Opt-in Features
+### Configure Git Identity
 
-By default only `lint-gh-actions` (GitHub Actions workflow lint) and `check-prek` (runs the pre-commit hooks)
-run on PRs; everything else is disabled.
-Enable any of the below if you want them.
+Before applying the configuration, edit [`home-modules/user/git.nix`](home-modules/user/git.nix) and set your Git identity.
+This is required so commits created from this environment have the correct author information.
 
-### Additional CI Jobs
+Uncomment and update these lines:
 
-The following jobs are commented out in [ci.yaml](.github/workflows/ci.yaml).
-Uncomment the corresponding block to enable each one.
-Each job runs only when the relevant files change.
+```nix
+userName = "Your Name";
+userEmail = "you@example.com";
+```
 
-- [`validate-renovate-config`](.github/workflows/ci.yaml#L105-L129) — validate the Renovate config
-- [`lint-markdown`](.github/workflows/ci.yaml#L131-L176) — lint Markdown files
-- [`lint-json5`](.github/workflows/ci.yaml#L178-L214) — lint JSON5 files
-- [`lint-toml`](.github/workflows/ci.yaml#L216-L289) — lint and format TOML files
-- [`lint-yaml`](.github/workflows/ci.yaml#L291-L325) — lint YAML files
-- [`check-typos`](.github/workflows/ci.yaml#L343-L372) — check for typos
+For other Git settings and any further customization, see [Customize Your Configuration](#customize-your-configuration).
 
-### Conventional Commits Enforcement (Commitizen)
+### Apply the Configuration
 
-Enforces [Conventional Commits](https://www.conventionalcommits.org) on commit messages and PR titles
-via [commitizen](https://github.com/commitizen-tools/commitizen).
-Once enabled, all commits and PR titles must follow the spec.
-Linting the PR title is especially useful with squash merging,
-since the PR title becomes the subject of the squashed commit by default.
+This template provides two Home Manager configurations:
 
-Uncomment both blocks:
+- `.#user`: Bash-based configuration
+- `.#user-zsh`: Bash + Zsh configuration
 
-- [`lint-commit-messages` in ci.yaml](.github/workflows/ci.yaml#L374-L397)
-- [`lint-pr-title` in manage-pull-requests.yaml](.github/workflows/manage-pull-requests.yaml#L27-L42)
-
-To author Conventional Commits interactively:
+Apply one of them:
 
 ```console
-uv tool install commitizen
-cz commit
+home-manager switch --flake .#user --impure
 ```
 
-### Renovate
+or:
 
-[Renovate](https://docs.renovatebot.com) is preconfigured in [.github/renovate.json5](.github/renovate.json5)
-to track Action SHAs, pinned tool versions inside [ci.yaml](.github/workflows/ci.yaml), and pre-commit hooks.
-To opt in, remove the `enabled: false,` line at [renovate.json5#L3](.github/renovate.json5#L3)
-(or change it to `true`) and make sure the Renovate GitHub App is installed for the repository.
+```console
+home-manager switch --flake .#user-zsh --impure
+```
+
+If Home Manager is not installed as a command yet, use the package exposed by this flake:
+
+```console
+nix run .#home-manager -- switch --flake .#user --impure
+```
+
+Re-run the same command whenever you change your configuration—after editing or adding a module, or updating inputs—
+to apply the changes.
+
+## Customize Your Configuration
+
+All personal customization lives under [`home-modules/user/`](home-modules/user/).
+The shared ISSL environment already installs many tools and deploys their base settings under `~/.config/issl`,
+so your modules only need to layer your personal settings on top.
+
+Whenever you add a new module, import it from [`home-modules/user.nix`](home-modules/user.nix):
+
+```nix
+imports = [
+  ./user/bash.nix
+  ./user/git.nix
+  ./user/packages.nix # your new module
+]
+++ lib.optionals enableZsh [ ./user/zsh.nix ];
+```
+
+### Extend an Existing Module
+
+Some tools already have a user module ([`bash.nix`](home-modules/user/bash.nix), [`zsh.nix`](home-modules/user/zsh.nix),
+[`git.nix`](home-modules/user/git.nix)) that sources the shared ISSL files.
+Add your settings to the existing module rather than creating a new one.
+
+For example, Git can be configured in the `programs.git` block of [`home-modules/user/git.nix`](home-modules/user/git.nix):
+
+```nix
+aliases = {
+  last = "log -1 HEAD";
+  unstage = "reset HEAD --";
+};
+
+extraConfig = {
+  commit.verbose = true;
+  merge.conflictStyle = "zdiff3";
+  rebase.autosquash = true;
+};
+```
+
+Bash and Zsh use the `programs.bash` or `programs.zsh` block of
+[`home-modules/user/bash.nix`](home-modules/user/bash.nix) or [`home-modules/user/zsh.nix`](home-modules/user/zsh.nix):
+
+```nix
+shellAliases = {
+  gs = "git status";
+  gd = "git diff";
+};
+
+sessionVariables = {
+  EDITOR = "vim";
+};
+```
+
+Zsh-specific options and completion styling go in `initContent`, for example:
+
+```nix
+programs.zsh.initContent = lib.mkAfter ''
+  setopt auto_cd
+  setopt correct
+
+  zstyle ':completion:*' menu select
+  zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+'';
+```
+
+### Add a Module for an Installed Tool
+
+Some tools (for example Rust and Python) are installed by the shared configuration but have no user module yet.
+Create a new module to add your personal settings; the tool itself is already provided,
+so you do not need to install it again.
+
+For example, add personal Cargo settings in `home-modules/user/rust.nix`:
+
+```nix
+{ ... }:
+
+{
+  home.file.".cargo/config.toml".text = ''
+    [build]
+    jobs = 8
+  '';
+}
+```
+
+### Install Extra Packages
+
+List the packages you want in `home.packages`.
+Any package from [Nixpkgs](https://search.nixos.org/packages) is available through `pkgs`.
+Put them in a module such as [`home-modules/user/packages.nix`](home-modules/user/):
+
+```nix
+{ pkgs, ... }:
+
+{
+  home.packages = [
+    pkgs.claude-code
+    pkgs.lazygit
+  ];
+}
+```
+
+> [!NOTE]
+> This template enables `allowUnfree`, so unfree packages such as `claude-code` install without extra setup.
+
+### Add a Module for a New Tool
+
+When a package also comes with its own configuration,
+it is easier to manage if you install the package and add its settings together in a dedicated module,
+rather than listing the package alongside the others.
+
+For example, `home-modules/user/julia.nix`:
+
+```nix
+{ pkgs, ... }:
+
+{
+  home.packages = [ pkgs.julia ];
+
+  home.file.".julia/config/startup.jl".text = ''
+    ENV["JULIA_NUM_THREADS"] = string(Sys.CPU_THREADS)
+  '';
+}
+```
+
+## Maintain Your Configuration
+
+### Update Inputs
+
+Update pinned inputs:
+
+```console
+nix flake update
+```
+
+Then apply the configuration again, as described in [Apply the Configuration](#apply-the-configuration),
+to pick up the new versions.
+
+### Validate Changes
+
+Run:
+
+```console
+nix flake check --show-trace
+```
+
+You can also build each activation package directly:
+
+```console
+nix build .#homeConfigurations.user.activationPackage --impure
+nix build .#homeConfigurations.user-zsh.activationPackage --impure
+```
