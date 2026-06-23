@@ -1,0 +1,29 @@
+# REUSE configuration — https://reuse.software
+#
+# The substantive scaffolding (flake.nix, home-modules/** and README.md) carries
+# inline SPDX headers. This file declares licensing for the remaining files.
+#
+# The generated lockfile contains no copyright notice and is dedicated to the
+# public domain to the extent possible under CC0-1.0.
+
+version = 1
+
+[[annotations]]
+path = [
+  ".cz.toml",
+  ".gitattributes",
+  ".gitignore",
+  ".markdownlint-cli2.yaml",
+  ".pre-commit-config.yaml",
+  ".tombi.toml",
+  ".typos.toml",
+  ".yamllint.yaml",
+  ".github/**",
+]
+SPDX-FileCopyrightText = "2026 Intelligent Space Systems Laboratory, The University of Tokyo"
+SPDX-License-Identifier = "MIT OR Apache-2.0"
+
+[[annotations]]
+path = ["flake.lock"]
+SPDX-FileCopyrightText = "NONE"
+SPDX-License-Identifier = "CC0-1.0"

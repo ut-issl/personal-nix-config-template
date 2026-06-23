@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Intelligent Space Systems Laboratory, The University of Tokyo
+#
+# SPDX-License-Identifier: MIT OR Apache-2.0
+
 {
   description = "Personal Home Manager configuration template for the ISSL Ubuntu environment";
 
