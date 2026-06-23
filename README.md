@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Intelligent Space Systems Laboratory, The University of Tokyo
+
+SPDX-License-Identifier: MIT OR Apache-2.0
+-->
+
 # personal-nix-config-template
 
 [![prek](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/j178/prek/master/docs/assets/badge-v0.json)](https://github.com/j178/prek)
@@ -21,8 +27,6 @@ Create a new repository from this template, then clone your repository:
 git clone git@github.com:<your-account>/<your-repository>.git
 cd <your-repository>
 ```
-
-After creating the repository, update [`.github/CODEOWNERS`](.github/CODEOWNERS) so it points to the responsible user.
 
 ### Configure Git Identity
 
@@ -216,3 +220,11 @@ You can also build each activation package directly:
 nix build .#homeConfigurations.user.activationPackage --impure
 nix build .#homeConfigurations.user-zsh.activationPackage --impure
 ```
+
+## License
+
+The scaffolding provided by this template is licensed under either [MIT](LICENSES/MIT.txt) or [Apache-2.0](LICENSES/Apache-2.0.txt)
+at your option, declared per file following the [REUSE](https://reuse.software) specification (see [REUSE.toml](REUSE.toml)).
+
+Files you add to your personal configuration are yours, and you may license them however you like.
+If you add files under paths already annotated in `REUSE.toml`, update the corresponding REUSE metadata as needed.
