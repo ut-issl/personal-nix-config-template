@@ -20,5 +20,7 @@ in
     # Personal identity:
     # userName = "Your Name";
     # userEmail = "you@example.com";
+
+    # Add your personal Git configuration below.
   };
 }

@@ -23,5 +23,7 @@ in
         . "${isslConfigHome}/bash/.bashrc"
       fi
     '';
+
+    # Add your personal Bash configuration below.
   };
 }

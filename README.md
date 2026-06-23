@@ -49,26 +49,21 @@ This template provides two Home Manager configurations:
 - `.#user`: Bash-based configuration
 - `.#user-zsh`: Bash + Zsh configuration
 
-Apply one of them:
+To apply the Bash + Zsh configuration, run:
 
 ```console
-home-manager switch --flake .#user --impure
+nix run .#home-manager -- switch --flake .#user-zsh --impure
 ```
 
-or:
+Use `.#user` instead if you want the Bash-only configuration.
 
-```console
-home-manager switch --flake .#user-zsh --impure
-```
-
-If Home Manager is not installed as a command yet, use the package exposed by this flake:
-
-```console
-nix run .#home-manager -- switch --flake .#user --impure
-```
-
-Re-run the same command whenever you change your configuration—after editing or adding a module, or updating inputs—
-to apply the changes.
+> [!TIP]
+> This first run installs the `home-manager` command and applies the shared Nix settings.
+> After that, re-run with the `home-manager` command directly whenever you change your configuration:
+>
+> ```console
+> home-manager switch --flake .#user-zsh --impure
+> ```
 
 ## Customize Your Configuration
 
@@ -89,8 +84,10 @@ imports = [
 
 ### Extend an Existing Module
 
-Some tools already have a user module ([`bash.nix`](home-modules/user/bash.nix), [`zsh.nix`](home-modules/user/zsh.nix),
-[`git.nix`](home-modules/user/git.nix)) that sources the shared ISSL files.
+Several tools already have a user module that sources or includes the shared ISSL files:
+[`bash.nix`](home-modules/user/bash.nix), [`zsh.nix`](home-modules/user/zsh.nix),
+[`git.nix`](home-modules/user/git.nix), [`python.nix`](home-modules/user/python.nix),
+and [`rust.nix`](home-modules/user/rust.nix).
 Add your settings to the existing module rather than creating a new one.
 
 For example, Git can be configured in the `programs.git` block of [`home-modules/user/git.nix`](home-modules/user/git.nix):
@@ -134,23 +131,34 @@ programs.zsh.initContent = lib.mkAfter ''
 '';
 ```
 
-### Add a Module for an Installed Tool
-
-Some tools (for example Rust and Python) are installed by the shared configuration but have no user module yet.
-Create a new module to add your personal settings; the tool itself is already provided,
-so you do not need to install it again.
-
-For example, add personal Cargo settings in `home-modules/user/rust.nix`:
+Python interactive-shell startup goes in [`home-modules/user/python.nix`](home-modules/user/python.nix),
+after the block that loads the shared startup:
 
 ```nix
-{ ... }:
+home.file.".python/.pythonrc.py".text = ''
+  import runpy
+  from pathlib import Path
 
-{
-  home.file.".cargo/config.toml".text = ''
-    [build]
-    jobs = 8
-  '';
-}
+  shared_pythonrc = Path("${isslConfigHome}/python/pythonrc.py")
+  if shared_pythonrc.is_file():
+      runpy.run_path(str(shared_pythonrc), run_name="__main__")
+
+  from datetime import datetime, timedelta  # noqa: F401
+'';
+```
+
+Personal Cargo settings go in [`home-modules/user/rust.nix`](home-modules/user/rust.nix),
+alongside the include of the shared configuration:
+
+```nix
+home.file.".cargo/config.toml".text = ''
+  include = [
+    { path = "${isslConfigHome}/rust/config.toml", optional = true },
+  ]
+
+  [build]
+  jobs = 8
+'';
 ```
 
 ### Install Extra Packages

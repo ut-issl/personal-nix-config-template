@@ -24,5 +24,7 @@ in
         . "${isslConfigHome}/zsh/.zshrc"
       fi
     '';
+
+    # Add your personal Zsh configuration below.
   };
 }

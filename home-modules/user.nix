@@ -8,6 +8,9 @@
   imports = [
     ./user/bash.nix
     ./user/git.nix
+    ./user/nix.nix
+    ./user/python.nix
+    ./user/rust.nix
   ]
   ++ lib.optionals enableZsh [ ./user/zsh.nix ];
 
