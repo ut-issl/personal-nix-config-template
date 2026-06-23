@@ -2,12 +2,14 @@
 #
 # SPDX-License-Identifier: MIT OR Apache-2.0
 
-{ config, ... }:
+{ config, pkgs, ... }:
 
 let
   isslConfigHome = "${config.xdg.configHome}/issl";
 in
 {
+  nix.package = pkgs.nix;
+
   nix.extraOptions = ''
     !include ${isslConfigHome}/nix/nix.conf
   '';
