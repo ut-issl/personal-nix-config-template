@@ -84,8 +84,9 @@ imports = [
 
 ### Extend an Existing Module
 
-Some tools already have a user module ([`bash.nix`](home-modules/user/bash.nix), [`zsh.nix`](home-modules/user/zsh.nix),
-[`git.nix`](home-modules/user/git.nix)) that sources the shared ISSL files.
+Several tools already have a user module that sources or includes the shared ISSL files:
+[`bash.nix`](home-modules/user/bash.nix), [`zsh.nix`](home-modules/user/zsh.nix),
+[`git.nix`](home-modules/user/git.nix), and [`python.nix`](home-modules/user/python.nix).
 Add your settings to the existing module rather than creating a new one.
 
 For example, Git can be configured in the `programs.git` block of [`home-modules/user/git.nix`](home-modules/user/git.nix):
@@ -129,9 +130,25 @@ programs.zsh.initContent = lib.mkAfter ''
 '';
 ```
 
+Python interactive-shell startup goes in [`home-modules/user/python.nix`](home-modules/user/python.nix),
+after the block that loads the shared startup:
+
+```nix
+home.file.".python/.pythonrc.py".text = ''
+  import runpy
+  from pathlib import Path
+
+  shared_pythonrc = Path("${isslConfigHome}/python/pythonrc.py")
+  if shared_pythonrc.is_file():
+      runpy.run_path(str(shared_pythonrc), run_name="__main__")
+
+  from datetime import datetime, timedelta  # noqa: F401
+'';
+```
+
 ### Add a Module for an Installed Tool
 
-Some tools (for example Rust and Python) are installed by the shared configuration but have no user module yet.
+Some tools (for example Rust) are installed by the shared configuration but have no user module yet.
 Create a new module to add your personal settings; the tool itself is already provided,
 so you do not need to install it again.
 
