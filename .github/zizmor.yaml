@@ -1,7 +1,0 @@
----
-rules:
-  unpinned-uses:
-    config:
-      policies:
-        # Allow same-org internal reusable workflows referenced by branch (e.g. @main)
-        ut-issl/*: ref-pin
