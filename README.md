@@ -86,7 +86,8 @@ imports = [
 
 Several tools already have a user module that sources or includes the shared ISSL files:
 [`bash.nix`](home-modules/user/bash.nix), [`zsh.nix`](home-modules/user/zsh.nix),
-[`git.nix`](home-modules/user/git.nix), and [`python.nix`](home-modules/user/python.nix).
+[`git.nix`](home-modules/user/git.nix), [`python.nix`](home-modules/user/python.nix),
+and [`rust.nix`](home-modules/user/rust.nix).
 Add your settings to the existing module rather than creating a new one.
 
 For example, Git can be configured in the `programs.git` block of [`home-modules/user/git.nix`](home-modules/user/git.nix):
@@ -146,23 +147,18 @@ home.file.".python/.pythonrc.py".text = ''
 '';
 ```
 
-### Add a Module for an Installed Tool
-
-Some tools (for example Rust) are installed by the shared configuration but have no user module yet.
-Create a new module to add your personal settings; the tool itself is already provided,
-so you do not need to install it again.
-
-For example, add personal Cargo settings in `home-modules/user/rust.nix`:
+Personal Cargo settings go in [`home-modules/user/rust.nix`](home-modules/user/rust.nix),
+alongside the include of the shared configuration:
 
 ```nix
-{ ... }:
+home.file.".cargo/config.toml".text = ''
+  include = [
+    { path = "${isslConfigHome}/rust/config.toml", optional = true },
+  ]
 
-{
-  home.file.".cargo/config.toml".text = ''
-    [build]
-    jobs = 8
-  '';
-}
+  [build]
+  jobs = 8
+'';
 ```
 
 ### Install Extra Packages
