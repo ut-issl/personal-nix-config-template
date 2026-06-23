@@ -166,6 +166,9 @@ Put them in a module such as [`home-modules/user/packages.nix`](home-modules/use
 }
 ```
 
+> [!NOTE]
+> This template enables `allowUnfree`, so unfree packages such as `claude-code` install without extra setup.
+
 ### Add a Module for a New Tool
 
 When a package also comes with its own configuration,
