@@ -49,26 +49,21 @@ This template provides two Home Manager configurations:
 - `.#user`: Bash-based configuration
 - `.#user-zsh`: Bash + Zsh configuration
 
-Apply one of them:
+To apply the Bash + Zsh configuration, run:
 
 ```console
-home-manager switch --flake .#user --impure
+nix run .#home-manager -- switch --flake .#user-zsh --impure
 ```
 
-or:
+Use `.#user` instead if you want the Bash-only configuration.
 
-```console
-home-manager switch --flake .#user-zsh --impure
-```
-
-If Home Manager is not installed as a command yet, use the package exposed by this flake:
-
-```console
-nix run .#home-manager -- switch --flake .#user --impure
-```
-
-Re-run the same command whenever you change your configuration—after editing or adding a module, or updating inputs—
-to apply the changes.
+> [!TIP]
+> This first run installs the `home-manager` command and applies the shared Nix settings.
+> After that, re-run with the `home-manager` command directly whenever you change your configuration:
+>
+> ```console
+> home-manager switch --flake .#user-zsh --impure
+> ```
 
 ## Customize Your Configuration
 
