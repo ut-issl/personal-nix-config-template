@@ -27,7 +27,7 @@
       ];
       forAllSystems = nixpkgs.lib.genAttrs systems;
       mkPkgs = system: import nixpkgs { inherit system; };
-      defaultSystem = if builtins ? currentSystem then builtins.currentSystem else "x86_64-linux";
+      defaultSystem = builtins.currentSystem or "x86_64-linux";
       mkHomeConfiguration =
         {
           system ? defaultSystem,
