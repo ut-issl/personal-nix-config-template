@@ -33,6 +33,14 @@ sh <(curl --proto '=https' --tlsv1.2 -L https://nixos.org/nix/install) --daemon
 
 Open a new shell afterward so that `nix` is available on your `PATH`.
 
+> [!IMPORTANT]
+> Nix uses a background daemon, and on WSL or other systems without systemd it may not be running.
+> If a Nix command cannot reach the daemon, start it manually and retry:
+>
+> ```console
+> sudo nix-daemon &
+> ```
+
 ### 3. Set Up GitHub SSH Access
 
 Generate a key, creating `~/.ssh` first if it does not exist:
@@ -91,14 +99,6 @@ nix --extra-experimental-features "nix-command flakes" run .#home-manager -- swi
 ```
 
 Use `.#user` instead if you want the Bash-only configuration.
-
-> [!IMPORTANT]
-> On WSL or other systems without systemd, the Nix daemon may not be running.
-> If the command above cannot reach the daemon, start it manually and retry:
->
-> ```console
-> sudo nix-daemon &
-> ```
 
 > [!NOTE]
 > The `--extra-experimental-features` flag is only needed on this first run,
