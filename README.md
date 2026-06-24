@@ -35,9 +35,6 @@ Open a new shell afterward so that `nix` is available on your `PATH`.
 
 ### 3. Set Up GitHub SSH Access
 
-If your personal repository is private, configure SSH access to GitHub before cloning.
-Skip this step if your repository is public or your SSH access is already set up.
-
 Generate a key, creating `~/.ssh` first if it does not exist:
 
 ```console
