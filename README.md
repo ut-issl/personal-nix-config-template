@@ -17,21 +17,59 @@ and lets each user manage personal startup files and additional settings declara
 The ISSL shared files are deployed under `~/.config/issl` by the imported shared module.
 The personal modules source or include those files from the Home Manager-managed user files.
 
-## How to Use
+## Getting Started
 
-### Create Your Personal Repository
+### 1. Create Your Repository
 
-Create a new repository from this template, then clone your repository:
+Create your own repository from this template using the **Use this template** button on GitHub.
+
+### 2. Install Nix
+
+If Nix is not installed yet, install it with the official multi-user installer:
 
 ```console
-git clone git@github.com:<your-account>/<your-repository>.git
+sh <(curl --proto '=https' --tlsv1.2 -L https://nixos.org/nix/install) --daemon
+```
+
+Open a new shell afterward so that `nix` is available on your `PATH`.
+
+### 3. Set Up GitHub SSH Access
+
+If your personal repository is private, configure SSH access to GitHub before cloning.
+Skip this step if your repository is public or your SSH access is already set up.
+
+Generate a key, creating `~/.ssh` first if it does not exist:
+
+```console
+mkdir -p ~/.ssh && chmod 700 ~/.ssh
+ssh-keygen -t ed25519 -f ~/.ssh/github_ed25519
+```
+
+Add the GitHub host to `~/.ssh/config`:
+
+```console
+printf 'Host github.com\n  HostName github.com\n  User git\n  IdentityFile ~/.ssh/github_ed25519\n' >> ~/.ssh/config
+```
+
+Register the public key (`~/.ssh/github_ed25519.pub`) at <https://github.com/settings/keys>, then verify the connection:
+
+```console
+ssh -T git@github.com
+```
+
+### 4. Clone Your Repository
+
+Clone your repository using Git provided through Nix:
+
+```console
+nix-shell -p git --run "git clone git@github.com:<your-account>/<your-repository>.git"
 cd <your-repository>
 ```
 
-### Configure Git Identity
+### 5. Configure Your Git Identity
 
-Before applying the configuration, edit [`home-modules/user/git.nix`](home-modules/user/git.nix) and set your Git identity.
-This is required so commits created from this environment have the correct author information.
+Edit [`home-modules/user/git.nix`](home-modules/user/git.nix) and set your Git identity
+so that commits created from this environment have the correct author information.
 
 Uncomment and update these lines:
 
@@ -42,7 +80,7 @@ userEmail = "you@example.com";
 
 For other Git settings and any further customization, see [Customize Your Configuration](#customize-your-configuration).
 
-### Apply the Configuration
+### 6. Apply the Configuration
 
 This template provides two Home Manager configurations:
 
@@ -52,24 +90,30 @@ This template provides two Home Manager configurations:
 To apply the Bash + Zsh configuration, run:
 
 ```console
-nix run .#home-manager -- switch --flake .#user-zsh --impure
+nix --extra-experimental-features "nix-command flakes" run .#home-manager -- switch --flake .#user-zsh --impure
 ```
 
 Use `.#user` instead if you want the Bash-only configuration.
 
-> [!TIP]
-> This first run installs the `home-manager` command and applies the shared Nix settings.
-> After that, re-run with the `home-manager` command directly whenever you change your configuration:
+> [!IMPORTANT]
+> On WSL or other systems without systemd, the Nix daemon may not be running.
+> If the command above cannot reach the daemon, start it manually and retry:
 >
 > ```console
-> home-manager switch --flake .#user-zsh --impure
+> sudo nix-daemon &
 > ```
+
+> [!NOTE]
+> The `--extra-experimental-features` flag is only needed on this first run,
+> because the shared ISSL configuration enables those features once it is applied.
 
 ## Customize Your Configuration
 
 All personal customization lives under [`home-modules/user/`](home-modules/user/).
 The shared ISSL environment already installs many tools and deploys their base settings under `~/.config/issl`,
 so your modules only need to layer your personal settings on top.
+
+Any change you make here takes effect only after you re-apply your configuration, as described in [Apply Your Changes](#apply-your-changes).
 
 Whenever you add a new module, import it from [`home-modules/user.nix`](home-modules/user.nix):
 
@@ -201,18 +245,29 @@ For example, `home-modules/user/julia.nix`:
 }
 ```
 
-## Maintain Your Configuration
+## Apply and Maintain Your Configuration
 
-### Update Inputs
+### Update Dependencies
 
-Update pinned inputs:
+Update the pinned versions your configuration depends on:
 
 ```console
 nix flake update
 ```
 
-Then apply the configuration again, as described in [Apply the Configuration](#apply-the-configuration),
+Then re-apply your configuration, as described in [Apply Your Changes](#apply-your-changes),
 to pick up the new versions.
+
+### Apply Your Changes
+
+After the first-time setup, the `home-manager` command is available directly.
+Re-apply whenever you change your configuration:
+
+```console
+home-manager switch --flake .#user-zsh --impure
+```
+
+Use `.#user` instead if you use the Bash-only configuration.
 
 ### Validate Changes
 
