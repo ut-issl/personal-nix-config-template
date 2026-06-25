@@ -129,12 +129,18 @@ Several tools already have a user module that sources or includes the shared ISS
 [`bash.nix`](home-modules/user/bash.nix), [`zsh.nix`](home-modules/user/zsh.nix),
 [`git.nix`](home-modules/user/git.nix), [`python.nix`](home-modules/user/python.nix),
 and [`rust.nix`](home-modules/user/rust.nix).
+These modules load the shared settings first and leave space for your personal settings afterward.
 Add your settings to the existing module rather than creating a new one.
 
-For example, Git can be configured in the `programs.git` block of [`home-modules/user/git.nix`](home-modules/user/git.nix):
+In [`home-modules/user/git.nix`](home-modules/user/git.nix), configure Git in the `programs.git` block:
 
 ```nix
 programs.git = {
+  ...
+
+  userName = "Your Name";
+  userEmail = "you@example.com";
+
   aliases = {
     last = "log -1 HEAD";
     unstage = "reset HEAD --";
@@ -148,11 +154,12 @@ programs.git = {
 };
 ```
 
-Bash and Zsh use the `programs.bash` or `programs.zsh` block of
-[`home-modules/user/bash.nix`](home-modules/user/bash.nix) or [`home-modules/user/zsh.nix`](home-modules/user/zsh.nix):
+In [`home-modules/user/bash.nix`](home-modules/user/bash.nix), configure Bash in the `programs.bash` block:
 
 ```nix
 programs.bash = {
+  ...
+
   shellAliases = {
     gs = "git status";
     gd = "git diff";
@@ -164,10 +171,12 @@ programs.bash = {
 };
 ```
 
-Zsh-specific options and completion styling go in `initContent`, for example:
+In [`home-modules/user/zsh.nix`](home-modules/user/zsh.nix), configure Zsh in the `programs.zsh` block:
 
 ```nix
 programs.zsh = {
+  ...
+
   autocd = true;
 
   shellAliases = {
@@ -185,30 +194,21 @@ programs.zsh = {
 };
 ```
 
-Python interactive-shell startup goes in [`home-modules/user/python.nix`](home-modules/user/python.nix),
-after the block that loads the shared startup:
+In [`home-modules/user/python.nix`](home-modules/user/python.nix), configure Python interactive-shell startup in `home.file`:
 
 ```nix
 home.file.".python/.pythonrc.py".text = ''
-  import runpy
-  from pathlib import Path
-
-  shared_pythonrc = Path("${isslConfigHome}/python/pythonrc.py")
-  if shared_pythonrc.is_file():
-      runpy.run_path(str(shared_pythonrc), run_name="__main__")
+  ...
 
   from datetime import datetime, timedelta  # noqa: F401
 '';
 ```
 
-Personal Cargo settings go in [`home-modules/user/rust.nix`](home-modules/user/rust.nix),
-alongside the include of the shared configuration:
+In [`home-modules/user/rust.nix`](home-modules/user/rust.nix), configure Cargo in `home.file`:
 
 ```nix
 home.file.".cargo/config.toml".text = ''
-  include = [
-    { path = "${isslConfigHome}/rust/config.toml", optional = true },
-  ]
+  ...
 
   [build]
   jobs = 8
