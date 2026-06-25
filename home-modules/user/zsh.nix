@@ -27,14 +27,18 @@ in
 
     # Add your personal Zsh configuration below.
 
-    # The following commented block shows some useful optional settings.
+    # The following commented block shows examples of personal preference settings.
     # Uncomment and adjust it if you want these preferences.
     #
+    # autocd = true;
+    #
     # initContent = lib.mkAfter ''
-    #   setopt auto_cd
     #   setopt auto_pushd
     #   setopt brace_ccl
     #   setopt globdots
+
+    #   zstyle ':completion:*' completer _oldlist _expand _complete _correct _approximate
+    #   zstyle ':completion:*' menu select=long
     # '';
   };
 }

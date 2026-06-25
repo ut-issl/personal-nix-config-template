@@ -163,13 +163,16 @@ sessionVariables = {
 Zsh-specific options and completion styling go in `initContent`, for example:
 
 ```nix
-programs.zsh.initContent = lib.mkAfter ''
-  setopt auto_cd
-  setopt auto_pushd
+programs.zsh = {
+  autocd = true;
 
-  zstyle ':completion:*' menu select
-  zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
-'';
+  initContent = lib.mkAfter ''
+    setopt auto_pushd
+
+    zstyle ':completion:*' completer _oldlist _expand _complete _correct _approximate
+    zstyle ':completion:*' menu select=long
+  '';
+};
 ```
 
 Python interactive-shell startup goes in [`home-modules/user/python.nix`](home-modules/user/python.nix),
