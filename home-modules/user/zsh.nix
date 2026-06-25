@@ -26,5 +26,15 @@ in
     '';
 
     # Add your personal Zsh configuration below.
+
+    # The following commented block shows some useful optional settings.
+    # Uncomment and adjust it if you want these preferences.
+    #
+    # initContent = lib.mkAfter ''
+    #   setopt auto_cd
+    #   setopt auto_pushd
+    #   setopt brace_ccl
+    #   setopt globdots
+    # '';
   };
 }

@@ -165,7 +165,7 @@ Zsh-specific options and completion styling go in `initContent`, for example:
 ```nix
 programs.zsh.initContent = lib.mkAfter ''
   setopt auto_cd
-  setopt correct
+  setopt auto_pushd
 
   zstyle ':completion:*' menu select
   zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
