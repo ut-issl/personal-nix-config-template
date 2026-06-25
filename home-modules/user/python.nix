@@ -17,5 +17,9 @@ in
         runpy.run_path(str(shared_pythonrc), run_name="__main__")
 
     # Add your personal interactive Python startup below.
+    # The commented lines below are examples. Uncomment and adjust them if you want these preferences.
+
+    # import math
+    # import statistics as stats
   '';
 }
