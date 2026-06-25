@@ -117,7 +117,8 @@ Whenever you add a new module, import it from [`home-modules/user.nix`](home-mod
 ```nix
 imports = [
   ./user/bash.nix
-  ./user/git.nix
+  ...
+  ./user/rust.nix
   ./user/packages.nix # your new module
 ]
 ++ lib.optionals enableZsh [ ./user/zsh.nix ];
@@ -125,95 +126,17 @@ imports = [
 
 ### Extend an Existing Module
 
-Several tools already have a user module that sources or includes the shared ISSL files:
-[`bash.nix`](home-modules/user/bash.nix), [`zsh.nix`](home-modules/user/zsh.nix),
-[`git.nix`](home-modules/user/git.nix), [`python.nix`](home-modules/user/python.nix),
-and [`rust.nix`](home-modules/user/rust.nix).
+Several tools already have a user module that sources or includes the shared ISSL files.
 These modules load the shared settings first and leave space for your personal settings afterward.
-Add your settings to the existing module rather than creating a new one.
+Add your settings to the existing module rather than creating a new one:
 
-In [`home-modules/user/git.nix`](home-modules/user/git.nix), configure Git in the `programs.git` block:
+- Git: [`home-modules/user/git.nix`](home-modules/user/git.nix)
+- Bash: [`home-modules/user/bash.nix`](home-modules/user/bash.nix)
+- Zsh: [`home-modules/user/zsh.nix`](home-modules/user/zsh.nix)
+- Python startup: [`home-modules/user/python.nix`](home-modules/user/python.nix)
+- Cargo: [`home-modules/user/rust.nix`](home-modules/user/rust.nix)
 
-```nix
-programs.git = {
-  ...
-
-  userName = "Your Name";
-  userEmail = "you@example.com";
-
-  aliases = {
-    last = "log -1 HEAD";
-    unstage = "reset HEAD --";
-  };
-
-  extraConfig = {
-    commit.verbose = true;
-    merge.conflictStyle = "zdiff3";
-    rebase.autosquash = true;
-  };
-};
-```
-
-In [`home-modules/user/bash.nix`](home-modules/user/bash.nix), configure Bash in the `programs.bash` block:
-
-```nix
-programs.bash = {
-  ...
-
-  shellAliases = {
-    python = "python3";
-  };
-
-  bashrcExtra = ''
-    shopt -s autocd
-    shopt -s cdspell
-  '';
-};
-```
-
-In [`home-modules/user/zsh.nix`](home-modules/user/zsh.nix), configure Zsh in the `programs.zsh` block:
-
-```nix
-programs.zsh = {
-  ...
-
-  autocd = true;
-
-  shellAliases = {
-    python = "python3";
-  };
-
-  initContent = lib.mkAfter ''
-    setopt auto_pushd
-
-    zstyle ':completion:*' completer _oldlist _expand _complete _correct _approximate
-    zstyle ':completion:*' menu select=long
-
-    alias -s py=python3
-  '';
-};
-```
-
-In [`home-modules/user/python.nix`](home-modules/user/python.nix), configure Python interactive-shell startup in `home.file`:
-
-```nix
-home.file.".python/.pythonrc.py".text = ''
-  ...
-
-  from datetime import datetime, timedelta  # noqa: F401
-'';
-```
-
-In [`home-modules/user/rust.nix`](home-modules/user/rust.nix), configure Cargo in `home.file`:
-
-```nix
-home.file.".cargo/config.toml".text = ''
-  ...
-
-  [build]
-  jobs = 8
-'';
-```
+Each file includes comments that show where to add personal settings and examples you can adapt.
 
 ### Install Extra Packages
 
