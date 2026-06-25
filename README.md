@@ -134,15 +134,17 @@ Add your settings to the existing module rather than creating a new one.
 For example, Git can be configured in the `programs.git` block of [`home-modules/user/git.nix`](home-modules/user/git.nix):
 
 ```nix
-aliases = {
-  last = "log -1 HEAD";
-  unstage = "reset HEAD --";
-};
+programs.git = {
+  aliases = {
+    last = "log -1 HEAD";
+    unstage = "reset HEAD --";
+  };
 
-extraConfig = {
-  commit.verbose = true;
-  merge.conflictStyle = "zdiff3";
-  rebase.autosquash = true;
+  extraConfig = {
+    commit.verbose = true;
+    merge.conflictStyle = "zdiff3";
+    rebase.autosquash = true;
+  };
 };
 ```
 
@@ -150,13 +152,15 @@ Bash and Zsh use the `programs.bash` or `programs.zsh` block of
 [`home-modules/user/bash.nix`](home-modules/user/bash.nix) or [`home-modules/user/zsh.nix`](home-modules/user/zsh.nix):
 
 ```nix
-shellAliases = {
-  gs = "git status";
-  gd = "git diff";
-};
+programs.bash = {
+  shellAliases = {
+    gs = "git status";
+    gd = "git diff";
+  };
 
-sessionVariables = {
-  EDITOR = "vim";
+  sessionVariables = {
+    EDITOR = "vim";
+  };
 };
 ```
 
