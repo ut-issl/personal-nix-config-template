@@ -32,13 +32,19 @@ in
     #
     # autocd = true;
     #
+    # shellAliases = {
+    #   python = "python3";
+    # };
+    #
     # initContent = lib.mkAfter ''
     #   setopt auto_pushd
     #   setopt brace_ccl
     #   setopt globdots
-
+    #
     #   zstyle ':completion:*' completer _oldlist _expand _complete _correct _approximate
     #   zstyle ':completion:*' menu select=long
+    #
+    #   alias -s py=python3
     # '';
   };
 }

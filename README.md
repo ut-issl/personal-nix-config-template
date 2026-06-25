@@ -170,11 +170,17 @@ Zsh-specific options and completion styling go in `initContent`, for example:
 programs.zsh = {
   autocd = true;
 
+  shellAliases = {
+    python = "python3";
+  };
+
   initContent = lib.mkAfter ''
     setopt auto_pushd
 
     zstyle ':completion:*' completer _oldlist _expand _complete _correct _approximate
     zstyle ':completion:*' menu select=long
+
+    alias -s py=python3
   '';
 };
 ```
