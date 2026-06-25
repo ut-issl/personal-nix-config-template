@@ -25,5 +25,18 @@ in
     '';
 
     # Add your personal Bash configuration below.
+
+    # The following commented block shows examples of personal preference settings.
+    # Uncomment and adjust it if you want these preferences.
+    #
+    # shellAliases = {
+    #   python = "python3";
+    # };
+    #
+    # bashrcExtra = ''
+    #   shopt -s autocd
+    #   shopt -s cdspell
+    #   shopt -s dotglob
+    # '';
   };
 }

@@ -161,13 +161,13 @@ programs.bash = {
   ...
 
   shellAliases = {
-    gs = "git status";
-    gd = "git diff";
+    python = "python3";
   };
 
-  sessionVariables = {
-    EDITOR = "vim";
-  };
+  bashrcExtra = ''
+    shopt -s autocd
+    shopt -s cdspell
+  '';
 };
 ```
 
