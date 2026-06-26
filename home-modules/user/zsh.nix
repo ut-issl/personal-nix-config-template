@@ -13,6 +13,25 @@ in
     enableCompletion = true;
     dotDir = ".zsh";
 
+    # Command history. Edit any of these freely as you like.
+    history = {
+      path = "\${ZDOTDIR}/.zsh_history";
+
+      size = 10000;
+      save = 10000;
+
+      ignoreSpace = true;
+      ignoreDups = true;
+      ignoreAllDups = false;
+      saveNoDups = false;
+      findNoDups = true;
+      expireDuplicatesFirst = false;
+
+      extended = true;
+      append = true;
+      share = true;
+    };
+
     profileExtra = ''
       if [ -f "${isslConfigHome}/zsh/.zprofile" ]; then
         . "${isslConfigHome}/zsh/.zprofile"
