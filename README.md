@@ -118,6 +118,9 @@ Whenever you add a new module, import it from [`home-modules/user.nix`](home-mod
 imports = [
   ./user/bash.nix
   ./user/git.nix
+  ./user/nix.nix
+  ./user/python.nix
+  ./user/rust.nix
   ./user/packages.nix # your new module
 ]
 ++ lib.optionals enableZsh [ ./user/zsh.nix ];
@@ -125,82 +128,17 @@ imports = [
 
 ### Extend an Existing Module
 
-Several tools already have a user module that sources or includes the shared ISSL files:
-[`bash.nix`](home-modules/user/bash.nix), [`zsh.nix`](home-modules/user/zsh.nix),
-[`git.nix`](home-modules/user/git.nix), [`python.nix`](home-modules/user/python.nix),
-and [`rust.nix`](home-modules/user/rust.nix).
-Add your settings to the existing module rather than creating a new one.
+Several tools already have a user module that sources or includes the shared ISSL files.
+These modules load the shared settings first and leave space for your personal settings afterward.
+Add your settings to the existing module rather than creating a new one:
 
-For example, Git can be configured in the `programs.git` block of [`home-modules/user/git.nix`](home-modules/user/git.nix):
+- Git: [`home-modules/user/git.nix`](home-modules/user/git.nix)
+- Bash: [`home-modules/user/bash.nix`](home-modules/user/bash.nix)
+- Zsh: [`home-modules/user/zsh.nix`](home-modules/user/zsh.nix)
+- Python startup: [`home-modules/user/python.nix`](home-modules/user/python.nix)
+- Cargo: [`home-modules/user/rust.nix`](home-modules/user/rust.nix)
 
-```nix
-aliases = {
-  last = "log -1 HEAD";
-  unstage = "reset HEAD --";
-};
-
-extraConfig = {
-  commit.verbose = true;
-  merge.conflictStyle = "zdiff3";
-  rebase.autosquash = true;
-};
-```
-
-Bash and Zsh use the `programs.bash` or `programs.zsh` block of
-[`home-modules/user/bash.nix`](home-modules/user/bash.nix) or [`home-modules/user/zsh.nix`](home-modules/user/zsh.nix):
-
-```nix
-shellAliases = {
-  gs = "git status";
-  gd = "git diff";
-};
-
-sessionVariables = {
-  EDITOR = "vim";
-};
-```
-
-Zsh-specific options and completion styling go in `initContent`, for example:
-
-```nix
-programs.zsh.initContent = lib.mkAfter ''
-  setopt auto_cd
-  setopt correct
-
-  zstyle ':completion:*' menu select
-  zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
-'';
-```
-
-Python interactive-shell startup goes in [`home-modules/user/python.nix`](home-modules/user/python.nix),
-after the block that loads the shared startup:
-
-```nix
-home.file.".python/.pythonrc.py".text = ''
-  import runpy
-  from pathlib import Path
-
-  shared_pythonrc = Path("${isslConfigHome}/python/pythonrc.py")
-  if shared_pythonrc.is_file():
-      runpy.run_path(str(shared_pythonrc), run_name="__main__")
-
-  from datetime import datetime, timedelta  # noqa: F401
-'';
-```
-
-Personal Cargo settings go in [`home-modules/user/rust.nix`](home-modules/user/rust.nix),
-alongside the include of the shared configuration:
-
-```nix
-home.file.".cargo/config.toml".text = ''
-  include = [
-    { path = "${isslConfigHome}/rust/config.toml", optional = true },
-  ]
-
-  [build]
-  jobs = 8
-'';
-```
+Each file includes comments that show where to add personal settings and examples you can adapt.
 
 ### Install Extra Packages
 

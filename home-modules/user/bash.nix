@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT OR Apache-2.0
 
-{ config, ... }:
+{ config, lib, ... }:
 
 let
   isslConfigHome = "${config.xdg.configHome}/issl";
@@ -18,12 +18,28 @@ in
       fi
     '';
 
-    bashrcExtra = ''
-      if [ -f "${isslConfigHome}/bash/.bashrc" ]; then
-        . "${isslConfigHome}/bash/.bashrc"
-      fi
-    '';
+    bashrcExtra = lib.mkMerge [
+      ''
+        if [ -f "${isslConfigHome}/bash/.bashrc" ]; then
+          . "${isslConfigHome}/bash/.bashrc"
+        fi
+      ''
 
-    # Add your personal Bash configuration below.
+      (lib.mkAfter ''
+        # Add personal Bash commands below.
+        # The commented lines below are examples. Uncomment and adjust them if you want these preferences.
+
+        # shopt -s autocd
+        # shopt -s cdspell
+        # shopt -s dotglob
+      '')
+    ];
+
+    # Add personal Home Manager options for Bash below.
+    # The commented lines below are examples. Uncomment and adjust them if you want these preferences.
+
+    # shellAliases = {
+    #   python = "python3";
+    # };
   };
 }

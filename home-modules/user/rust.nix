@@ -14,5 +14,16 @@ in
     ]
 
     # Add your personal Cargo configuration below.
+    # The commented lines below are examples. Uncomment and adjust them if you want these preferences.
+
+    # [build]
+    # jobs = 8
+
+    # [alias]
+    # c = "check"
+    # t = "test"
+
+    # [term]
+    # verbose = true
   '';
 }
