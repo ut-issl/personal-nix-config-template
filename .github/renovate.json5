@@ -126,6 +126,18 @@
       managerFilePatterns: [
         '/^\\.github/workflows/ci\\.ya?ml$/',
       ],
+      matchStrings: [
+        'ruff==(?<currentValue>[^"\\s]+)',
+      ],
+      datasourceTemplate: 'pypi',
+      depNameTemplate: 'astral-sh/ruff',
+      packageNameTemplate: 'ruff',
+    },
+    {
+      customType: 'regex',
+      managerFilePatterns: [
+        '/^\\.github/workflows/ci\\.ya?ml$/',
+      ],
       matchStringsStrategy: 'recursive',
       matchStrings: [
         "uses: j178/prek-action@[a-f0-9]{40}[^\\n]*\\n(?:\\s+with:\\n(?:\\s+[^\\n]+\\n)*?)\\s+prek-version: '[^'\\s]+'",
@@ -156,6 +168,13 @@
         'DavidAnson/markdownlint-cli2',
       ],
       groupName: 'markdownlint-cli2',
+    },
+    {
+      matchDepNames: [
+        'astral-sh/ruff',
+        'astral-sh/ruff-pre-commit',
+      ],
+      groupName: 'ruff',
     },
     {
       matchDepNames: [
