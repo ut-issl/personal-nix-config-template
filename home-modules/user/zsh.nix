@@ -44,6 +44,8 @@ in
     # Add personal Home Manager options for Zsh below.
     # The commented lines below are examples. Uncomment and adjust them if you want these preferences.
 
+    # autosuggestion.enable = true;
+
     # autocd = true;
 
     # shellAliases = {
