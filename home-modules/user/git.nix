@@ -24,8 +24,6 @@ in
     # Add your personal Git configuration below.
     # The commented lines below are examples. Uncomment and adjust them if you want these preferences.
 
-    # editor = "code --wait";
-
     # aliases = {
     #   ch = "checkout";
     #   cm = "commit";
@@ -35,6 +33,8 @@ in
     # };
 
     extraConfig = {
+      # core.editor = "code --wait";
+
       # commit.verbose = true;
 
       # help.autocorrect = 1;

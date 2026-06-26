@@ -117,7 +117,9 @@ Whenever you add a new module, import it from [`home-modules/user.nix`](home-mod
 ```nix
 imports = [
   ./user/bash.nix
-  ...
+  ./user/git.nix
+  ./user/nix.nix
+  ./user/python.nix
   ./user/rust.nix
   ./user/packages.nix # your new module
 ]
