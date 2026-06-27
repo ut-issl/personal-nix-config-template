@@ -12,7 +12,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     issl = {
-      url = "github:ut-issl/issl-ubuntu-environment-setup/v0.2.0";
+      url = "github:ut-issl/issl-ubuntu-environment-setup/v0.2.4";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
