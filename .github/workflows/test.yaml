@@ -1,0 +1,37 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/test.yaml
+      - flake.nix
+      - flake.lock
+      - home-modules/**
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - .github/workflows/test.yaml
+      - flake.nix
+      - flake.lock
+      - home-modules/**
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  user-repo:
+    name: Test config-repository-based setup
+    uses: ut-issl/issl-ubuntu-environment-setup/.github/workflows/test-environment.yaml@bbf54e2b41c1e154d36e926dee72342927f27100 # v0.2.3
+    with:
+      setup-mode: repository-based
+      common-repository: ut-issl/issl-ubuntu-environment-setup
+      common-ref: bbf54e2b41c1e154d36e926dee72342927f27100 # v0.2.3
+      user-repository: ${{ github.repository }}
+      user-ref: ${{ github.sha }}
+      override-issl-input: false
