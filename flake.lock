@@ -51,16 +51,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1782241149,
-        "narHash": "sha256-jXp2GBuZhZ/litaRSTE/phh16iuG3r43fmaf9cmimFg=",
+        "lastModified": 1782564783,
+        "narHash": "sha256-ZvaQ7B5txftfv/dPdAI9DN82AdoszOt/su+XctVBJzc=",
         "owner": "ut-issl",
         "repo": "issl-ubuntu-environment-setup",
-        "rev": "782c5314fe10bc2d83a7754897f15d1f9ee8f857",
+        "rev": "bbf54e2b41c1e154d36e926dee72342927f27100",
         "type": "github"
       },
       "original": {
         "owner": "ut-issl",
-        "ref": "v0.2.0",
+        "ref": "v0.2.3",
         "repo": "issl-ubuntu-environment-setup",
         "type": "github"
       }
