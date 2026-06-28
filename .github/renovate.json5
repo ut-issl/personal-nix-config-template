@@ -256,7 +256,7 @@
         '.github/workflows/**',
       ],
       addLabels: [
-        'ci :gear:',
+        'ci',
       ],
     },
     {
@@ -264,7 +264,7 @@
         'pre-commit',
       ],
       addLabels: [
-        'pre-commit :hook:',
+        'pre-commit',
       ],
     },
     {
@@ -321,7 +321,7 @@
     enabled: true,
   },
   labels: [
-    'automated :robot:',
-    'dependencies :package:',
+    'automated',
+    'dependencies',
   ],
 }
