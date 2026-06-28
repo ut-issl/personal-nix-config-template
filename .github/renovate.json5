@@ -146,6 +146,31 @@
       datasourceTemplate: 'github-releases',
       depNameTemplate: 'j178/prek',
     },
+    {
+      customType: 'regex',
+      managerFilePatterns: [
+        '/^\\.github/workflows/test\\.ya?ml$/',
+      ],
+      matchStrings: [
+        'common-ref: (?<currentDigest>[a-f0-9]{40}) # (?<currentValue>v[^\\s]+)',
+      ],
+      autoReplaceStringTemplate: 'common-ref: {{{newDigest}}} # {{{newValue}}}',
+      datasourceTemplate: 'github-tags',
+      depNameTemplate: 'ut-issl/issl-ubuntu-environment-setup',
+      versioningTemplate: 'semver',
+    },
+    {
+      customType: 'regex',
+      managerFilePatterns: [
+        '/^flake\\.nix$/',
+      ],
+      matchStrings: [
+        'github:ut-issl/issl-ubuntu-environment-setup/(?<currentValue>v[^"\\s]+)',
+      ],
+      datasourceTemplate: 'github-tags',
+      depNameTemplate: 'ut-issl/issl-ubuntu-environment-setup',
+      versioningTemplate: 'semver',
+    },
   ],
   packageRules: [
     {
@@ -202,6 +227,22 @@
         'adrienverge/yamllint',
       ],
       groupName: 'yamllint',
+    },
+    {
+      matchDepNames: [
+        'ut-issl/issl-ubuntu-environment-setup',
+      ],
+      groupName: 'issl environment',
+      allowedVersions: '/^v\\d+\\.\\d+\\.\\d+$/',
+      postUpgradeTasks: {
+        commands: [
+          'nix flake update issl',
+        ],
+        fileFilters: [
+          'flake.lock',
+        ],
+        executionMode: 'branch',
+      },
     },
     {
       matchDepNames: [
