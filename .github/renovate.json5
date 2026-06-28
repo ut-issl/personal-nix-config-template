@@ -234,6 +234,7 @@
       ],
       groupName: 'issl environment',
       allowedVersions: '/^v\\d+\\.\\d+\\.\\d+$/',
+      // Self-hosted only; hosted runs still re-lock at switch time and via weekly lock file maintenance.
       postUpgradeTasks: {
         commands: [
           'nix flake update issl',
