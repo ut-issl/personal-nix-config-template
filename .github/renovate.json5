@@ -1,6 +1,6 @@
 {
   $schema: 'https://docs.renovatebot.com/renovate-schema.json',
-  enabled: true,  // temporarily enabled to verify Renovate behavior; revert to false (opt-in) before publishing
+  enabled: false,  // set to true (or remove) to opt in to Renovate updates
   extends: [
     'config:best-practices',
   ],
