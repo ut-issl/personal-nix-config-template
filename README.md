@@ -1,5 +1,6 @@
 <!--
 SPDX-FileCopyrightText: 2026 Intelligent Space Systems Laboratory, The University of Tokyo
+SPDX-FileCopyrightText: 2026 Riki Nakamura
 
 SPDX-License-Identifier: MIT OR Apache-2.0
 -->
