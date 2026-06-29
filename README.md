@@ -223,6 +223,47 @@ nix build .#homeConfigurations.user.activationPackage --impure
 nix build .#homeConfigurations.user-zsh.activationPackage --impure
 ```
 
+## Development Tooling
+
+This template ships a few quality and maintenance tools.
+Pre-commit hooks are part of the everyday workflow, while Renovate and Conventional Commits enforcement are opt-in.
+
+### Pre-commit Hooks
+
+This template uses [prek](https://prek.j178.dev), a faster drop-in replacement for [pre-commit](https://pre-commit.com),
+with the hooks defined in [`.pre-commit-config.yaml`](.pre-commit-config.yaml).
+Install the hooks once after cloning:
+
+```console
+prek install --hook-type pre-commit --hook-type pre-push
+```
+
+If you prefer `pre-commit`, substitute `uvx pre-commit` for `prek` in the command above.
+The `check-prek` CI job runs the same hooks on every pull request.
+
+### Renovate
+
+[Renovate](https://docs.renovatebot.com) is preconfigured in [`.github/renovate.json5`](.github/renovate.json5)
+to track Action SHAs, pinned tool versions inside [`ci.yaml`](.github/workflows/ci.yaml), and pre-commit hooks.
+It is disabled by default; to opt in, change the `enabled: false` line to `true` (or remove it),
+and make sure the Renovate GitHub App is installed for the repository.
+The `validate-renovate-config` CI job checks the configuration whenever it changes.
+
+### Conventional Commits
+
+Commit messages and pull request titles can be checked against [Conventional Commits](https://www.conventionalcommits.org)
+via [Commitizen](https://github.com/commitizen-tools/commitizen).
+This is opt-in: uncomment [`lint-commit-messages` in `ci.yaml`](.github/workflows/ci.yaml)
+and [`lint-pr-title` in `manage-pull-requests.yaml`](.github/workflows/manage-pull-requests.yaml) to enable it.
+Linting the PR title is especially useful with squash merging,
+since the PR title becomes the subject of the squashed commit by default.
+
+To author Conventional Commits interactively:
+
+```console
+cz commit
+```
+
 ## License
 
 The scaffolding provided by this template is licensed under either [MIT](LICENSES/MIT.txt) or [Apache-2.0](LICENSES/Apache-2.0.txt)
