@@ -232,6 +232,11 @@ Pre-commit hooks are part of the everyday workflow, while Renovate and Conventio
 
 This template uses [prek](https://prek.j178.dev), a faster drop-in replacement for [pre-commit](https://pre-commit.com),
 with the hooks defined in [`.pre-commit-config.yaml`](.pre-commit-config.yaml).
+
+> [!NOTE]
+> `prek` is installed by this configuration once you apply the setup.
+> If it is not available yet, complete the setup first by following [Getting Started](#getting-started).
+
 Install the hooks once after cloning:
 
 ```console
@@ -257,6 +262,10 @@ This is opt-in: uncomment [`lint-commit-messages` in `ci.yaml`](.github/workflow
 and [`lint-pr-title` in `manage-pull-requests.yaml`](.github/workflows/manage-pull-requests.yaml) to enable it.
 Linting the PR title is especially useful with squash merging,
 since the PR title becomes the subject of the squashed commit by default.
+
+> [!NOTE]
+> `cz` (Commitizen) is installed by this configuration once you apply the setup.
+> If it is not available yet, complete the setup first by following [Getting Started](#getting-started).
 
 To author Conventional Commits interactively:
 
