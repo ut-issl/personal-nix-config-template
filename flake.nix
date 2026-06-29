@@ -7,15 +7,9 @@
   description = "Personal Home Manager configuration template for the ISSL Ubuntu environment";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
-    home-manager = {
-      url = "github:nix-community/home-manager/release-25.05";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    issl = {
-      url = "github:ut-issl/issl-ubuntu-environment-setup/v0.2.4";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    issl.url = "github:ut-issl/issl-ubuntu-environment-setup/v0.2.5";
+    nixpkgs.follows = "issl/nixpkgs";
+    home-manager.follows = "issl/home-manager";
   };
 
   outputs =
@@ -71,7 +65,7 @@
             {
               home = {
                 inherit username homeDirectory;
-                stateVersion = "25.05";
+                stateVersion = "26.05";
               };
             }
           ];

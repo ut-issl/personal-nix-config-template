@@ -3,89 +3,72 @@
     "home-manager": {
       "inputs": {
         "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1763992789,
-        "narHash": "sha256-WHkdBlw6oyxXIra/vQPYLtqY+3G8dUVZM8bEXk0t8x4=",
-        "owner": "nix-community",
-        "repo": "home-manager",
-        "rev": "44831a7eaba4360fb81f2acc5ea6de5fde90aaa3",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "ref": "release-25.05",
-        "repo": "home-manager",
-        "type": "github"
-      }
-    },
-    "home-manager_2": {
-      "inputs": {
-        "nixpkgs": [
           "issl",
           "nixpkgs"
         ]
       },
       "locked": {
-        "lastModified": 1763992789,
-        "narHash": "sha256-WHkdBlw6oyxXIra/vQPYLtqY+3G8dUVZM8bEXk0t8x4=",
+        "lastModified": 1781981105,
+        "narHash": "sha256-/1nNBbA7PrSQpTc9Qazkhl4kIPg+TNl0CjxS3UQJKlw=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "44831a7eaba4360fb81f2acc5ea6de5fde90aaa3",
+        "rev": "7bfff44b465909f69a442701293bc0badcf476dc",
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
-        "ref": "release-25.05",
+        "ref": "release-26.05",
         "repo": "home-manager",
         "type": "github"
       }
     },
     "issl": {
       "inputs": {
-        "home-manager": "home-manager_2",
-        "nixpkgs": [
-          "nixpkgs"
-        ]
+        "home-manager": "home-manager",
+        "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1782576600,
-        "narHash": "sha256-V65XDGAcfC2eeNUz6ke6UtVTPM9MJJwCamCJkZBu85I=",
+        "lastModified": 1782696680,
+        "narHash": "sha256-RWS6C1SxpNiYs9dqng7q3K/zmdn4heocgl6tqAHjRnc=",
         "owner": "ut-issl",
         "repo": "issl-ubuntu-environment-setup",
-        "rev": "92a637cdd1f7303495114774a3af222269bd82b8",
+        "rev": "5f2201e084f0d79565ea17c165274629f1d6b9bc",
         "type": "github"
       },
       "original": {
         "owner": "ut-issl",
-        "ref": "v0.2.4",
+        "ref": "v0.2.5",
         "repo": "issl-ubuntu-environment-setup",
         "type": "github"
       }
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1767313136,
-        "narHash": "sha256-16KkgfdYqjaeRGBaYsNrhPRRENs0qzkQVUooNHtoy2w=",
+        "lastModified": 1782535326,
+        "narHash": "sha256-ZeRxu4yn6shd3SNF5ZUQb4r7BaVo1zBKMjRhfoNSBmw=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "ac62194c3917d5f474c1a844b6fd6da2db95077d",
+        "rev": "714a5f8c4ead6b31148d829288440ed033ccc041",
         "type": "github"
       },
       "original": {
         "owner": "NixOS",
-        "ref": "nixos-25.05",
+        "ref": "nixos-26.05",
         "repo": "nixpkgs",
         "type": "github"
       }
     },
     "root": {
       "inputs": {
-        "home-manager": "home-manager",
+        "home-manager": [
+          "issl",
+          "home-manager"
+        ],
         "issl": "issl",
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": [
+          "issl",
+          "nixpkgs"
+        ]
       }
     }
   },
