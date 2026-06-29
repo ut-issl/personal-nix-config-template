@@ -274,7 +274,7 @@
       matchUpdateTypes: [
         'patch',
       ],
-      // automerge: true,
+      automerge: true,
     },
     {
       matchDepNames: [
@@ -299,7 +299,7 @@
       matchUpdateTypes: [
         'minor',
       ],
-      // automerge: true,
+      automerge: true,
     },
     {
       matchManagers: [
@@ -308,7 +308,7 @@
       matchUpdateTypes: [
         'patch',
       ],
-      // automerge: true,
+      automerge: true,
     },
   ],
   'git-submodules': {
