@@ -33,7 +33,7 @@ in
     #   sw = "switch";
     # };
 
-    extraConfig = {
+    settings = {
       # core.editor = "code --wait";
 
       # commit.verbose = true;
