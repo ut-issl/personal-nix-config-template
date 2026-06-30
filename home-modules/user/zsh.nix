@@ -12,11 +12,11 @@ in
   programs.zsh = {
     enable = true;
     enableCompletion = true;
-    dotDir = ".zsh";
+    dotDir = "${config.xdg.configHome}/zsh";
 
     # Command history. Edit any of these freely as you like.
     history = {
-      path = "\${ZDOTDIR}/.zsh_history";
+      path = "${config.xdg.stateHome}/zsh/history";
 
       size = 10000;
       save = 10000;
