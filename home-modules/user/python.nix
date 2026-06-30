@@ -9,7 +9,7 @@ let
   isslConfigHome = "${config.xdg.configHome}/issl";
 in
 {
-  home.file.".python/.pythonrc.py".text = ''
+  xdg.configFile."python/pythonrc.py".text = ''
     import runpy
     from pathlib import Path
 
