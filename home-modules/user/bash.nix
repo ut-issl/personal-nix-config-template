@@ -14,8 +14,8 @@ in
     enableCompletion = true;
 
     profileExtra = ''
-      if [ -f "${isslConfigHome}/bash/.bash_profile" ]; then
-        . "${isslConfigHome}/bash/.bash_profile"
+      if [ -f "${isslConfigHome}/shell/env.sh" ]; then
+        . "${isslConfigHome}/shell/env.sh"
       fi
     '';
 
