@@ -35,3 +35,4 @@ jobs:
       user-repository: ${{ github.repository }}
       user-ref: ${{ github.sha }}
       override-issl-input: false
+      timeout-minutes: 10
