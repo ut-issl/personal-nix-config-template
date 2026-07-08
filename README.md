@@ -21,6 +21,12 @@ and lets each user manage personal startup files and additional settings declara
 The ISSL shared files are deployed under `~/.config/issl` by the imported shared module.
 The personal modules source or include those files from the Home Manager-managed user files.
 
+> [!WARNING]
+> This repository is an early-stage prototype and is under active development.
+> It may be made private or deleted without prior notice.
+> It is provided as-is, without user support or compatibility guarantees.
+> Use it at your own risk.
+
 ## Getting Started
 
 ### 1. Create Your Repository
