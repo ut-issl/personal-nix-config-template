@@ -46,7 +46,9 @@ in
 
   # The first `home-manager switch` overwrites the pre-existing dotfiles that these options manage.
   # See the warning in the README ("Apply the Configuration") before your first run.
-  home.file.".profile".force = true;
-  home.file.".bash_profile".force = true;
-  home.file.".bashrc".force = true;
+  home.file = {
+    ".profile".force = true;
+    ".bash_profile".force = true;
+    ".bashrc".force = true;
+  };
 }
