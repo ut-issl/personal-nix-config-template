@@ -28,16 +28,16 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1783579134,
-        "narHash": "sha256-MMewpv+KecBAKas+d2HoZPcxW2+n7JGV7jozIE670nw=",
+        "lastModified": 1783613924,
+        "narHash": "sha256-/OLvRthh3HWcYpxYOLii1R0U9uoy2K6xcujp6bY3Mdc=",
         "owner": "ut-issl",
         "repo": "issl-ubuntu-environment-setup",
-        "rev": "88db4b284589b3c1c90be732574631a7ad177e3f",
+        "rev": "fdb95ceada2c1f43ba9593127b0c168eb3d8409e",
         "type": "github"
       },
       "original": {
         "owner": "ut-issl",
-        "ref": "v0.2.10",
+        "ref": "v0.3.0",
         "repo": "issl-ubuntu-environment-setup",
         "type": "github"
       }
