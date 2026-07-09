@@ -72,4 +72,8 @@ in
     #   python = "python3";
     # };
   };
+
+  # The first `home-manager switch` overwrites the pre-existing ~/.zshenv.
+  # See the warning in the README ("Apply the Configuration") before your first run.
+  home.file.".zshenv".force = true;
 }

@@ -97,6 +97,19 @@ For other Git settings and any further customization, see [Customize Your Config
 
 ### 6. Apply the Configuration
 
+> [!CAUTION]
+> The first `home-manager switch` **overwrites** the shell startup files that this configuration manages:
+> `~/.profile`, `~/.bash_profile`, and `~/.bashrc` (plus `~/.zshenv` when you use `.#user-zsh`).
+>
+> On a fresh Ubuntu account these are just the default skeleton files,
+> so there is nothing of yours to lose and you can safely proceed.
+>
+> If you have customized any of them and want to keep your version,
+> first remove the `force = true` lines in [`home-modules/user/bash.nix`](home-modules/user/bash.nix#L49-L51)
+> (and [`home-modules/user/zsh.nix`](home-modules/user/zsh.nix#L78) for Zsh),
+> then append `-b backup` to the first switch command below.
+> That moves each existing file to `<file>.backup` instead of overwriting it.
+
 This template provides two Home Manager configurations:
 
 - `.#user`: Bash-based configuration
