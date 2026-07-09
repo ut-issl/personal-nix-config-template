@@ -27,11 +27,11 @@ permissions:
 jobs:
   user-repo:
     name: Test config-repository-based setup
-    uses: ut-issl/issl-ubuntu-environment-setup/.github/workflows/test-environment.yaml@88db4b284589b3c1c90be732574631a7ad177e3f # v0.2.10
+    uses: ut-issl/issl-ubuntu-environment-setup/.github/workflows/test-environment.yaml@fdb95ceada2c1f43ba9593127b0c168eb3d8409e # v0.3.0
     with:
       setup-mode: repository-based
       common-repository: ut-issl/issl-ubuntu-environment-setup
-      common-ref: 88db4b284589b3c1c90be732574631a7ad177e3f # v0.2.10
+      common-ref: fdb95ceada2c1f43ba9593127b0c168eb3d8409e # v0.3.0
       user-repository: ${{ github.repository }}
       user-ref: ${{ github.sha }}
       override-issl-input: false
