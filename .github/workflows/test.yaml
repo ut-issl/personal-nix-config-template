@@ -27,9 +27,17 @@ permissions:
 jobs:
   user-repo:
     name: Test config-repository-based setup
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-22.04
+          - ubuntu-24.04
+          - ubuntu-26.04
     uses: ut-issl/issl-ubuntu-environment-setup/.github/workflows/test-environment.yaml@fdb95ceada2c1f43ba9593127b0c168eb3d8409e # v0.3.0
     with:
       setup-mode: repository-based
+      os: ${{ matrix.os }}
       common-repository: ut-issl/issl-ubuntu-environment-setup
       common-ref: fdb95ceada2c1f43ba9593127b0c168eb3d8409e # v0.3.0
       user-repository: ${{ github.repository }}
