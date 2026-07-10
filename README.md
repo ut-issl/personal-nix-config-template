@@ -293,6 +293,17 @@ To author Conventional Commits interactively:
 cz commit
 ```
 
+### REUSE Compliance
+
+The [`reuse.yaml`](.github/workflows/reuse.yaml) CI workflow checks that every file carries
+copyright and licensing information following the [REUSE](https://reuse.software) specification (see [License](#license)).
+
+This check is scoped to the template repository itself:
+an `if` guard on the `lint-reuse` job limits it to `ut-issl/personal-nix-config-template`,
+so it does nothing in repositories derived from this template and can be left in place.
+If you would rather not keep it, delete [`reuse.yaml`](.github/workflows/reuse.yaml).
+Conversely, to enforce REUSE compliance in your own repository, remove the `if` guard from the `lint-reuse` job.
+
 ## License
 
 The scaffolding provided by this template is licensed under either [MIT](LICENSES/MIT.txt) or [Apache-2.0](LICENSES/Apache-2.0.txt)
