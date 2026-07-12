@@ -171,6 +171,18 @@
       depNameTemplate: 'ut-issl/issl-ubuntu-environment-setup',
       versioningTemplate: 'semver',
     },
+    {
+      customType: 'regex',
+      managerFilePatterns: [
+        '/^README\\.md$/',
+      ],
+      matchStrings: [
+        'issl-ubuntu-environment-setup/releases/download/(?<currentValue>v[^/\\s]+)/bootstrap-host\\.sh',
+      ],
+      datasourceTemplate: 'github-tags',
+      depNameTemplate: 'ut-issl/issl-ubuntu-environment-setup',
+      versioningTemplate: 'semver',
+    },
   ],
   packageRules: [
     {
