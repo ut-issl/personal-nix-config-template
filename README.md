@@ -34,55 +34,30 @@ The personal modules source or include those files from the Home Manager-managed
 
 Create your own repository from this template using the **Use this template** button on GitHub.
 
-### 2. Install Nix
+### 2. Prepare the Host
 
-If Nix is not installed yet, install it with the official multi-user installer:
+Run the shared host bootstrap script:
 
 ```console
-sh <(curl --proto '=https' --tlsv1.2 -L https://nixos.org/nix/install) --daemon
+bash <(curl -fsSL https://github.com/ut-issl/issl-ubuntu-environment-setup/releases/download/v0.4.0/bootstrap-host.sh)
 ```
+
+The bootstrap script installs Nix and starts `nix-daemon` on systems without systemd.
+It also offers to set up GitHub SSH access for private repositories and install Docker Engine.
 
 Open a new shell afterward so that `nix` is available on your `PATH`.
 
-> [!IMPORTANT]
-> Nix uses a background daemon, and on WSL or other systems without systemd it may not be running.
-> If a Nix command cannot reach the daemon, start it manually and retry:
->
-> ```console
-> sudo nix-daemon &
-> ```
+### 3. Clone Your Repository
 
-### 3. Set Up GitHub SSH Access
-
-Generate a key, creating `~/.ssh` first if it does not exist:
+Clone your repository using Git and OpenSSH provided through Nix:
 
 ```console
-mkdir -p ~/.ssh && chmod 700 ~/.ssh
-ssh-keygen -t ed25519 -f ~/.ssh/github_ed25519
-```
-
-Add the GitHub host to `~/.ssh/config`:
-
-```console
-printf 'Host github.com\n  HostName github.com\n  User git\n  IdentityFile ~/.ssh/github_ed25519\n' >> ~/.ssh/config
-```
-
-Register the public key (`~/.ssh/github_ed25519.pub`) at <https://github.com/settings/keys>, then verify the connection:
-
-```console
-ssh -T git@github.com
-```
-
-### 4. Clone Your Repository
-
-Clone your repository using Git provided through Nix:
-
-```console
-nix-shell -p git --run "git clone git@github.com:<your-account>/<your-repository>.git"
+nix --extra-experimental-features "nix-command flakes" shell nixpkgs#git nixpkgs#openssh \
+  --command git clone git@github.com:<your-account>/<your-repository>.git
 cd <your-repository>
 ```
 
-### 5. Configure Your Git Identity
+### 4. Configure Your Git Identity
 
 Edit [`home-modules/user/git.nix`](home-modules/user/git.nix) and set your Git identity
 so that commits created from this environment have the correct author information.
@@ -96,7 +71,7 @@ userEmail = "you@example.com";
 
 For other Git settings and any further customization, see [Customize Your Configuration](#customize-your-configuration).
 
-### 6. Apply the Configuration
+### 5. Apply the Configuration
 
 > [!CAUTION]
 > The first `home-manager switch` **overwrites** the shell startup files that this configuration manages:
