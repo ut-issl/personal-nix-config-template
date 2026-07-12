@@ -43,7 +43,7 @@ bash <(curl -fsSL https://github.com/ut-issl/issl-ubuntu-environment-setup/relea
 ```
 
 The bootstrap script installs Nix and starts `nix-daemon` on systems without systemd.
-It also offers to set up GitHub SSH access for private repositories and install Docker Engine.
+Complete the GitHub SSH setup when prompted.
 
 Open a new shell afterward so that `nix` is available on your `PATH`.
 
