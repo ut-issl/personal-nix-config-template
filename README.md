@@ -103,6 +103,18 @@ Use `.#user` instead if you want the Bash-only configuration.
 > The `--extra-experimental-features` flag is only needed on this first run,
 > because the shared ISSL configuration enables those features once it is applied.
 
+## Agent-Assisted Setup
+
+If you use a coding agent that supports [Agent Skills](https://agentskills.io) (e.g. Codex or Claude Code),
+the `repo-setup` skill interactively walks you through the setup that Getting Started does not cover:
+it checks your Git identity and sets up the [development tooling](#development-tooling)
+(pre-commit hooks and the opt-in features).
+Invoke it with `$repo-setup` in Codex or `/repo-setup` in Claude Code.
+
+You can run it on the host you just set up, where the agents are installed by this configuration,
+or on any other machine where an agent is already available
+(e.g. when preparing this repository from your current environment).
+
 ## Customize Your Configuration
 
 All personal customization lives under [`home-modules/user/`](home-modules/user/).
