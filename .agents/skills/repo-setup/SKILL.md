@@ -68,7 +68,8 @@ If the user opts in:
 
 ## 4. Enforce Conventional Commits (opt-in)
 
-If the blocks listed below are already uncommented, skip to installing the `commit-msg` hook at the end of this step.
+If all three blocks below are already uncommented, do not redo the uncommenting;
+still offer to install the `commit-msg` hook at the end of this step if it is missing.
 
 Explain: this enforces [Conventional Commits](https://www.conventionalcommits.org) on commit messages and PR titles
 via [Commitizen](https://github.com/commitizen-tools/commitizen).
