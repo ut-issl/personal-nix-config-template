@@ -42,7 +42,7 @@ and fill in the user's answers.
 
 ## 2. Install pre-commit hooks
 
-If the git hooks are already installed (e.g. `.git/hooks/pre-commit` exists), skip this step.
+If the git hooks are already installed (both `.git/hooks/pre-commit` and `.git/hooks/pre-push` exist), skip this step.
 
 Otherwise, ask the user whether to install them now.
 If yes, run:
@@ -58,8 +58,8 @@ If `uv` is not available either, skipping this step is fine.
 
 If the `enabled: false` line is already gone from `.github/renovate.json5`, skip this step.
 
-Explain: Renovate is preconfigured in `.github/renovate.json5` to track Action SHAs,
-tool versions pinned in `.github/workflows/ci.yaml`, and pre-commit hooks.
+Explain: Renovate is preconfigured in `.github/renovate.json5` to track the pinned ISSL environment version,
+Action SHAs, tool versions pinned in `.github/workflows/ci.yaml`, and pre-commit hooks.
 
 If the user opts in:
 
@@ -68,7 +68,7 @@ If the user opts in:
 
 ## 4. Enforce Conventional Commits (opt-in)
 
-If the blocks listed below are already uncommented, skip this step.
+If the blocks listed below are already uncommented, skip to installing the `commit-msg` hook at the end of this step.
 
 Explain: this enforces [Conventional Commits](https://www.conventionalcommits.org) on commit messages and PR titles
 via [Commitizen](https://github.com/commitizen-tools/commitizen).
@@ -81,7 +81,7 @@ If the user opts in, uncomment all of the following blocks:
 - the `commitizen` repo block in `.pre-commit-config.yaml`
 
 The `commitizen` hook runs at the `commit-msg` stage, which step 2 does not install.
-Install it additionally, with the same fallback rules as step 2:
+Install it additionally (skip if `.git/hooks/commit-msg` already exists), with the same fallback rules as step 2:
 
 ```console
 prek install --hook-type commit-msg
@@ -115,5 +115,6 @@ If yes:
 ## 7. Wrap up
 
 Show a summary of everything that was changed or skipped.
-Offer to run `prek run --all-files` (or `uvx prek run --all-files`) to verify the edited files pass the hooks.
+Offer to run `prek run --all-files --skip no-commit-to-branch` (or the same via `uvx prek`)
+to verify the edited files pass the hooks (`no-commit-to-branch` must be skipped when working on `main`).
 Leave all changes uncommitted; committing and pushing are up to the user unless explicitly requested.
