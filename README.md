@@ -39,7 +39,7 @@ Create your own repository from this template using the **Use this template** bu
 Run the shared host bootstrap script:
 
 ```console
-bash <(curl -fsSL https://github.com/ut-issl/issl-ubuntu-environment-setup/releases/download/v0.4.0/bootstrap-host.sh)
+bash <(curl -fsSL https://github.com/ut-issl/issl-ubuntu-environment-setup/releases/download/v0.4.2/bootstrap-host.sh)
 ```
 
 The bootstrap script installs Nix and starts `nix-daemon` on systems without systemd.
