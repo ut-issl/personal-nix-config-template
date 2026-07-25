@@ -17,8 +17,15 @@ install a tool, configure a program, or port settings from existing dotfiles.
 Follow the conventions of the "Customize Your Configuration" section of `README.md`.
 Converse in the language the user writes in, but keep all edits (code, comments, commit messages, etc.) in English.
 Leave all changes uncommitted; committing and pushing are up to the user unless explicitly requested.
-Never run `home-manager switch` without an explicit yes from the user (see the final step).
+Never run `home-manager switch` without an explicit yes from the user (see step 7).
 Never write secrets (tokens, private keys, credentials) into the repository.
+
+This repository manages globally available user tools with Nix and Home Manager,
+following the shared package management practices
+(`docs/13-package-management-practices.md` in `ut-issl/issl-ubuntu-environment-setup`).
+Never install the requested tool with `apt`, `cargo install`, `uv tool install`, `npm install -g`, or the like;
+if the request is really a project-local dependency or a system-level package,
+say that it does not belong in this repository and point to those practices instead.
 
 ## 1. Understand the request and the environment
 
@@ -37,11 +44,19 @@ Before adding anything, check whether the tool is already provided:
 - the shared modules: `home-modules/` of `ut-issl/issl-ubuntu-environment-setup`
   at the version pinned in `flake.nix`;
 - this repository's own modules under `home-modules/user/`;
-- on an applied machine, whether the command is already on `PATH`.
+- on an applied machine, whether the command is already on `PATH` — and if so, where it resolves to.
 
-If the tool is already installed, only the personal settings need to be layered on top.
+If the command resolves into the Nix store (directly or via `~/.nix-profile`),
+the tool is already provided; only the personal settings need to be layered on top.
 Follow the existing pattern: the shared files are loaded first, personal additions come after
 (see `home-modules/user/bash.nix` or `git.nix` for examples).
+
+If the command resolves outside the Nix store, find out how it was installed —
+the user may not remember or even know it is there.
+Check the usual suspects: `dpkg -S` for `apt`, `~/.cargo/bin` for `cargo install`,
+`uv tool list` / `~/.local/bin` for `uv tool install`, and `npm list -g` for `npm install -g`.
+Then offer to migrate it into this configuration, except system-level `apt` packages, which stay with `apt`.
+The old installation is removed only at the very end (see step 8).
 
 ## 3. Research the package and its options
 
@@ -107,5 +122,13 @@ home-manager switch --flake .#user-zsh --impure
 
 If the user declines or `home-manager` is not available, point to the "Apply Your Changes" section of `README.md`.
 After a successful switch, verify the result where easy (e.g. the new command is on `PATH`).
+
+## 8. Clean up and wrap up
+
+If step 2 found the tool installed outside the Nix store, remove the old installation now,
+so it does not shadow the Nix-managed one on `PATH`.
+Do this only after the new configuration has been applied and the new version is verified to work,
+and confirm the exact uninstall command with the user
+(e.g. `uv tool uninstall`, `cargo uninstall`, `npm uninstall -g`) before running it yourself.
 
 Finally, summarize what was changed and what was validated or skipped, and leave the changes uncommitted.
