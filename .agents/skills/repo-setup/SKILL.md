@@ -2,7 +2,8 @@
 name: repo-setup
 description: >-
   Interactive setup of a personal configuration repository newly created from this template:
-  Git identity check and development tooling setup (pre-commit hooks, Renovate, Conventional Commits, REUSE).
+  Git identity check, development tooling setup (pre-commit hooks, Renovate, Conventional Commits, REUSE),
+  and README update to match the new repository.
   Use when the user asks to set up, initialize, or bootstrap the repository or its tooling.
   May also be used proactively,
   but only when home-modules/user/git.nix still has the personal identity lines commented out
