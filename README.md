@@ -103,17 +103,27 @@ Use `.#user` instead if you want the Bash-only configuration.
 > The `--extra-experimental-features` flag is only needed on this first run,
 > because the shared ISSL configuration enables those features once it is applied.
 
-## Agent-Assisted Setup
+## Agent Skills
 
-If you use a coding agent that supports [Agent Skills](https://agentskills.io) (e.g. Codex or Claude Code),
-the `repo-setup` skill interactively walks you through the repository setup:
+This repository ships skills for coding agents that support [Agent Skills](https://agentskills.io)
+(e.g. Codex or Claude Code).
+Invoke a skill with `$<name>` in Codex or `/<name>` in Claude Code.
+
+### `repo-setup`
+
+Interactively walks you through the repository setup:
 it checks your Git identity and sets up the [development tooling](#development-tooling)
 (pre-commit hooks and the opt-in features).
-Invoke it with `$repo-setup` in Codex or `/repo-setup` in Claude Code.
 
 You can run it on the host you just set up, where Codex is installed by the applied configuration,
 or on any other machine where an agent is already available
 (e.g. when preparing this repository from your current environment).
+
+### `customize`
+
+Assists [customizing your configuration](#customize-your-configuration) interactively —
+from researching nixpkgs and the Home Manager options to editing the modules and validating the result.
+State what you want when invoking it (e.g. `$customize add lazygit`).
 
 ## Customize Your Configuration
 
@@ -122,6 +132,8 @@ The shared ISSL environment already installs many tools and deploys their base s
 so your modules only need to layer your personal settings on top.
 
 Any change you make here takes effect only after you re-apply your configuration, as described in [Apply Your Changes](#apply-your-changes).
+
+The `customize` skill can assist with these customizations interactively; see [Agent Skills](#agent-skills).
 
 Whenever you add a new module, import it from [`home-modules/user.nix`](home-modules/user.nix):
 

@@ -110,8 +110,8 @@ If yes:
 
 - Delete the `.agents/skills/repo-setup/` directory and the `.claude/skills/repo-setup` symlink,
   and remove `.agents/` and `.claude/` entirely if they are empty afterwards.
-- Remove the "Agent-Assisted Setup" section from `README.md`, since it points to the deleted skill.
-- Remove the `.agents/**` and `.claude/**` entries from `REUSE.toml`.
+- Remove the `repo-setup` entry from the "Agent Skills" section of `README.md`, since it points to the deleted skill.
+- Remove the `.agents/**` and `.claude/**` entries from `REUSE.toml` if no other skills remain there.
 
 ## 7. Wrap up
 
