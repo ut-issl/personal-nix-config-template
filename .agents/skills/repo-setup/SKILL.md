@@ -30,25 +30,9 @@ confirm with the user that they want to run the setup now before touching anythi
 Follow the steps below in order, one step at a time.
 Before each step, briefly explain what it does, then ask the user how to proceed.
 Never enable an opt-in feature without an explicit yes from the user; if the user declines a step, skip it and move on.
-The X-2 README sub-steps are consistency fixes that follow from the X-1 decision;
-they do not require a separate opt-in from the user.
 Converse in the language the user writes in, but keep all edits (comments, commit messages, etc.) in English.
 
-## 1. Update README for the new repository
-
-Detect the owner and repo from the `origin` remote URL.
-If `origin` is not set or already matches `ut-issl/personal-nix-config-template`, skip this step.
-
-Otherwise, update the following in `README.md`:
-
-- Replace the H1 heading (`# personal-nix-config-template`) with the repository name derived from `origin`.
-- In the badge block near the top, find the CI and Test badge lines
-  (the ones whose URLs contain `ut-issl/personal-nix-config-template/actions/workflows/`).
-  Replace all four occurrences of `ut-issl/personal-nix-config-template`
-  (two in the image URL and two in the link URL across the two badges)
-  with the user's `<owner>/<repo>`.
-
-## 2. Configure your Git identity
+## 1. Configure your Git identity
 
 Check `home-modules/user/git.nix`; if the `userName` and `userEmail` lines are already set, skip this step.
 
@@ -56,7 +40,7 @@ Otherwise, ask the user for the name and email address to use as the Git author 
 then uncomment the `userName` and `userEmail` lines under the "Personal identity" comment
 and fill in the user's answers.
 
-## 3. Install pre-commit hooks
+## 2. Install pre-commit hooks
 
 If the git hooks are already installed (both `.git/hooks/pre-commit` and `.git/hooks/pre-push` exist), skip this step.
 
@@ -70,11 +54,9 @@ prek install --hook-type pre-commit --hook-type pre-push
 If `prek` is not on PATH, run the same command via `uvx prek` instead.
 If `uv` is not available either, skipping this step is fine.
 
-## 4. Enable Renovate (opt-in)
+## 3. Enable Renovate (opt-in)
 
-### 4-1. Configuration
-
-If the `enabled: false` line is already gone from `.github/renovate.json5`, skip to 4-2.
+If the `enabled: false` line is already gone from `.github/renovate.json5`, skip this step.
 
 Explain: Renovate is preconfigured in `.github/renovate.json5` to track the pinned ISSL environment version,
 Action SHAs, tool versions pinned in `.github/workflows/ci.yaml`, and pre-commit hooks.
@@ -84,24 +66,10 @@ If the user opts in:
 - Delete the `enabled: false,` line (including its trailing comment) from `.github/renovate.json5`.
 - Remind the user that the Renovate GitHub App must be installed for this repository to take effect.
 
-### 4-2. README
-
-After 4-1 is resolved (either just completed or already skipped), check whether the README
-matches the actual state of `.github/renovate.json5`.
-
-If Renovate is enabled (no `enabled: false` line) but the "Renovate" subsection of `README.md`
-still says "It is disabled by default", update it:
-replace that sentence with a note that Renovate is enabled
-and the Renovate GitHub App must be installed for this repository to take effect.
-
-Otherwise (Renovate is still disabled, or the README already reflects the enabled state), skip this part.
-
-## 5. Enforce Conventional Commits (opt-in)
-
-### 5-1. Configuration
+## 4. Enforce Conventional Commits (opt-in)
 
 If all three blocks below are already uncommented,
-offer to install the `commit-msg` hook if it is missing, then skip to 5-2.
+offer to install the `commit-msg` hook if it is missing, then skip this step.
 
 Explain: this enforces [Conventional Commits](https://www.conventionalcommits.org) on commit messages and PR titles
 via [Commitizen](https://github.com/commitizen-tools/commitizen).
@@ -113,35 +81,16 @@ If the user opts in, uncomment all of the following blocks:
 - the `lint-pr-title` job in `.github/workflows/manage-pull-requests.yaml`
 - the `commitizen` repo block in `.pre-commit-config.yaml`
 
-The `commitizen` hook runs at the `commit-msg` stage, which step 3 does not install.
-Install it additionally (skip if `.git/hooks/commit-msg` already exists), with the same fallback rules as step 3:
+The `commitizen` hook runs at the `commit-msg` stage, which step 2 does not install.
+Install it additionally (skip if `.git/hooks/commit-msg` already exists), with the same fallback rules as step 2:
 
 ```console
 prek install --hook-type commit-msg
 ```
 
-### 5-2. README
+## 5. Decide how to handle the REUSE workflow (opt-in)
 
-After 5-1 is resolved (either just completed or already skipped), check whether the README
-matches the actual state of the CI jobs and pre-commit config.
-
-Check each of the following independently and apply whichever updates are still needed:
-
-- If the commitizen block in `.pre-commit-config.yaml` is uncommented but the "Pre-commit Hooks" subsection's
-  `prek install` command does not yet include `--hook-type commit-msg`,
-  add it so the documented command installs all three hook types at once.
-- If all three blocks are uncommented (both CI jobs and the commitizen pre-commit hook)
-  but the "Conventional Commits" subsection still contains the sentence that begins with
-  "This is opt-in: uncomment `lint-commit-messages` in `ci.yaml`…", replace it with a note that
-  the enforcement is enabled (the CI jobs and the pre-commit hook are already configured).
-
-If neither item applies, skip this part.
-
-## 6. Decide how to handle the REUSE workflow (opt-in)
-
-### 6-1. Workflow
-
-If `.github/workflows/reuse.yaml` is already deleted or its `if` guard is already removed, skip to 6-2.
+If `.github/workflows/reuse.yaml` is already deleted or its `if` guard is already removed, skip this step.
 
 Explain: `.github/workflows/reuse.yaml` checks [REUSE](https://reuse.software) compliance,
 but its `lint-reuse` job is guarded to run only in the upstream template repository,
@@ -154,18 +103,50 @@ Ask the user which they prefer:
 - Remove the `if` guard from the `lint-reuse` job to enforce REUSE compliance in this repository.
   In that case, remind the user that every file they add must carry REUSE-compliant licensing information.
 
-### 6-2. README
+## 6. Update README for the new repository
 
-After 6-1 is resolved (either just completed or already skipped), check whether the
-"REUSE Compliance" subsection of `README.md` matches the actual workflow state.
+Now that all opt-in decisions have been made, update `README.md` to reflect the actual state of this repository.
+This step does not require a separate opt-in; it is a consistency fix.
+Skip this step entirely if every item below is already up to date.
 
-- If `reuse.yaml` was deleted but the README still references it, remove the entire subsection.
-- If the `if` guard was removed but the README still says "This check is scoped to the template repository itself",
+Detect the owner and repo from the `origin` remote URL
+(handle both SSH and HTTPS forms, and strip a trailing `.git` suffix if present).
+If `origin` is not set or already matches `ut-issl/personal-nix-config-template`,
+skip the owner/repo-specific items (H1, badges) but still check the items below.
+
+Update the following as needed:
+
+- Replace the H1 heading (`# personal-nix-config-template`) with the repository name derived from `origin`.
+- In the badge block near the top,
+  find the CI and Test badge lines (the ones whose URLs contain `ut-issl/personal-nix-config-template/actions/workflows/`).
+  Replace all four occurrences of `ut-issl/personal-nix-config-template`
+  (two in the image URL and two in the link URL across the two badges) with the user's `<owner>/<repo>`.
+- In the "Development Tooling" section intro,
+  if any opt-in feature (Renovate or Conventional Commits) was enabled in steps 3–4,
+  update the sentence "Pre-commit hooks are part of the everyday workflow,
+  while Renovate and Conventional Commits enforcement are opt-in."
+  to reflect which features are now enabled and which remain opt-in.
+- If Renovate was enabled (no `enabled: false` line in `.github/renovate.json5`)
+  but the "Renovate" subsection still says "It is disabled by default",
+  replace that sentence with a note that Renovate is enabled
+  and the Renovate GitHub App must be installed for this repository to take effect.
+- If the commitizen block in `.pre-commit-config.yaml` is uncommented
+  but the "Pre-commit Hooks" subsection's `prek install` command does not yet include `--hook-type commit-msg`,
+  add it so the documented command installs all three hook types at once.
+- If all three Conventional Commits blocks are uncommented
+  (both CI jobs and the commitizen pre-commit hook)
+  but the "Conventional Commits" subsection still contains the sentence that begins with
+  "This is opt-in: uncomment `lint-commit-messages` in `ci.yaml`…",
+  replace it with a note that the enforcement is enabled
+  (the CI jobs and the pre-commit hook are already configured).
+- If `reuse.yaml` was deleted but the "REUSE Compliance" subsection still references it,
+  remove the entire subsection.
+- If the `if` guard was removed from `reuse.yaml`
+  but the "REUSE Compliance" subsection still says "This check is scoped to the template repository itself",
   replace the paragraph about the scoping and the `if` guard
   (from "This check is scoped…" through "…remove the `if` guard from the `lint-reuse` job.")
   with a note that every file must carry REUSE-compliant copyright and licensing information,
   either in the file itself or through an entry in `REUSE.toml`.
-- Otherwise (the workflow is unchanged, or the README already reflects the current state), skip this part.
 
 ## 7. Clean up the setup skill (opt-in)
 
