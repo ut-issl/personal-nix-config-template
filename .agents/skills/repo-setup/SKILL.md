@@ -74,6 +74,10 @@ Action SHAs, tool versions pinned in `.github/workflows/ci.yaml`, and pre-commit
 If the user opts in:
 
 - Delete the `enabled: false,` line (including its trailing comment) from `.github/renovate.json5`.
+- Update the "Renovate" subsection of `README.md`:
+  replace the sentence "It is disabled by default; to opt in, change the `enabled: false` line to `true` (or remove it),
+  and make sure the Renovate GitHub App is installed for the repository."
+  with a note that Renovate is enabled and the Renovate GitHub App must be installed for this repository to take effect.
 - Remind the user that the Renovate GitHub App must be installed for this repository to take effect.
 
 ## 5. Enforce Conventional Commits (opt-in)
@@ -97,6 +101,14 @@ Install it additionally (skip if `.git/hooks/commit-msg` already exists), with t
 ```console
 prek install --hook-type commit-msg
 ```
+
+Also update `README.md`:
+
+- In the "Pre-commit Hooks" subsection, add `--hook-type commit-msg` to the `prek install` command
+  so the documented command installs all three hook types at once.
+- In the "Conventional Commits" subsection, replace the sentence that begins with
+  "This is opt-in: uncomment `lint-commit-messages` in `ci.yaml`…" with a note that
+  the enforcement is enabled (the CI jobs and the pre-commit hook are already configured).
 
 ## 6. Decide how to handle the REUSE workflow (opt-in)
 
