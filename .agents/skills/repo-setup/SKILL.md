@@ -66,9 +66,16 @@ If `uv` is not available either, skipping this step is fine.
 
 ## 4. Enable Renovate (opt-in)
 
-If the `enabled: false` line is already gone from `.github/renovate.json5`, skip this step.
+This step has two independent parts: the configuration change and the README update.
+Skip each part individually if it is already done, and skip the entire step only when both are done.
 
-Explain: Renovate is preconfigured in `.github/renovate.json5` to track the pinned ISSL environment version,
+**Configuration**: if the `enabled: false` line is already gone from `.github/renovate.json5`, skip this part.
+
+**README**: if the "Renovate" subsection of `README.md` no longer contains the sentence beginning with
+"It is disabled by default", skip this part.
+
+If either part still needs work, explain: Renovate is preconfigured in `.github/renovate.json5`
+to track the pinned ISSL environment version,
 Action SHAs, tool versions pinned in `.github/workflows/ci.yaml`, and pre-commit hooks.
 
 If the user opts in:
@@ -82,12 +89,21 @@ If the user opts in:
 
 ## 5. Enforce Conventional Commits (opt-in)
 
-If all three blocks below are already uncommented, do not redo the uncommenting;
-still offer to install the `commit-msg` hook at the end of this step if it is missing.
+This step has two independent parts: the configuration changes and the README update.
+Skip each part individually if it is already done, and skip the entire step only when both are done.
 
-Explain: this enforces [Conventional Commits](https://www.conventionalcommits.org) on commit messages and PR titles
+**Configuration**: if all three blocks below are already uncommented, skip this part;
+still offer to install the `commit-msg` hook at the end of this part if it is missing.
+
+**README**: if the "Conventional Commits" subsection of `README.md` no longer contains the sentence
+beginning with "This is opt-in", and the "Pre-commit Hooks" subsection already includes
+`--hook-type commit-msg` in the `prek install` command, skip this part.
+
+If either part still needs work, explain: this enforces
+[Conventional Commits](https://www.conventionalcommits.org) on commit messages and PR titles
 via [Commitizen](https://github.com/commitizen-tools/commitizen).
-Linting the PR title is especially useful with squash merging, since the PR title becomes the squashed commit subject.
+Linting the PR title is especially useful with squash merging,
+since the PR title becomes the squashed commit subject.
 
 If the user opts in, uncomment all of the following blocks:
 
@@ -96,7 +112,8 @@ If the user opts in, uncomment all of the following blocks:
 - the `commitizen` repo block in `.pre-commit-config.yaml`
 
 The `commitizen` hook runs at the `commit-msg` stage, which step 3 does not install.
-Install it additionally (skip if `.git/hooks/commit-msg` already exists), with the same fallback rules as step 3:
+Install it additionally (skip if `.git/hooks/commit-msg` already exists),
+with the same fallback rules as step 3:
 
 ```console
 prek install --hook-type commit-msg
@@ -112,9 +129,19 @@ Also update `README.md`:
 
 ## 6. Decide how to handle the REUSE workflow (opt-in)
 
-If `.github/workflows/reuse.yaml` is already deleted or its `if` guard is already removed, skip this step.
+This step has two independent parts: the workflow change and the README update.
+Skip each part individually if it is already done, and skip the entire step only when both are done.
 
-Explain: `.github/workflows/reuse.yaml` checks [REUSE](https://reuse.software) compliance,
+**Workflow**: if `.github/workflows/reuse.yaml` is already deleted or its `if` guard is already removed,
+skip this part.
+
+**README**: if the "REUSE Compliance" subsection of `README.md` no longer contains the paragraph
+beginning with "This check is scoped to the template repository itself", skip this part.
+
+If neither part needs work, skip the entire step.
+
+If the workflow part still needs a decision, explain: `.github/workflows/reuse.yaml` checks
+[REUSE](https://reuse.software) compliance,
 but its `lint-reuse` job is guarded to run only in the upstream template repository,
 so it does nothing in this repository and can safely be left in place.
 
@@ -130,8 +157,12 @@ Ask the user which they prefer:
   Also update the "REUSE Compliance" subsection of `README.md`:
   replace the two paragraphs about the scoping and the `if` guard
   (from "This check is scoped…" through "…remove the `if` guard from the `lint-reuse` job.")
-  with a note that the workflow enforces REUSE compliance on every push and pull request.
-  In that case, remind the user that every file they add must carry REUSE-compliant licensing information.
+  with a note that every file must carry REUSE-compliant copyright and licensing information,
+  either in the file itself or through an entry in `REUSE.toml`.
+  Remind the user of this requirement as well.
+
+If only the README part is stale (the workflow was already changed by a previous run),
+update the README to match the current workflow state without re-asking the user.
 
 ## 7. Clean up the setup skill (opt-in)
 
