@@ -69,7 +69,7 @@ If the user opts in:
 ## 4. Enforce Conventional Commits (opt-in)
 
 If all three blocks below are already uncommented,
-offer to install the `commit-msg` hook if it is missing, then skip this step.
+offer to install the `commit-msg` hook if it is missing, then proceed to the next step.
 
 Explain: this enforces [Conventional Commits](https://www.conventionalcommits.org) on commit messages and PR titles
 via [Commitizen](https://github.com/commitizen-tools/commitizen).
@@ -112,7 +112,7 @@ Skip this step entirely if every item below is already up to date.
 Detect the owner and repo from the `origin` remote URL
 (handle both SSH and HTTPS forms, and strip a trailing `.git` suffix if present).
 If `origin` is not set or already matches `ut-issl/personal-nix-config-template`,
-skip the owner/repo-specific items (H1, badges) but still check the items below.
+skip the owner/repo-specific items (H1, badges) but still check the remaining items.
 
 Update the following as needed:
 
@@ -120,12 +120,13 @@ Update the following as needed:
 - In the badge block near the top,
   find the CI and Test badge lines (the ones whose URLs contain `ut-issl/personal-nix-config-template/actions/workflows/`).
   Replace all four occurrences of `ut-issl/personal-nix-config-template`
-  (two in the image URL and two in the link URL across the two badges) with the user's `<owner>/<repo>`.
-- In the "Development Tooling" section intro,
-  if any opt-in feature (Renovate or Conventional Commits) was enabled in steps 3–4,
-  update the sentence "Pre-commit hooks are part of the everyday workflow,
+  (one in the image URL and one in the link URL of each badge) with the user's `<owner>/<repo>`.
+- Check the "Development Tooling" section intro sentence
+  "Pre-commit hooks are part of the everyday workflow,
   while Renovate and Conventional Commits enforcement are opt-in."
-  to reflect which features are now enabled and which remain opt-in.
+  If the actual state of Renovate (`.github/renovate.json5`) or Conventional Commits
+  (the CI jobs and commitizen block) no longer matches the "opt-in" claim,
+  update the sentence to reflect which features are now enabled and which remain opt-in.
 - If Renovate was enabled (no `enabled: false` line in `.github/renovate.json5`)
   but the "Renovate" subsection still says "It is disabled by default",
   replace that sentence with a note that Renovate is enabled
@@ -145,8 +146,10 @@ Update the following as needed:
   but the "REUSE Compliance" subsection still says "This check is scoped to the template repository itself",
   replace the paragraph about the scoping and the `if` guard
   (from "This check is scoped…" through "…remove the `if` guard from the `lint-reuse` job.")
-  with a note that every file must carry REUSE-compliant copyright and licensing information,
-  either in the file itself or through an entry in `REUSE.toml`.
+  with a short note that the check now runs in this repository.
+- Review the rest of `README.md` for any remaining template-specific wording
+  (e.g. phrasing that describes the template repository rather than the user's own repository)
+  and adjust it to reflect that this is now the user's personal configuration repository.
 
 ## 7. Clean up the setup skill (opt-in)
 
