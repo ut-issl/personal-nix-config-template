@@ -71,8 +71,10 @@ Skip each part individually if it is already done, and skip the entire step only
 
 **Configuration**: if the `enabled: false` line is already gone from `.github/renovate.json5`, skip this part.
 
-**README**: if the "Renovate" subsection of `README.md` no longer contains the sentence beginning with
-"It is disabled by default", skip this part.
+**README**: the README needs updating only when its description no longer matches the actual state.
+If Renovate is still disabled (`enabled: false` is present),
+the "disabled by default" sentence is accurate — skip this part.
+If Renovate is enabled and the sentence is already gone, the README is up to date — skip this part too.
 
 If either part still needs work, explain: Renovate is preconfigured in `.github/renovate.json5`
 to track the pinned ISSL environment version,
@@ -95,9 +97,11 @@ Skip each part individually if it is already done, and skip the entire step only
 **Configuration**: if all three blocks below are already uncommented, skip this part;
 still offer to install the `commit-msg` hook at the end of this part if it is missing.
 
-**README**: if the "Conventional Commits" subsection of `README.md` no longer contains the sentence
-beginning with "This is opt-in", and the "Pre-commit Hooks" subsection already includes
-`--hook-type commit-msg` in the `prek install` command, skip this part.
+**README**: the README needs updating only when its description no longer matches the actual state.
+If the CI jobs are still commented out, the "opt-in" sentence is accurate — skip this part.
+If the CI jobs are already uncommented and the README already reflects that
+(no "This is opt-in" sentence, and `--hook-type commit-msg` is in the `prek install` command),
+skip this part too.
 
 If either part still needs work, explain: this enforces
 [Conventional Commits](https://www.conventionalcommits.org) on commit messages and PR titles
@@ -135,10 +139,10 @@ Skip each part individually if it is already done, and skip the entire step only
 **Workflow**: if `.github/workflows/reuse.yaml` is already deleted or its `if` guard is already removed,
 skip this part.
 
-**README**: if the "REUSE Compliance" subsection of `README.md` no longer contains the paragraph
-beginning with "This check is scoped to the template repository itself", skip this part.
-
-If neither part needs work, skip the entire step.
+**README**: the README needs updating only when its description no longer matches the actual state.
+If the workflow still has its `if` guard, the "scoped to the template repository" paragraph is accurate — skip this part.
+If the workflow was deleted or the guard was removed and the README already reflects that
+(no "This check is scoped to the template repository itself" paragraph), skip this part too.
 
 If the workflow part still needs a decision, explain: `.github/workflows/reuse.yaml` checks
 [REUSE](https://reuse.software) compliance,
