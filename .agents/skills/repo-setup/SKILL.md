@@ -30,17 +30,23 @@ confirm with the user that they want to run the setup now before touching anythi
 Follow the steps below in order, one step at a time.
 Before each step, briefly explain what it does, then ask the user how to proceed.
 Never enable an opt-in feature without an explicit yes from the user; if the user declines a step, skip it and move on.
+The X-2 README sub-steps are consistency fixes that follow from the X-1 decision;
+they do not require a separate opt-in from the user.
 Converse in the language the user writes in, but keep all edits (comments, commit messages, etc.) in English.
 
-## 1. Update README badges
-
-Check lines 14–15 of `README.md` for the CI and Test badge URLs.
-If they still reference `ut-issl/personal-nix-config-template`, replace all four occurrences
-(two in the image URL and two in the link URL across the two badges)
-with the user's `<owner>/<repo>`.
+## 1. Update README for the new repository
 
 Detect the owner and repo from the `origin` remote URL.
 If `origin` is not set or already matches `ut-issl/personal-nix-config-template`, skip this step.
+
+Otherwise, update the following in `README.md`:
+
+- Replace the H1 heading (`# personal-nix-config-template`) with the repository name derived from `origin`.
+- In the badge block near the top, find the CI and Test badge lines
+  (the ones whose URLs contain `ut-issl/personal-nix-config-template/actions/workflows/`).
+  Replace all four occurrences of `ut-issl/personal-nix-config-template`
+  (two in the image URL and two in the link URL across the two badges)
+  with the user's `<owner>/<repo>`.
 
 ## 2. Configure your Git identity
 
@@ -94,8 +100,8 @@ Otherwise (Renovate is still disabled, or the README already reflects the enable
 
 ### 5-1. Configuration
 
-If all three blocks below are already uncommented, skip to 5-2;
-still offer to install the `commit-msg` hook at the end of this part if it is missing.
+If all three blocks below are already uncommented,
+offer to install the `commit-msg` hook if it is missing, then skip to 5-2.
 
 Explain: this enforces [Conventional Commits](https://www.conventionalcommits.org) on commit messages and PR titles
 via [Commitizen](https://github.com/commitizen-tools/commitizen).
@@ -119,17 +125,16 @@ prek install --hook-type commit-msg
 After 5-1 is resolved (either just completed or already skipped), check whether the README
 matches the actual state of the CI jobs and pre-commit config.
 
-If enforcement is enabled (the CI jobs are uncommented) but the README still says
-"This is opt-in", update it:
+If enforcement is enabled (the CI jobs are uncommented), check each of the following independently
+and apply whichever updates are still needed:
 
-- In the "Pre-commit Hooks" subsection, add `--hook-type commit-msg` to the `prek install` command
-  so the documented command installs all three hook types at once.
-- In the "Conventional Commits" subsection, replace the sentence that begins with
-  "This is opt-in: uncomment `lint-commit-messages` in `ci.yaml`…" with a note that
+- If the "Pre-commit Hooks" subsection's `prek install` command does not yet include `--hook-type commit-msg`,
+  add it so the documented command installs all three hook types at once.
+- If the "Conventional Commits" subsection still contains the sentence that begins with
+  "This is opt-in: uncomment `lint-commit-messages` in `ci.yaml`…", replace it with a note that
   the enforcement is enabled (the CI jobs and the pre-commit hook are already configured).
 
-Otherwise (the CI jobs are still commented out, or the README already reflects the enabled state),
-skip this part.
+If the CI jobs are still commented out, or both items above are already up to date, skip this part.
 
 ## 6. Decide how to handle the REUSE workflow (opt-in)
 
@@ -155,7 +160,7 @@ After 6-1 is resolved (either just completed or already skipped), check whether 
 
 - If `reuse.yaml` was deleted but the README still references it, remove the entire subsection.
 - If the `if` guard was removed but the README still says "This check is scoped to the template repository itself",
-  replace the two paragraphs about the scoping and the `if` guard
+  replace the paragraph about the scoping and the `if` guard
   (from "This check is scoped…" through "…remove the `if` guard from the `lint-reuse` job.")
   with a note that every file must carry REUSE-compliant copyright and licensing information,
   either in the file itself or through an entry in `REUSE.toml`.
