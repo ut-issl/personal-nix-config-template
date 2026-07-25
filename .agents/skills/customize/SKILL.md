@@ -68,9 +68,10 @@ For a new tool:
   on an applied machine `man home-configuration.nix` documents the installed version and is the source of truth;
   otherwise use the Home Manager manual for the matching release.
 - Unfree packages are fine: the flake already sets `allowUnfree = true`.
-- If the package is not in nixpkgs, report the options honestly
-  (do without it, have the user install it outside Nix themselves, or add another flake input)
-  and let the user decide; never add flake inputs or overlays without an explicit yes.
+- If the package is not in nixpkgs, report the options honestly and let the user decide:
+  do without it, add another flake input that provides it, or manage it outside Nix —
+  the last is the user's own call and out of scope for this skill.
+  Never add flake inputs or overlays without an explicit yes.
 
 ## 4. Decide where the change goes
 
@@ -123,8 +124,8 @@ After a successful switch, verify the result where easy (e.g. the new command is
 
 ## 8. Clean up and wrap up
 
-If step 2 found the tool installed outside the Nix store, remove the old installation now,
-so it does not shadow the Nix-managed one on `PATH`.
+If an installation outside the Nix store was migrated into this configuration (step 2),
+remove the old installation now, so it does not shadow the Nix-managed one on `PATH`.
 Do this only after the new configuration has been applied and the new version is verified to work,
 and confirm the exact uninstall command with the user
 (e.g. `uv tool uninstall`, `cargo uninstall`, `npm uninstall -g`) before running it yourself.
