@@ -32,7 +32,17 @@ Before each step, briefly explain what it does, then ask the user how to proceed
 Never enable an opt-in feature without an explicit yes from the user; if the user declines a step, skip it and move on.
 Converse in the language the user writes in, but keep all edits (comments, commit messages, etc.) in English.
 
-## 1. Configure your Git identity (skip if already configured)
+## 1. Update README badges
+
+Check lines 14–15 of `README.md` for the CI and Test badge URLs.
+If they still reference `ut-issl/personal-nix-config-template`, replace all four occurrences
+(two in the image URL and two in the link URL across the two badges)
+with the user's `<owner>/<repo>`.
+
+Detect the owner and repo from the `origin` remote URL.
+If `origin` is not set or already matches `ut-issl/personal-nix-config-template`, skip this step.
+
+## 2. Configure your Git identity
 
 Check `home-modules/user/git.nix`; if the `userName` and `userEmail` lines are already set, skip this step.
 
@@ -40,7 +50,7 @@ Otherwise, ask the user for the name and email address to use as the Git author 
 then uncomment the `userName` and `userEmail` lines under the "Personal identity" comment
 and fill in the user's answers.
 
-## 2. Install pre-commit hooks
+## 3. Install pre-commit hooks
 
 If the git hooks are already installed (both `.git/hooks/pre-commit` and `.git/hooks/pre-push` exist), skip this step.
 
@@ -54,7 +64,7 @@ prek install --hook-type pre-commit --hook-type pre-push
 If `prek` is not on PATH, run the same command via `uvx prek` instead.
 If `uv` is not available either, skipping this step is fine.
 
-## 3. Enable Renovate (opt-in)
+## 4. Enable Renovate (opt-in)
 
 If the `enabled: false` line is already gone from `.github/renovate.json5`, skip this step.
 
@@ -66,7 +76,7 @@ If the user opts in:
 - Delete the `enabled: false,` line (including its trailing comment) from `.github/renovate.json5`.
 - Remind the user that the Renovate GitHub App must be installed for this repository to take effect.
 
-## 4. Enforce Conventional Commits (opt-in)
+## 5. Enforce Conventional Commits (opt-in)
 
 If all three blocks below are already uncommented, do not redo the uncommenting;
 still offer to install the `commit-msg` hook at the end of this step if it is missing.
@@ -81,14 +91,14 @@ If the user opts in, uncomment all of the following blocks:
 - the `lint-pr-title` job in `.github/workflows/manage-pull-requests.yaml`
 - the `commitizen` repo block in `.pre-commit-config.yaml`
 
-The `commitizen` hook runs at the `commit-msg` stage, which step 2 does not install.
-Install it additionally (skip if `.git/hooks/commit-msg` already exists), with the same fallback rules as step 2:
+The `commitizen` hook runs at the `commit-msg` stage, which step 3 does not install.
+Install it additionally (skip if `.git/hooks/commit-msg` already exists), with the same fallback rules as step 3:
 
 ```console
 prek install --hook-type commit-msg
 ```
 
-## 5. Decide how to handle the REUSE workflow (opt-in)
+## 6. Decide how to handle the REUSE workflow (opt-in)
 
 If `.github/workflows/reuse.yaml` is already deleted or its `if` guard is already removed, skip this step.
 
@@ -100,10 +110,18 @@ Ask the user which they prefer:
 
 - Leave it as is (default; nothing to do).
 - Delete `.github/workflows/reuse.yaml` to drop the workflow entirely.
+  Also update the "REUSE Compliance" subsection of `README.md`:
+  replace the entire content (from the paragraph beginning with "The `reuse.yaml` CI workflow…"
+  through the paragraph ending with "…remove the `if` guard from the `lint-reuse` job.")
+  with a short note that the REUSE workflow has been removed and can be restored from the template if needed.
 - Remove the `if` guard from the `lint-reuse` job to enforce REUSE compliance in this repository.
+  Also update the "REUSE Compliance" subsection of `README.md`:
+  replace the two paragraphs about the scoping and the `if` guard
+  (from "This check is scoped…" through "…remove the `if` guard from the `lint-reuse` job.")
+  with a note that the workflow enforces REUSE compliance on every push and pull request.
   In that case, remind the user that every file they add must carry REUSE-compliant licensing information.
 
-## 6. Clean up the setup skill (opt-in)
+## 7. Clean up the setup skill (opt-in)
 
 Ask whether to remove this skill now that setup is complete.
 If yes:
@@ -113,7 +131,7 @@ If yes:
 - Remove the `repo-setup` entry from the "Agent Skills" section of `README.md`, since it points to the deleted skill.
 - Remove the `.agents/**` and `.claude/**` entries from `REUSE.toml` if no other skills remain there.
 
-## 7. Wrap up
+## 8. Wrap up
 
 Show a summary of everything that was changed or skipped.
 Offer to run `prek run --all-files --skip no-commit-to-branch` (or the same via `uvx prek`)
