@@ -25,12 +25,7 @@
         "aarch64-linux"
       ];
       forAllSystems = nixpkgs.lib.genAttrs systems;
-      mkPkgs =
-        system:
-        import nixpkgs {
-          inherit system;
-          config.allowUnfree = true;
-        };
+      mkPkgs = system: import nixpkgs { inherit system; };
       requireEnv =
         name:
         let

@@ -67,7 +67,7 @@ For a new tool:
 - Check whether Home Manager has a matching module (`programs.<tool>` or `services.<tool>`):
   on an applied machine `man home-configuration.nix` documents the installed version and is the source of truth;
   otherwise use the Home Manager manual for the matching release.
-- Unfree packages are fine: the flake already sets `allowUnfree = true`.
+- Unfree packages are fine: the shared ISSL configuration already sets `allowUnfree = true`.
 - If the package is not in nixpkgs, report the options honestly and let the user decide:
   do without it, add another flake input that provides it, or manage it outside Nix —
   the last is the user's own call and out of scope for this skill.
