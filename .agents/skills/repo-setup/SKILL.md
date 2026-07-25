@@ -125,16 +125,17 @@ prek install --hook-type commit-msg
 After 5-1 is resolved (either just completed or already skipped), check whether the README
 matches the actual state of the CI jobs and pre-commit config.
 
-If enforcement is enabled (the CI jobs are uncommented), check each of the following independently
-and apply whichever updates are still needed:
+Check each of the following independently and apply whichever updates are still needed:
 
-- If the "Pre-commit Hooks" subsection's `prek install` command does not yet include `--hook-type commit-msg`,
+- If the commitizen block in `.pre-commit-config.yaml` is uncommented but the "Pre-commit Hooks" subsection's
+  `prek install` command does not yet include `--hook-type commit-msg`,
   add it so the documented command installs all three hook types at once.
-- If the "Conventional Commits" subsection still contains the sentence that begins with
+- If all three blocks are uncommented (both CI jobs and the commitizen pre-commit hook)
+  but the "Conventional Commits" subsection still contains the sentence that begins with
   "This is opt-in: uncomment `lint-commit-messages` in `ci.yaml`…", replace it with a note that
   the enforcement is enabled (the CI jobs and the pre-commit hook are already configured).
 
-If the CI jobs are still commented out, or both items above are already up to date, skip this part.
+If neither item applies, skip this part.
 
 ## 6. Decide how to handle the REUSE workflow (opt-in)
 
