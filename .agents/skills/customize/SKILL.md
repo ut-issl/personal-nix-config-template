@@ -41,8 +41,7 @@ but clearly report at the end that local validation was skipped and the change i
 The shared ISSL environment installs many tools and deploys their base settings under `~/.config/issl`.
 Before adding anything, check whether the tool is already provided:
 
-- the shared modules: `home-modules/` of `ut-issl/issl-ubuntu-environment-setup`
-  at the version pinned in `flake.nix`;
+- the shared modules: `home-modules/` of `ut-issl/issl-ubuntu-environment-setup` at the version pinned in `flake.nix`;
 - this repository's own modules under `home-modules/user/`;
 - on an applied machine, whether the command is already on `PATH` — and if so, where it resolves to.
 
@@ -70,22 +69,21 @@ For a new tool:
   otherwise use the Home Manager manual for the matching release.
 - Unfree packages are fine: the flake already sets `allowUnfree = true`.
 - If the package is not in nixpkgs, report the options honestly
-  (do without it, install it outside Nix, or add another flake input) and let the user decide;
-  never add flake inputs or overlays without an explicit yes.
+  (do without it, have the user install it outside Nix themselves, or add another flake input)
+  and let the user decide; never add flake inputs or overlays without an explicit yes.
 
 ## 4. Decide where the change goes
 
 Apply the README's conventions:
 
 - The tool already has a module under `home-modules/user/` (bash, zsh, git, python, rust):
-  extend that module at its marked "Add personal ..." spots instead of creating a new one.
+  extend that module at the comments marked for personal additions instead of creating a new one.
 - A package with no settings: add it to `home.packages` in `home-modules/user/packages.nix`
   (create the file and its import if it does not exist yet).
 - A package together with its settings: create a dedicated module `home-modules/user/<tool>.nix`;
   prefer the Home Manager `programs.<tool>` options when they exist,
   otherwise combine `home.packages` with `home.file` / `xdg.configFile`.
-- Import every new module from `home-modules/user.nix`;
-  Zsh-only modules belong in the `lib.optionals enableZsh` list.
+- Import every new module from `home-modules/user.nix`; Zsh-only modules belong in the `lib.optionals enableZsh` list.
 
 If more than one placement is reasonable, present the options briefly with a recommendation
 and let the user choose before editing.
@@ -107,7 +105,7 @@ Match the style of the existing modules (formatting is enforced by nixfmt via th
 
 Then validate:
 
-- Run `prek run --files <changed files>` (or the same via `uvx prek`) and fix what it reports.
+- Run `prek run --files <changed files> --skip no-commit-to-branch` (or via `uvx prek`) and fix what it reports.
 - With Nix, run `nix flake check --show-trace`;
   this builds the activation packages of both configurations, so it also catches build failures.
 
