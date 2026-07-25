@@ -66,48 +66,40 @@ If `uv` is not available either, skipping this step is fine.
 
 ## 4. Enable Renovate (opt-in)
 
-This step has two independent parts: the configuration change and the README update.
-Skip each part individually if it is already done, and skip the entire step only when both are done.
+### 4-1. Configuration
 
-**Configuration**: if the `enabled: false` line is already gone from `.github/renovate.json5`, skip this part.
+If the `enabled: false` line is already gone from `.github/renovate.json5`, skip to 4-2.
 
-**README**: the README needs updating only when its description no longer matches the actual state.
-If Renovate is still disabled (`enabled: false` is present),
-the "disabled by default" sentence is accurate — skip this part.
-If Renovate is enabled and the sentence is already gone, the README is up to date — skip this part too.
-
-If either part still needs work, explain: Renovate is preconfigured in `.github/renovate.json5`
-to track the pinned ISSL environment version,
+Explain: Renovate is preconfigured in `.github/renovate.json5` to track the pinned ISSL environment version,
 Action SHAs, tool versions pinned in `.github/workflows/ci.yaml`, and pre-commit hooks.
 
 If the user opts in:
 
 - Delete the `enabled: false,` line (including its trailing comment) from `.github/renovate.json5`.
-- Update the "Renovate" subsection of `README.md`:
-  replace the sentence "It is disabled by default; to opt in, change the `enabled: false` line to `true` (or remove it),
-  and make sure the Renovate GitHub App is installed for the repository."
-  with a note that Renovate is enabled and the Renovate GitHub App must be installed for this repository to take effect.
 - Remind the user that the Renovate GitHub App must be installed for this repository to take effect.
+
+### 4-2. README
+
+After 4-1 is resolved (either just completed or already skipped), check whether the README
+matches the actual state of `.github/renovate.json5`.
+
+If Renovate is enabled (no `enabled: false` line) but the "Renovate" subsection of `README.md`
+still says "It is disabled by default", update it:
+replace that sentence with a note that Renovate is enabled
+and the Renovate GitHub App must be installed for this repository to take effect.
+
+Otherwise (Renovate is still disabled, or the README already reflects the enabled state), skip this part.
 
 ## 5. Enforce Conventional Commits (opt-in)
 
-This step has two independent parts: the configuration changes and the README update.
-Skip each part individually if it is already done, and skip the entire step only when both are done.
+### 5-1. Configuration
 
-**Configuration**: if all three blocks below are already uncommented, skip this part;
+If all three blocks below are already uncommented, skip to 5-2;
 still offer to install the `commit-msg` hook at the end of this part if it is missing.
 
-**README**: the README needs updating only when its description no longer matches the actual state.
-If the CI jobs are still commented out, the "opt-in" sentence is accurate — skip this part.
-If the CI jobs are already uncommented and the README already reflects that
-(no "This is opt-in" sentence, and `--hook-type commit-msg` is in the `prek install` command),
-skip this part too.
-
-If either part still needs work, explain: this enforces
-[Conventional Commits](https://www.conventionalcommits.org) on commit messages and PR titles
+Explain: this enforces [Conventional Commits](https://www.conventionalcommits.org) on commit messages and PR titles
 via [Commitizen](https://github.com/commitizen-tools/commitizen).
-Linting the PR title is especially useful with squash merging,
-since the PR title becomes the squashed commit subject.
+Linting the PR title is especially useful with squash merging, since the PR title becomes the squashed commit subject.
 
 If the user opts in, uncomment all of the following blocks:
 
@@ -116,14 +108,19 @@ If the user opts in, uncomment all of the following blocks:
 - the `commitizen` repo block in `.pre-commit-config.yaml`
 
 The `commitizen` hook runs at the `commit-msg` stage, which step 3 does not install.
-Install it additionally (skip if `.git/hooks/commit-msg` already exists),
-with the same fallback rules as step 3:
+Install it additionally (skip if `.git/hooks/commit-msg` already exists), with the same fallback rules as step 3:
 
 ```console
 prek install --hook-type commit-msg
 ```
 
-Also update `README.md`:
+### 5-2. README
+
+After 5-1 is resolved (either just completed or already skipped), check whether the README
+matches the actual state of the CI jobs and pre-commit config.
+
+If enforcement is enabled (the CI jobs are uncommented) but the README still says
+"This is opt-in", update it:
 
 - In the "Pre-commit Hooks" subsection, add `--hook-type commit-msg` to the `prek install` command
   so the documented command installs all three hook types at once.
@@ -131,21 +128,16 @@ Also update `README.md`:
   "This is opt-in: uncomment `lint-commit-messages` in `ci.yaml`…" with a note that
   the enforcement is enabled (the CI jobs and the pre-commit hook are already configured).
 
-## 6. Decide how to handle the REUSE workflow (opt-in)
-
-This step has two independent parts: the workflow change and the README update.
-Skip each part individually if it is already done, and skip the entire step only when both are done.
-
-**Workflow**: if `.github/workflows/reuse.yaml` is already deleted or its `if` guard is already removed,
+Otherwise (the CI jobs are still commented out, or the README already reflects the enabled state),
 skip this part.
 
-**README**: the README needs updating only when its description no longer matches the actual state.
-If the workflow still has its `if` guard, the "scoped to the template repository" paragraph is accurate — skip this part.
-If the workflow was deleted or the guard was removed and the README already reflects that
-(no "This check is scoped to the template repository itself" paragraph), skip this part too.
+## 6. Decide how to handle the REUSE workflow (opt-in)
 
-If the workflow part still needs a decision, explain: `.github/workflows/reuse.yaml` checks
-[REUSE](https://reuse.software) compliance,
+### 6-1. Workflow
+
+If `.github/workflows/reuse.yaml` is already deleted or its `if` guard is already removed, skip to 6-2.
+
+Explain: `.github/workflows/reuse.yaml` checks [REUSE](https://reuse.software) compliance,
 but its `lint-reuse` job is guarded to run only in the upstream template repository,
 so it does nothing in this repository and can safely be left in place.
 
@@ -153,20 +145,21 @@ Ask the user which they prefer:
 
 - Leave it as is (default; nothing to do).
 - Delete `.github/workflows/reuse.yaml` to drop the workflow entirely.
-  Also update the "REUSE Compliance" subsection of `README.md`:
-  replace the entire content (from the paragraph beginning with "The `reuse.yaml` CI workflow…"
-  through the paragraph ending with "…remove the `if` guard from the `lint-reuse` job.")
-  with a short note that the REUSE workflow has been removed and can be restored from the template if needed.
 - Remove the `if` guard from the `lint-reuse` job to enforce REUSE compliance in this repository.
-  Also update the "REUSE Compliance" subsection of `README.md`:
+  In that case, remind the user that every file they add must carry REUSE-compliant licensing information.
+
+### 6-2. README
+
+After 6-1 is resolved (either just completed or already skipped), check whether the
+"REUSE Compliance" subsection of `README.md` matches the actual workflow state.
+
+- If `reuse.yaml` was deleted but the README still references it, remove the entire subsection.
+- If the `if` guard was removed but the README still says "This check is scoped to the template repository itself",
   replace the two paragraphs about the scoping and the `if` guard
   (from "This check is scoped…" through "…remove the `if` guard from the `lint-reuse` job.")
   with a note that every file must carry REUSE-compliant copyright and licensing information,
   either in the file itself or through an entry in `REUSE.toml`.
-  Remind the user of this requirement as well.
-
-If only the README part is stale (the workflow was already changed by a previous run),
-update the README to match the current workflow state without re-asking the user.
+- Otherwise (the workflow is unchanged, or the README already reflects the current state), skip this part.
 
 ## 7. Clean up the setup skill (opt-in)
 
