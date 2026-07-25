@@ -131,6 +131,11 @@ All personal customization lives under [`home-modules/user/`](home-modules/user/
 The shared ISSL environment already installs many tools and deploys their base settings under `~/.config/issl`,
 so your modules only need to layer your personal settings on top.
 
+> [!NOTE]
+> Nixpkgs settings belong in your modules as well:
+> set them as `nixpkgs.config.*` instead of passing a `config` attribute to `import nixpkgs` in `flake.nix`.
+> Options set in a module are merged with the shared ones, while such a `config` attribute is discarded.
+
 Any change you make here takes effect only after you re-apply your configuration, as described in [Apply Your Changes](#apply-your-changes).
 
 The `customize` skill can assist with these customizations interactively; see [Agent Skills](#agent-skills).
@@ -181,7 +186,7 @@ Put them in a module such as [`home-modules/user/packages.nix`](home-modules/use
 ```
 
 > [!NOTE]
-> This template enables `allowUnfree`, so unfree packages such as `claude-code` install without extra setup.
+> The shared ISSL configuration enables `allowUnfree`, so unfree packages such as `claude-code` install without extra setup.
 
 ### Add a Module for a New Tool
 
