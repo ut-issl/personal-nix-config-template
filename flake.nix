@@ -77,7 +77,7 @@
         user-zsh = mkHomeConfiguration { enableZsh = true; };
       };
 
-      formatter = forAllSystems (system: (mkPkgs system).nixfmt-rfc-style);
+      formatter = forAllSystems (system: (mkPkgs system).nixfmt);
 
       checks = forAllSystems (system: {
         home =
