@@ -116,14 +116,15 @@ Then validate:
   nix build .#homeConfigurations.user-zsh.activationPackage --impure --out-link result-user-zsh
   ```
 
-  Building only the configuration the user applies is enough.
+  Building only the configuration the user applies is enough;
+  inspect the out-link of the configuration you actually built (`<out-link>` below).
 
   Each build result shows what the configuration actually produces:
 
-  - `result-user/home-path/bin` holds the binaries the configuration installs.
-  - `result-user/home-files` holds the files deployed through `home.file` and `xdg.configFile`,
+  - `<out-link>/home-path/bin` holds the binaries the configuration installs.
+  - `<out-link>/home-files` holds the files deployed through `home.file` and `xdg.configFile`,
     so a deployed file can be compared against its source with `cmp`.
-  - `result-user/activate` is the activation script that Home Manager runs on `switch`.
+  - `<out-link>/activate` is the activation script that Home Manager runs on `switch`.
 
   Remove the `result-*` symlinks when done.
 
