@@ -109,6 +109,23 @@ Then validate:
 - Run `prek run --files <changed files> --skip no-commit-to-branch` (or via `uvx prek`) and fix what it reports.
 - With Nix, run `nix flake check --show-trace`;
   this builds the activation packages of both configurations, so it also catches build failures.
+- Then build the activation packages to inspect the result:
+
+  ```console
+  nix build .#homeConfigurations.user.activationPackage --impure --out-link result-user
+  nix build .#homeConfigurations.user-zsh.activationPackage --impure --out-link result-user-zsh
+  ```
+
+  Building only the configuration the user applies is enough.
+
+  Each build result shows what the configuration actually produces:
+
+  - `result-user/home-path/bin` holds the binaries the configuration installs.
+  - `result-user/home-files` holds the files deployed through `home.file` and `xdg.configFile`,
+    so a deployed file can be compared against its source with `cmp`.
+  - `result-user/activate` is the activation script that Home Manager runs on `switch`.
+
+  Remove the `result-*` symlinks when done.
 
 ## 7. Offer to apply
 
