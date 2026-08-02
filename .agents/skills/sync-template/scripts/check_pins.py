@@ -58,7 +58,7 @@ def repository_files() -> list[tuple[Path, str]]:
     found = []
     for directory, subdirectories, names in os.walk(ROOT):
         subdirectories[:] = [name for name in subdirectories if name != ".git"]
-        found += [Path(directory) / name for name in names]
+        found += [path for path in (Path(directory) / name for name in names) if path.is_file()]
     return sorted((path, path.relative_to(ROOT).as_posix()) for path in found)
 
 
@@ -93,8 +93,11 @@ def uncommented(text: str) -> str:
 
 def normalize(version: str) -> str:
     # A prek hook release such as "v3.13.1-1" pins upstream shfmt "v3.13.1".
-    # Only that trailing packaging revision is noise: a prerelease such as "-rc.1" tells two pins apart.
-    return re.sub(r"-\d+$", "", version.lstrip("v"))
+    # That trailing revision is noise only where a plain version is left behind:
+    # a prerelease such as "-rc.1" or "-alpha-1" is what tells two pins apart.
+    core = version.lstrip("v")
+    stripped = re.sub(r"-\d+$", "", core)
+    return stripped if re.fullmatch(r"\d+(\.\d+)*", stripped) else core
 
 
 renovate_config = ROOT / ".github/renovate.json5"
