@@ -102,7 +102,8 @@ Ask the user which they prefer:
 - Leave it as is (default; nothing to do).
 - Delete `.github/workflows/reuse.yaml` to drop the workflow entirely.
 - Remove the `if` guard from the `lint-reuse` job to enforce REUSE compliance in this repository.
-  In that case, remind the user that every file they add must carry REUSE-compliant licensing information.
+  In that case, remind the user that every file they add must carry REUSE-compliant licensing information,
+  and add `.template-base` to the CC0 annotation in `REUSE.toml` when that file exists.
 
 ## 6. Update README for the new repository
 
@@ -155,6 +156,7 @@ Update the following as needed:
 ## 7. Clean up the setup skill (opt-in)
 
 Ask whether to remove this skill now that setup is complete.
+This concerns `repo-setup` only; leave `customize` and `sync-template` in place, since both stay useful afterwards.
 If yes:
 
 - Delete the `.agents/skills/repo-setup/` directory and the `.claude/skills/repo-setup` symlink,

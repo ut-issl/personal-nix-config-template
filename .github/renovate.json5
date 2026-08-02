@@ -333,6 +333,11 @@
   nix: {
     enabled: true,
   },
+  pep723: {
+    managerFilePatterns: [
+      '/^\\.agents/skills/.*\\.py$/',
+    ],
+  },
   labels: [
     'automated',
     'dependencies',
