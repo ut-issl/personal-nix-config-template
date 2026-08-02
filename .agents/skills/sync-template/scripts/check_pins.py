@@ -64,8 +64,8 @@ def matching_files(patterns: list[str]) -> list[Path]:
 
 def captured_values(manager: dict, text: str) -> list[str]:
     """Apply the manager's matchStrings to one file and return every currentValue."""
-    # The "recursive" strategy narrows the search space with each matchString in
-    # turn; every other strategy applies each matchString to the whole file.
+    # The "recursive" strategy narrows the search space with each matchString in turn;
+    # every other strategy applies each matchString to the whole file.
     strategy = manager.get("matchStringsStrategy")
     scopes = [text]
     values = []
@@ -89,7 +89,8 @@ def uncommented(text: str) -> str:
 
 def normalize(version: str) -> str:
     # A prek hook release such as "v3.13.1-1" pins upstream shfmt "v3.13.1".
-    return version.lstrip("v").split("-")[0]
+    # Only that trailing packaging revision is noise: a prerelease such as "-rc.1" tells two pins apart.
+    return re.sub(r"-\d+$", "", version.lstrip("v"))
 
 
 renovate_config = ROOT / ".github/renovate.json5"
