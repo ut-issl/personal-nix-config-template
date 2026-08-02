@@ -18,6 +18,7 @@ by the linters, which never compare the two files.
 Usage: uv run .agents/skills/sync-template/scripts/check_pins.py [repository-root]
 """
 
+import os
 import re
 import sys
 from fnmatch import fnmatchcase
@@ -52,14 +53,17 @@ def matches_path(pattern: str, path: str) -> bool:
     return matches_glob(pattern.lower().split("/"), path.lower().split("/"))
 
 
+def repository_files() -> list[tuple[Path, str]]:
+    """Pair every file in the repository with the path Renovate matches it against."""
+    found = []
+    for directory, subdirectories, names in os.walk(ROOT):
+        subdirectories[:] = [name for name in subdirectories if name != ".git"]
+        found += [Path(directory) / name for name in names]
+    return sorted((path, path.relative_to(ROOT).as_posix()) for path in found)
+
+
 def matching_files(patterns: list[str]) -> list[Path]:
-    return [
-        path
-        for path in sorted(ROOT.rglob("*"))
-        if path.is_file()
-        and ".git/" not in str(path)
-        and any(matches_path(pattern, path.relative_to(ROOT).as_posix()) for pattern in patterns)
-    ]
+    return [path for path, relative in FILES if any(matches_path(pattern, relative) for pattern in patterns)]
 
 
 def captured_values(manager: dict, text: str) -> list[str]:
@@ -98,6 +102,7 @@ if not renovate_config.is_file():
     sys.exit(f"{renovate_config} does not exist, so the pins cannot be checked.")
 
 config = json5.loads(renovate_config.read_text())
+FILES = repository_files()
 versions: dict[str, set[str]] = {}
 inactive: set[str] = set()
 failures: list[str] = []
