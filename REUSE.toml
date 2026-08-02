@@ -3,8 +3,8 @@
 # The substantive scaffolding (flake.nix, home-modules/** and README.md) carries
 # inline SPDX headers. This file declares licensing for the remaining files.
 #
-# The generated lockfile contains no copyright notice and is dedicated to the
-# public domain to the extent possible under CC0-1.0.
+# Generated files carry no copyright notice and are dedicated to the public
+# domain to the extent possible under CC0-1.0.
 
 version = 1
 

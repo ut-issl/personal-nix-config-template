@@ -125,6 +125,16 @@ Assists [customizing your configuration](#customize-your-configuration) interact
 from researching nixpkgs and the Home Manager options to editing the modules and validating the result.
 State what you want when invoking it (e.g. `$customize add lazygit`).
 
+### `sync-template`
+
+Merges later improvements to this template into your repository.
+
+A repository created from a GitHub template shares no history with it, so the two drift apart from the moment it is created.
+This skill works out which template commit you last took — on the first run, the one your repository was created from —
+merges everything since, resolves the conflicts, verifies the result and opens the pull request.
+It records where it got to in `.template-base`, so the next run picks up from there.
+Run it whenever you want to take the template's latest changes.
+
 ## Customize Your Configuration
 
 All personal customization lives under [`home-modules/user/`](home-modules/user/).
