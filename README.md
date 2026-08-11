@@ -82,7 +82,7 @@ For other Git settings and any further customization, see [Customize Your Config
 >
 > If you have customized any of them and want to keep your version,
 > first remove the `force = true` lines in [`home-modules/user/bash.nix`](home-modules/user/bash.nix#L49-L53)
-> (and [`home-modules/user/zsh.nix`](home-modules/user/zsh.nix#L78) for Zsh),
+> (and [`home-modules/user/zsh.nix`](home-modules/user/zsh.nix#L79) for Zsh),
 > then append `-b backup` to the first switch command below.
 > That moves each existing file to `<file>.backup` instead of overwriting it.
 
@@ -150,19 +150,11 @@ Any change you make here takes effect only after you re-apply your configuration
 
 The `customize` skill can assist with these customizations interactively; see [Agent Skills](#agent-skills).
 
-Whenever you add a new module, import it from [`home-modules/user.nix`](home-modules/user.nix):
+A new module under [`home-modules/user/`](home-modules/user/) is imported automatically.
+It has to be tracked by Git, because a flake only sees tracked files.
 
-```nix
-imports = [
-  ./user/bash.nix
-  ./user/git.nix
-  ./user/nix.nix
-  ./user/python.nix
-  ./user/rust.nix
-  ./user/packages.nix # your new module
-]
-++ lib.optionals enableZsh [ ./user/zsh.nix ];
-```
+A module that should apply only to the Zsh configuration wraps its settings in `lib.mkIf config.issl.zsh.enable`,
+as [`home-modules/user/zsh.nix`](home-modules/user/zsh.nix) does.
 
 ### Extend an Existing Module
 

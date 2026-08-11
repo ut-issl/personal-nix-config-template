@@ -3,17 +3,10 @@
 #
 # SPDX-License-Identifier: MIT OR Apache-2.0
 
-{ lib, enableZsh, ... }:
+{ lib, ... }:
 
 {
-  imports = [
-    ./user/bash.nix
-    ./user/git.nix
-    ./user/nix.nix
-    ./user/python.nix
-    ./user/rust.nix
-  ]
-  ++ lib.optionals enableZsh [ ./user/zsh.nix ];
+  imports = lib.mapAttrsToList (name: _: ./user + "/${name}") (builtins.readDir ./user);
 
   xdg.enable = true;
 }
