@@ -7,9 +7,13 @@
 
 {
   imports = lib.mapAttrsToList (name: _: ./user + "/${name}") (
-    lib.filterAttrs (name: type: type == "directory" || lib.hasSuffix ".nix" name) (
-      builtins.readDir ./user
-    )
+    lib.filterAttrs (
+      name: type:
+      if type == "directory" then
+        builtins.pathExists (./user + "/${name}/default.nix")
+      else
+        lib.hasSuffix ".nix" name
+    ) (builtins.readDir ./user)
   );
 
   xdg.enable = true;
