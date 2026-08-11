@@ -80,11 +80,12 @@ Apply the README's conventions:
 - The tool already has a module under `home-modules/user/` (bash, zsh, git, python, rust):
   extend that module at the comments marked for personal additions instead of creating a new one.
 - A package with no settings: add it to `home.packages` in `home-modules/user/packages.nix`
-  (create the file and its import if it does not exist yet).
+  (create the file if it does not exist yet).
 - A package together with its settings: create a dedicated module `home-modules/user/<tool>.nix`;
   prefer the Home Manager `programs.<tool>` options when they exist,
   otherwise combine `home.packages` with `home.file` / `xdg.configFile`.
-- Import every new module from `home-modules/user.nix`; Zsh-only modules belong in the `lib.optionals enableZsh` list.
+- A new module under `home-modules/user/` is imported automatically, but it has to be tracked by Git.
+  A Zsh-only module wraps its settings in `lib.mkIf config.issl.zsh.enable`, as `home-modules/user/zsh.nix` does.
 
 If more than one placement is reasonable, present the options briefly with a recommendation
 and let the user choose before editing.
