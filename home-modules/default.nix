@@ -6,7 +6,11 @@
 { lib, ... }:
 
 {
-  imports = lib.mapAttrsToList (name: _: ./user + "/${name}") (builtins.readDir ./user);
+  imports = lib.mapAttrsToList (name: _: ./user + "/${name}") (
+    lib.filterAttrs (name: type: type == "directory" || lib.hasSuffix ".nix" name) (
+      builtins.readDir ./user
+    )
+  );
 
   xdg.enable = true;
 }
