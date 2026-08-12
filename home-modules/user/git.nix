@@ -18,22 +18,22 @@ in
       }
     ];
 
-    # Personal identity:
-    # userName = "Your Name";
-    # userEmail = "you@example.com";
-
-    # Add your personal Git configuration below.
-    # The commented lines below are examples. Uncomment and adjust them if you want these preferences.
-
-    # aliases = {
-    #   ch = "checkout";
-    #   cm = "commit";
-    #   cr = "clone --recursive";
-    #   st = "status";
-    #   sw = "switch";
-    # };
-
     settings = {
+      # Personal identity:
+      # user.name = "Your Name";
+      # user.email = "you@example.com";
+
+      # Add your personal Git configuration below.
+      # The commented lines below are examples. Uncomment and adjust them if you want these preferences.
+
+      # alias = {
+      #   ch = "checkout";
+      #   cm = "commit";
+      #   cr = "clone --recursive";
+      #   st = "status";
+      #   sw = "switch";
+      # };
+
       # core.editor = "code --wait";
 
       # commit.verbose = true;
