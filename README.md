@@ -65,8 +65,8 @@ so that commits created from this environment have the correct author informatio
 Uncomment and update these lines:
 
 ```nix
-userName = "Your Name";
-userEmail = "you@example.com";
+user.name = "Your Name";
+user.email = "you@example.com";
 ```
 
 For other Git settings and any further customization, see [Customize Your Configuration](#customize-your-configuration).

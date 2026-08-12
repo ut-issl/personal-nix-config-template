@@ -35,10 +35,10 @@ Converse in the language the user writes in, but keep all edits (comments, commi
 
 ## 1. Configure your Git identity
 
-Check `home-modules/user/git.nix`; if the `userName` and `userEmail` lines are already set, skip this step.
+Check `home-modules/user/git.nix`; if the `user.name` and `user.email` lines are already set, skip this step.
 
 Otherwise, ask the user for the name and email address to use as the Git author identity,
-then uncomment the `userName` and `userEmail` lines under the "Personal identity" comment
+then uncomment the `user.name` and `user.email` lines under the "Personal identity" comment
 and fill in the user's answers.
 
 ## 2. Install pre-commit hooks
