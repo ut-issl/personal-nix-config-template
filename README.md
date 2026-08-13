@@ -210,6 +210,47 @@ For example, `home-modules/user/julia.nix`:
 }
 ```
 
+### Install Desktop Applications
+
+A graphical application installed through Nix appears in the desktop launcher like any other,
+because the shared ISSL environment makes its desktop entry visible through `XDG_DATA_DIRS`.
+Log out and back in after the switch that installs it, so that the desktop environment picks it up.
+
+An application that renders through OpenGL needs one more setting.
+It looks for the GPU drivers under `/run/opengl-driver`, which Ubuntu does not provide,
+so a set of drivers from Nixpkgs has to be linked there once per machine.
+Turn that on in the module that installs the application, for example `home-modules/user/desktop.nix`:
+
+```nix
+{ pkgs, ... }:
+
+{
+  home.packages = [
+    pkgs.gthumb
+    pkgs.vlc
+  ];
+
+  # This needs a one-time privileged setup on each machine.
+  targets.genericLinux.gpu.enable = true;
+}
+```
+
+The next switch warns that the drivers are not set up yet.
+Run the setup command it installs:
+
+```console
+sudo ~/.nix-profile/bin/non-nixos-gpu-setup
+```
+
+It installs a `systemd-tmpfiles` rule that recreates `/run/opengl-driver` on every boot,
+so it does not need to be repeated after a reboot.
+Run it again whenever a switch reports that the drivers need an update.
+
+> [!NOTE]
+> Applications the desktop already provides, such as the browser and the mail client, are best left as they are.
+> See [package management practices](https://github.com/ut-issl/issl-ubuntu-environment-setup/blob/v0.7.0/docs/13-package-management-practices.md#gui-applications)
+> for the other cases that are better left to the distribution.
+
 ## Apply and Maintain Your Configuration
 
 ### Update Dependencies
