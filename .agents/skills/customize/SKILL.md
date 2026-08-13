@@ -84,6 +84,9 @@ Apply the README's conventions:
 - A package together with its settings: create a dedicated module `home-modules/user/<tool>.nix`;
   prefer the Home Manager `programs.<tool>` options when they exist,
   otherwise combine `home.packages` with `home.file` / `xdg.configFile`.
+- A graphical application: follow "Install Desktop Applications" in `README.md`.
+  One that renders through OpenGL also needs `targets.genericLinux.gpu.enable = true`,
+  so it belongs in a dedicated module rather than alongside the packages that carry no settings.
 - A new module under `home-modules/user/` is imported automatically, but it has to be tracked by Git.
   A Zsh-only module wraps its settings in `lib.mkIf config.issl.zsh.enable`, as `home-modules/user/zsh.nix` does.
 
@@ -140,6 +143,11 @@ home-manager switch --flake .#user-zsh --impure
 
 If the user declines or `home-manager` is not available, point to the "Apply Your Changes" section of `README.md`.
 After a successful switch, verify the result where easy (e.g. the new command is on `PATH`).
+
+A graphical application takes two more steps that only the user can take.
+Tell them to log out and back in, so that the desktop environment picks the application up.
+If `targets.genericLinux.gpu.enable` was turned on,
+tell them to run `sudo ~/.nix-profile/bin/non-nixos-gpu-setup` once on this machine, as the switch itself warns.
 
 ## 8. Clean up and wrap up
 

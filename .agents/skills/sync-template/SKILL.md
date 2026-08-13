@@ -167,7 +167,7 @@ Keep the deletion, but read the template's change and tell the user if it adds s
 
 Follow the template.
 The version appears in `flake.nix`, `flake.lock`, twice in `.github/workflows/test.yaml`
-and in the `README.md` bootstrap command,
+and twice in `README.md` (the bootstrap command and the link into the shared documentation),
 and all of them have to agree.
 
 ## 6. Verify

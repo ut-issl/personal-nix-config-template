@@ -178,6 +178,7 @@
       ],
       matchStrings: [
         'issl-ubuntu-environment-setup/releases/download/(?<currentValue>v[^/\\s]+)/bootstrap-host\\.sh',
+        'issl-ubuntu-environment-setup/blob/(?<currentValue>v[^/\\s]+)/',
       ],
       datasourceTemplate: 'github-tags',
       depNameTemplate: 'ut-issl/issl-ubuntu-environment-setup',
