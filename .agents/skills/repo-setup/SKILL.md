@@ -58,7 +58,8 @@ If they want a Bash-only environment:
 
 If they keep Zsh, delete `home-modules/user/shell.nix` and leave `.github/workflows/test.yaml` as it is.
 That file carries nothing but the opt-out, and the shared default already gives them Zsh.
-Mention that turning Zsh off later means putting the line back in a module under `home-modules/user/`.
+Mention that turning Zsh off later means putting the line back in a module under `home-modules/user/`
+and adding `zsh-enabled: false` to `.github/workflows/test.yaml`.
 
 Either way, delete the `Run flake check with Zsh disabled` step from the `lint-nix` job of `.github/workflows/ci.yaml`.
 The template runs that step to keep both shells working for whoever adopts it next.
@@ -66,7 +67,8 @@ This repository has just settled on one shell, so the step would only repeat the
 or check a configuration nobody here applies.
 
 If the user picks Bash, mention that `home-modules/user/zsh.nix` stays in place but takes effect only
-when Zsh is enabled, so the choice can be reverted later by commenting the line out again.
+when Zsh is enabled, so the choice can be reverted later by commenting the line out again
+and dropping `zsh-enabled: false` from `.github/workflows/test.yaml`.
 
 ## 3. Install pre-commit hooks
 
