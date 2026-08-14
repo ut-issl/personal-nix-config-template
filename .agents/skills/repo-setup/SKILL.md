@@ -2,7 +2,7 @@
 name: repo-setup
 description: >-
   Interactive setup of a personal configuration repository newly created from this template:
-  Git identity check, development tooling setup (pre-commit hooks, Renovate, Conventional Commits, REUSE),
+  Git identity check, shell choice, development tooling setup (pre-commit hooks, Renovate, Conventional Commits, REUSE),
   and README update to match the new repository.
   Use when the user asks to set up, initialize, or bootstrap the repository or its tooling.
   May also be used proactively,
@@ -41,7 +41,34 @@ Otherwise, ask the user for the name and email address to use as the Git author 
 then uncomment the `user.name` and `user.email` lines under the "Personal identity" comment
 and fill in the user's answers.
 
-## 2. Install pre-commit hooks
+## 2. Choose your shell
+
+If the `Run flake check with Zsh disabled` step is already gone from `.github/workflows/ci.yaml`, skip this step.
+
+Explain: the shared ISSL environment enables Zsh by default, and its Bash configuration applies either way.
+This is a repository-wide choice rather than a per-host one,
+on the assumption that the user uses the same shell on every machine.
+
+Ask which shell the user wants.
+If they want a Bash-only environment:
+
+- Uncomment the `issl.zsh.enable = false;` line in `home-modules/user/shell.nix`.
+- Add `zsh-enabled: false` to the `with:` block of the `user-repo` job in `.github/workflows/test.yaml`,
+  so that the environment tests expect a Bash-only result.
+
+If they keep Zsh, delete `home-modules/user/shell.nix` and leave `.github/workflows/test.yaml` as it is.
+That file carries nothing but the opt-out, and the shared default already gives them Zsh.
+Mention that turning Zsh off later means putting the line back in a module under `home-modules/user/`.
+
+Either way, delete the `Run flake check with Zsh disabled` step from the `lint-nix` job of `.github/workflows/ci.yaml`.
+The template runs that step to keep both shells working for whoever adopts it next.
+This repository has just settled on one shell, so the step would only repeat the check above,
+or check a configuration nobody here applies.
+
+If the user picks Bash, mention that `home-modules/user/zsh.nix` stays in place but takes effect only
+when Zsh is enabled, so the choice can be reverted later by commenting the line out again.
+
+## 3. Install pre-commit hooks
 
 If the git hooks are already installed (both `.git/hooks/pre-commit` and `.git/hooks/pre-push` exist), skip this step.
 
@@ -55,7 +82,7 @@ prek install --hook-type pre-commit --hook-type pre-push
 If `prek` is not on PATH, run the same command via `uvx prek` instead.
 If `uv` is not available either, skipping this step is fine.
 
-## 3. Enable Renovate (opt-in)
+## 4. Enable Renovate (opt-in)
 
 If the `enabled: false` line is already gone from `.github/renovate.json5`, skip this step.
 
@@ -67,7 +94,7 @@ If the user opts in:
 - Delete the `enabled: false,` line (including its trailing comment) from `.github/renovate.json5`.
 - Remind the user that the Renovate GitHub App must be installed for this repository to take effect.
 
-## 4. Enforce Conventional Commits (opt-in)
+## 5. Enforce Conventional Commits (opt-in)
 
 If all three blocks below are already uncommented,
 offer to install the `commit-msg` hook if it is missing, then proceed to the next step.
@@ -82,14 +109,14 @@ If the user opts in, uncomment all of the following blocks:
 - the `lint-pr-title` job in `.github/workflows/manage-pull-requests.yaml`
 - the `commitizen` repo block in `.pre-commit-config.yaml`
 
-The `commitizen` hook runs at the `commit-msg` stage, which step 2 does not install.
-Install it additionally (skip if `.git/hooks/commit-msg` already exists), with the same fallback rules as step 2:
+The `commitizen` hook runs at the `commit-msg` stage, which step 3 does not install.
+Install it additionally (skip if `.git/hooks/commit-msg` already exists), with the same fallback rules as step 3:
 
 ```console
 prek install --hook-type commit-msg
 ```
 
-## 5. Decide how to handle the REUSE workflow (opt-in)
+## 6. Decide how to handle the REUSE workflow (opt-in)
 
 If `.github/workflows/reuse.yaml` is already deleted or its `if` guard is already removed, skip this step.
 
@@ -105,7 +132,7 @@ Ask the user which they prefer:
   In that case, remind the user that every file they add must carry REUSE-compliant licensing information,
   and add `.template-base` to the CC0 annotation in `REUSE.toml` when that file exists.
 
-## 6. Update README for the new repository
+## 7. Update README for the new repository
 
 Now that all opt-in decisions have been made, update `README.md` to reflect the actual state of this repository.
 This step does not require a separate opt-in; it is a consistency fix.
@@ -142,6 +169,8 @@ Update the following as needed:
   "This is opt-in: uncomment `lint-commit-messages` in `ci.yaml`…",
   replace it with a note that the enforcement is enabled
   (the CI jobs and the pre-commit hook are already configured).
+- If `home-modules/user/shell.nix` was deleted but the "Choose Your Shell" subsection is still there,
+  remove that subsection along with the sentences in "Apply the Configuration" that point to it.
 - If `reuse.yaml` was deleted but the "REUSE Compliance" subsection still references it,
   remove the entire subsection.
 - If the `if` guard was removed from `reuse.yaml`
@@ -153,7 +182,7 @@ Update the following as needed:
   (e.g. phrasing that describes the template repository rather than the user's own repository)
   and adjust it to reflect that this is now the user's personal configuration repository.
 
-## 7. Clean up the setup skill (opt-in)
+## 8. Clean up the setup skill (opt-in)
 
 Ask whether to remove this skill now that setup is complete.
 This concerns `repo-setup` only; leave `customize` and `sync-template` in place, since both stay useful afterwards.
@@ -164,7 +193,7 @@ If yes:
 - Remove the `repo-setup` entry from the "Agent Skills" section of `README.md`, since it points to the deleted skill.
 - Remove the `.agents/**` and `.claude/**` entries from `REUSE.toml` if no other skills remain there.
 
-## 8. Wrap up
+## 9. Wrap up
 
 Show a summary of everything that was changed or skipped.
 Offer to run `prek run --all-files --skip no-commit-to-branch` (or the same via `uvx prek`)

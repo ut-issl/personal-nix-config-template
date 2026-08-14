@@ -43,7 +43,6 @@
           system ? defaultSystem,
           username ? requireEnv "USER",
           homeDirectory ? requireEnv "HOME",
-          enableZsh ? false,
         }:
         let
           pkgs = mkPkgs system;
@@ -54,7 +53,6 @@
             issl.homeModules.default
             ./home-modules
             {
-              issl.zsh.enable = enableZsh;
               home = {
                 inherit username homeDirectory;
                 stateVersion = "26.05";
@@ -70,8 +68,7 @@
       });
 
       homeConfigurations = {
-        user = mkHomeConfiguration { enableZsh = false; };
-        user-zsh = mkHomeConfiguration { enableZsh = true; };
+        user = mkHomeConfiguration { };
       };
 
       formatter = forAllSystems (system: (mkPkgs system).nixfmt);
@@ -82,13 +79,6 @@
             inherit system;
             username = "user";
             homeDirectory = "/tmp/user-home";
-          }).activationPackage;
-        home-zsh =
-          (mkHomeConfiguration {
-            inherit system;
-            username = "user";
-            homeDirectory = "/tmp/user-home";
-            enableZsh = true;
           }).activationPackage;
       });
     };
