@@ -34,10 +34,19 @@ jobs:
           - ubuntu-22.04
           - ubuntu-24.04
           - ubuntu-26.04
-    uses: ut-issl/issl-ubuntu-environment-setup/.github/workflows/test-environment.yaml@da9a531db23fe8908c90d65dc73155945d20d071 # v0.8.0
+        flake-target:
+          - user
+          - user-zsh
+        include:
+          - flake-target: user
+            zsh-enabled: false
+          - flake-target: user-zsh
+            zsh-enabled: true
+    uses: ut-issl/issl-ubuntu-environment-setup/.github/workflows/test-config-repository.yaml@da9a531db23fe8908c90d65dc73155945d20d071 # v0.8.0
     with:
-      setup-mode: repository-based
       os: ${{ matrix.os }}
+      flake-target: ${{ matrix.flake-target }}
+      zsh-enabled: ${{ matrix.zsh-enabled }}
       common-repository: ut-issl/issl-ubuntu-environment-setup
       common-ref: da9a531db23fe8908c90d65dc73155945d20d071 # v0.8.0
       user-repository: ${{ github.repository }}
