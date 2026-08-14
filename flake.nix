@@ -43,6 +43,7 @@
           system ? defaultSystem,
           username ? requireEnv "USER",
           homeDirectory ? requireEnv "HOME",
+          extraModules ? [ ],
         }:
         let
           pkgs = mkPkgs system;
@@ -58,7 +59,8 @@
                 stateVersion = "26.05";
               };
             }
-          ];
+          ]
+          ++ extraModules;
         };
     in
     {
@@ -79,6 +81,13 @@
             inherit system;
             username = "user";
             homeDirectory = "/tmp/user-home";
+          }).activationPackage;
+        home-bash-only =
+          (mkHomeConfiguration {
+            inherit system;
+            username = "user";
+            homeDirectory = "/tmp/user-home";
+            extraModules = [ { issl.zsh.enable = false; } ];
           }).activationPackage;
       });
     };

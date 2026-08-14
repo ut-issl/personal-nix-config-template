@@ -43,7 +43,7 @@ and fill in the user's answers.
 
 ## 2. Choose your shell
 
-If the `Run flake check with Zsh disabled` step is already gone from `.github/workflows/ci.yaml`, skip this step.
+If the `home-bash-only` check is already gone from `flake.nix`, skip this step.
 
 Explain: the shared ISSL environment enables Zsh by default, and its Bash configuration applies either way.
 This is a repository-wide choice rather than a per-host one,
@@ -61,10 +61,11 @@ That file carries nothing but the opt-out, and the shared default already gives 
 Mention that turning Zsh off later means putting the line back in a module under `home-modules/user/`
 and adding `zsh-enabled: false` to `.github/workflows/test.yaml`.
 
-Either way, delete the `Run flake check with Zsh disabled` step from the `lint-nix` job of `.github/workflows/ci.yaml`.
-The template runs that step to keep both shells working for whoever adopts it next.
-This repository has just settled on one shell, so the step would only repeat the check above,
-or check a configuration nobody here applies.
+Either way, delete the `home-bash-only` entry from `checks` in `flake.nix`.
+The template keeps it so that both shells stay working for whoever adopts it next.
+This repository has just settled on one shell, so the check would either duplicate `home`
+or build a configuration nobody here applies.
+Leave the `extraModules` argument of `mkHomeConfiguration` alone; the module list still uses it.
 
 If the user picks Bash, mention that `home-modules/user/zsh.nix` stays in place but takes effect only
 when Zsh is enabled, so the choice can be reverted later by commenting the line out again

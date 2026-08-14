@@ -218,16 +218,6 @@ jobs:
             echo "No flake.nix found. Skipping flake check."
           fi
 
-      - name: Run flake check with Zsh disabled
-        run: |
-          if [ -f flake.nix ] && [ -f home-modules/user/shell.nix ]; then
-            sed -i 's|^\( *\)# \(issl\.zsh\.enable = false;\)$|\1\2|' home-modules/user/shell.nix
-            grep -q '^ *issl\.zsh\.enable = false;$' home-modules/user/shell.nix
-            nix flake check --show-trace
-          else
-            echo "No shell module found. Skipping the Bash-only flake check."
-          fi
-
   lint-sh-bash:
     name: Lint sh/Bash
     needs: determine-changes
