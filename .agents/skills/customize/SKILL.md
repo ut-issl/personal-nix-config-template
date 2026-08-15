@@ -113,7 +113,7 @@ Then validate:
 
 - Run `prek run --files <changed files> --skip no-commit-to-branch` (or via `uvx prek`) and fix what it reports.
 - With Nix, run `nix flake check --show-trace`;
-  this builds the activation package, so it also catches build failures.
+  this builds the activation packages in `checks`, so it also catches build failures.
 - Then build the activation package to inspect the result:
 
   ```console
