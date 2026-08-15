@@ -88,7 +88,8 @@ Apply the README's conventions:
   One that renders through OpenGL also needs `targets.genericLinux.gpu.enable = true`,
   so it belongs in a dedicated module rather than alongside the packages that carry no settings.
 - A new module under `home-modules/user/` is imported automatically, but it has to be tracked by Git.
-  A Zsh-only module wraps its settings in `lib.mkIf config.issl.zsh.enable`, as `home-modules/user/zsh.nix` does.
+  A module that applies only when Zsh is enabled wraps its settings in `lib.mkIf config.issl.zsh.enable`,
+  as `home-modules/user/zsh.nix` does.
 
 If more than one placement is reasonable, present the options briefly with a recommendation
 and let the user choose before editing.
@@ -112,33 +113,29 @@ Then validate:
 
 - Run `prek run --files <changed files> --skip no-commit-to-branch` (or via `uvx prek`) and fix what it reports.
 - With Nix, run `nix flake check --show-trace`;
-  this builds the activation packages of both configurations, so it also catches build failures.
-- Then build the activation packages to inspect the result:
+  this builds the activation packages in `checks`, so it also catches build failures.
+- Then build the activation package to inspect the result:
 
   ```console
-  nix build .#homeConfigurations.user.activationPackage --impure --out-link result-user
-  nix build .#homeConfigurations.user-zsh.activationPackage --impure --out-link result-user-zsh
+  nix build .#homeConfigurations.user.activationPackage --impure
   ```
 
-  Building only the configuration the user applies is enough;
-  inspect the out-link of the configuration you actually built (`<out-link>` below).
+  The build result shows what the configuration actually produces:
 
-  Each build result shows what the configuration actually produces:
-
-  - `<out-link>/home-path/bin` holds the binaries the configuration installs.
-  - `<out-link>/home-files` holds the files deployed through `home.file` and `xdg.configFile`,
+  - `result/home-path/bin` holds the binaries the configuration installs.
+  - `result/home-files` holds the files deployed through `home.file` and `xdg.configFile`,
     so a deployed file can be compared against its source with `cmp`.
-  - `<out-link>/activate` is the activation script that Home Manager runs on `switch`.
+  - `result/activate` is the activation script that Home Manager runs on `switch`.
 
-  Remove the `result-*` symlinks when done.
+  Remove the `result` symlink when done.
 
 ## 7. Offer to apply
 
 Applying is optional and requires an explicit yes.
-Ask which configuration the user applies (`.#user` or `.#user-zsh`) if not already known, then offer to run:
+Offer to run:
 
 ```console
-home-manager switch --flake .#user-zsh --impure
+home-manager switch --flake .#user --impure
 ```
 
 If the user declines or `home-manager` is not available, point to the "Apply Your Changes" section of `README.md`.

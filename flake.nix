@@ -7,7 +7,7 @@
   description = "Personal Home Manager configuration template for the ISSL Ubuntu environment";
 
   inputs = {
-    issl.url = "github:ut-issl/issl-ubuntu-environment-setup/v0.7.0";
+    issl.url = "github:ut-issl/issl-ubuntu-environment-setup/v0.8.0";
     nixpkgs.follows = "issl/nixpkgs";
     home-manager.follows = "issl/home-manager";
   };
@@ -43,7 +43,7 @@
           system ? defaultSystem,
           username ? requireEnv "USER",
           homeDirectory ? requireEnv "HOME",
-          enableZsh ? false,
+          extraModules ? [ ],
         }:
         let
           pkgs = mkPkgs system;
@@ -54,13 +54,13 @@
             issl.homeModules.default
             ./home-modules
             {
-              issl.zsh.enable = enableZsh;
               home = {
                 inherit username homeDirectory;
                 stateVersion = "26.05";
               };
             }
-          ];
+          ]
+          ++ extraModules;
         };
     in
     {
@@ -70,8 +70,7 @@
       });
 
       homeConfigurations = {
-        user = mkHomeConfiguration { enableZsh = false; };
-        user-zsh = mkHomeConfiguration { enableZsh = true; };
+        user = mkHomeConfiguration { };
       };
 
       formatter = forAllSystems (system: (mkPkgs system).nixfmt);
@@ -83,12 +82,12 @@
             username = "user";
             homeDirectory = "/tmp/user-home";
           }).activationPackage;
-        home-zsh =
+        home-bash-only =
           (mkHomeConfiguration {
             inherit system;
             username = "user";
             homeDirectory = "/tmp/user-home";
-            enableZsh = true;
+            extraModules = [ { issl.zsh.enable = false; } ];
           }).activationPackage;
       });
     };

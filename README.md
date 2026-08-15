@@ -39,7 +39,7 @@ Create your own repository from this template using the **Use this template** bu
 Run the shared host bootstrap script:
 
 ```console
-bash <(curl -fsSL https://github.com/ut-issl/issl-ubuntu-environment-setup/releases/download/v0.7.0/bootstrap-host.sh)
+bash <(curl -fsSL https://github.com/ut-issl/issl-ubuntu-environment-setup/releases/download/v0.8.0/bootstrap-host.sh)
 ```
 
 The bootstrap script installs Nix and starts `nix-daemon` on systems without systemd.
@@ -75,7 +75,7 @@ For other Git settings and any further customization, see [Customize Your Config
 
 > [!CAUTION]
 > The first `home-manager switch` **overwrites** the shell startup files that this configuration manages:
-> `~/.profile`, `~/.bash_profile`, and `~/.bashrc` (plus `~/.zshenv` when you use `.#user-zsh`).
+> `~/.profile`, `~/.bash_profile`, and `~/.bashrc` (plus `~/.zshenv` unless you turn Zsh off).
 >
 > On a fresh Ubuntu account these are just the default skeleton files,
 > so there is nothing of yours to lose and you can safely proceed.
@@ -86,18 +86,14 @@ For other Git settings and any further customization, see [Customize Your Config
 > then append `-b backup` to the first switch command below.
 > That moves each existing file to `<file>.backup` instead of overwriting it.
 
-This template provides two Home Manager configurations:
+Zsh is enabled by default, for the whole repository rather than per host.
+To make this repository Bash-only instead, follow [Choose Your Shell](#choose-your-shell) first.
 
-- `.#user`: Bash-based configuration
-- `.#user-zsh`: Bash + Zsh configuration
-
-To apply the Bash + Zsh configuration, run:
+Apply the configuration:
 
 ```console
-nix --extra-experimental-features "nix-command flakes" run .#home-manager -- switch --flake .#user-zsh --impure
+nix --extra-experimental-features "nix-command flakes" run .#home-manager -- switch --flake .#user --impure
 ```
-
-Use `.#user` instead if you want the Bash-only configuration.
 
 > [!NOTE]
 > The `--extra-experimental-features` flag is only needed on this first run,
@@ -112,8 +108,8 @@ Invoke a skill with `$<name>` in Codex or `/<name>` in Claude Code.
 ### `repo-setup`
 
 Interactively walks you through the repository setup:
-it checks your Git identity and sets up the [development tooling](#development-tooling)
-(pre-commit hooks and the opt-in features).
+it checks your Git identity, asks which shell you want,
+and sets up the [development tooling](#development-tooling) (pre-commit hooks and the opt-in features).
 
 You can run it on the host you just set up, where Codex is installed by the applied configuration,
 or on any other machine where an agent is already available
@@ -153,8 +149,21 @@ The `customize` skill can assist with these customizations interactively; see [A
 A new module under [`home-modules/user/`](home-modules/user/) is imported automatically.
 It has to be tracked by Git, because a flake only sees tracked files.
 
-A module that should apply only to the Zsh configuration wraps its settings in `lib.mkIf config.issl.zsh.enable`,
+A module that should apply only when Zsh is enabled wraps its settings in `lib.mkIf config.issl.zsh.enable`,
 as [`home-modules/user/zsh.nix`](home-modules/user/zsh.nix) does.
+
+### Choose Your Shell
+
+The shared ISSL environment enables Zsh by default, and its Bash configuration applies either way.
+If you want a Bash-only environment, uncomment the line in [`home-modules/user/shell.nix`](home-modules/user/shell.nix):
+
+```nix
+issl.zsh.enable = false;
+```
+
+Then add `zsh-enabled: false` to the `with:` block of the `user-repo` job
+in [`.github/workflows/test.yaml`](.github/workflows/test.yaml).
+Without it the environment tests still look for Zsh and fail.
 
 ### Extend an Existing Module
 
@@ -248,7 +257,7 @@ Run it again whenever a switch reports that the drivers need an update.
 
 > [!NOTE]
 > Applications the desktop already provides, such as the browser and the mail client, are best left as they are.
-> See [package management practices](https://github.com/ut-issl/issl-ubuntu-environment-setup/blob/v0.7.0/docs/13-package-management-practices.md#gui-applications)
+> See [package management practices](https://github.com/ut-issl/issl-ubuntu-environment-setup/blob/v0.8.0/docs/13-package-management-practices.md#gui-applications)
 > for the other cases that are better left to the distribution.
 
 ## Apply and Maintain Your Configuration
@@ -270,10 +279,8 @@ After the first-time setup, the `home-manager` command is available directly.
 Re-apply whenever you change your configuration:
 
 ```console
-home-manager switch --flake .#user-zsh --impure
+home-manager switch --flake .#user --impure
 ```
-
-Use `.#user` instead if you use the Bash-only configuration.
 
 ### Validate Changes
 
@@ -283,11 +290,10 @@ Run:
 nix flake check --show-trace
 ```
 
-You can also build each activation package directly:
+You can also build the activation package directly:
 
 ```console
 nix build .#homeConfigurations.user.activationPackage --impure
-nix build .#homeConfigurations.user-zsh.activationPackage --impure
 ```
 
 ## Development Tooling
