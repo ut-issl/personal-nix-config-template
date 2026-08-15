@@ -174,6 +174,12 @@ Update the following as needed:
   (the CI jobs and the pre-commit hook are already configured).
 - If `home-modules/user/shell.nix` was deleted but the "Choose Your Shell" subsection is still there,
   remove that subsection along with the sentences in "Apply the Configuration" that point to it.
+- If `home-modules/user/shell.nix` still has its `issl.zsh.enable = false;` line uncommented
+  but the "Choose Your Shell" subsection still reads as an instruction,
+  rewrite that subsection and the sentences in "Apply the Configuration" that point to it
+  so that they state this repository is Bash-only, and say how to go back:
+  comment the line out again and drop `zsh-enabled: false` from the `user-repo` job
+  in `.github/workflows/test.yaml`.
 - If `reuse.yaml` was deleted but the "REUSE Compliance" subsection still references it,
   remove the entire subsection.
 - If the `if` guard was removed from `reuse.yaml`
