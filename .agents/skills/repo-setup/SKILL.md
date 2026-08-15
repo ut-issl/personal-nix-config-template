@@ -50,26 +50,24 @@ This is a repository-wide choice rather than a per-host one,
 on the assumption that the user uses the same shell on every machine.
 
 Ask which shell the user wants.
-If they want a Bash-only environment:
+
+For a Bash-only environment:
 
 - Uncomment the `issl.zsh.enable = false;` line in `home-modules/user/shell.nix`.
 - Add `zsh-enabled: false` to the `with:` block of the `user-repo` job in `.github/workflows/test.yaml`,
   so that the environment tests expect a Bash-only result.
 
-If they keep Zsh, delete `home-modules/user/shell.nix` and leave `.github/workflows/test.yaml` as it is.
-That file carries nothing but the opt-out, and the shared default already gives them Zsh.
-Mention that turning Zsh off later means putting the line back in a module under `home-modules/user/`
+Mention that `home-modules/user/zsh.nix` stays in place but takes effect only when Zsh is enabled,
+so undoing both edits brings Zsh back.
+
+To keep Zsh, delete `home-modules/user/shell.nix`; it carries nothing but the opt-out.
+Mention that turning Zsh off later means putting that line back in a module under `home-modules/user/`
 and adding `zsh-enabled: false` to `.github/workflows/test.yaml`.
 
-Either way, delete the `home-bash-only` entry from `checks` in `flake.nix`.
-The template keeps it so that both shells stay working for whoever adopts it next.
-This repository has just settled on one shell, so the check would either duplicate `home`
+Either way, delete the `home-bash-only` entry from `checks` in `flake.nix`:
+this repository now runs one shell, so the check would either duplicate `home`
 or build a configuration nobody here applies.
 Leave the `extraModules` argument of `mkHomeConfiguration` alone; the module list still uses it.
-
-If the user picks Bash, mention that `home-modules/user/zsh.nix` stays in place but takes effect only
-when Zsh is enabled, so the choice can be reverted later by commenting the line out again
-and dropping `zsh-enabled: false` from `.github/workflows/test.yaml`.
 
 ## 3. Install pre-commit hooks
 
@@ -174,12 +172,11 @@ Update the following as needed:
   (the CI jobs and the pre-commit hook are already configured).
 - If `home-modules/user/shell.nix` was deleted but the "Choose Your Shell" subsection is still there,
   remove that subsection along with the sentences in "Apply the Configuration" that point to it.
-- If `home-modules/user/shell.nix` still has its `issl.zsh.enable = false;` line uncommented
-  but the "Choose Your Shell" subsection still reads as an instruction,
-  rewrite that subsection and the sentences in "Apply the Configuration" that point to it
-  so that they state this repository is Bash-only, and say how to go back:
-  comment the line out again and drop `zsh-enabled: false` from the `user-repo` job
-  in `.github/workflows/test.yaml`.
+- If the `issl.zsh.enable = false;` line in `home-modules/user/shell.nix` is uncommented
+  but "Choose Your Shell" still reads as an instruction, rewrite that subsection and the sentences
+  in "Apply the Configuration" that point to it, so that they state this repository is Bash-only
+  and that going back means commenting the line out again
+  and dropping `zsh-enabled: false` from `.github/workflows/test.yaml`.
 - If `reuse.yaml` was deleted but the "REUSE Compliance" subsection still references it,
   remove the entire subsection.
 - If the `if` guard was removed from `reuse.yaml`

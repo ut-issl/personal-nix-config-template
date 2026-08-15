@@ -86,7 +86,7 @@ For other Git settings and any further customization, see [Customize Your Config
 > then append `-b backup` to the first switch command below.
 > That moves each existing file to `<file>.backup` instead of overwriting it.
 
-Apply the `.#user` configuration this template provides:
+Apply the configuration:
 
 ```console
 nix --extra-experimental-features "nix-command flakes" run .#home-manager -- switch --flake .#user --impure
