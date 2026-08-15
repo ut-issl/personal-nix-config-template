@@ -34,12 +34,12 @@ jobs:
           - ubuntu-22.04
           - ubuntu-24.04
           - ubuntu-26.04
-    uses: ut-issl/issl-ubuntu-environment-setup/.github/workflows/test-environment.yaml@b5a73d09399bd7204a1f679816edfe68fd06b1b4 # v0.7.0
+    uses: ut-issl/issl-ubuntu-environment-setup/.github/workflows/test-environment.yaml@da9a531db23fe8908c90d65dc73155945d20d071 # v0.8.0
     with:
       setup-mode: repository-based
       os: ${{ matrix.os }}
       common-repository: ut-issl/issl-ubuntu-environment-setup
-      common-ref: b5a73d09399bd7204a1f679816edfe68fd06b1b4 # v0.7.0
+      common-ref: da9a531db23fe8908c90d65dc73155945d20d071 # v0.8.0
       user-repository: ${{ github.repository }}
       user-ref: ${{ github.sha }}
       override-issl-input: false

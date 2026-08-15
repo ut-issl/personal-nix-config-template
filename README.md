@@ -39,7 +39,7 @@ Create your own repository from this template using the **Use this template** bu
 Run the shared host bootstrap script:
 
 ```console
-bash <(curl -fsSL https://github.com/ut-issl/issl-ubuntu-environment-setup/releases/download/v0.7.0/bootstrap-host.sh)
+bash <(curl -fsSL https://github.com/ut-issl/issl-ubuntu-environment-setup/releases/download/v0.8.0/bootstrap-host.sh)
 ```
 
 The bootstrap script installs Nix and starts `nix-daemon` on systems without systemd.
@@ -248,7 +248,7 @@ Run it again whenever a switch reports that the drivers need an update.
 
 > [!NOTE]
 > Applications the desktop already provides, such as the browser and the mail client, are best left as they are.
-> See [package management practices](https://github.com/ut-issl/issl-ubuntu-environment-setup/blob/v0.7.0/docs/13-package-management-practices.md#gui-applications)
+> See [package management practices](https://github.com/ut-issl/issl-ubuntu-environment-setup/blob/v0.8.0/docs/13-package-management-practices.md#gui-applications)
 > for the other cases that are better left to the distribution.
 
 ## Apply and Maintain Your Configuration
