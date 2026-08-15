@@ -86,14 +86,14 @@ For other Git settings and any further customization, see [Customize Your Config
 > then append `-b backup` to the first switch command below.
 > That moves each existing file to `<file>.backup` instead of overwriting it.
 
+Zsh is enabled by default, for the whole repository rather than per host.
+To make this repository Bash-only instead, follow [Choose Your Shell](#choose-your-shell) first.
+
 Apply the configuration:
 
 ```console
 nix --extra-experimental-features "nix-command flakes" run .#home-manager -- switch --flake .#user --impure
 ```
-
-Your shell is a choice you make once for the whole repository.
-Zsh is enabled by default; see [Choose Your Shell](#choose-your-shell) to turn it off.
 
 > [!NOTE]
 > The `--extra-experimental-features` flag is only needed on this first run,
