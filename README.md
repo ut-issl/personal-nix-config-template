@@ -248,8 +248,8 @@ It then reaches `.#user-desktop` and stays out of `.#user`.
 An application that renders through OpenGL needs one more setting.
 It looks for the GPU drivers under `/run/opengl-driver`, which Ubuntu does not provide,
 so a set of drivers from Nixpkgs has to be linked there once per machine.
-The `targets.genericLinux.gpu.enable` line is already in `home-modules/user/desktop.nix`, commented out.
-Uncomment it, add `pkgs` to the module's arguments, and add your application:
+Turn `targets.genericLinux.gpu.enable` on in that module, add `pkgs` to its arguments,
+and add your application:
 
 ```nix
 {

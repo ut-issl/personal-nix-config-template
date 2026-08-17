@@ -25,6 +25,8 @@ a remote named `upstream` outranks `origin`, and `gh` would silently act on the 
 
 **Trust the result of Git's three-way merge, and intervene only where Git reports a conflict.**
 
+Step 6 names the single exception, where a clean merge can undo a decision this repository already made.
+
 A template commit is internally consistent: a version bump travels with the change that requires it,
 and Git keeps the two together for every line this repository has not touched.
 So never revert an incoming version bump because this repository has not reached that version yet.
@@ -158,6 +160,7 @@ Keep them together; never take the structural change while restoring the old ver
 ### Wording specific to this repository
 
 Keep this repository's version: its name, its badge URLs, and anything describing it as a personal configuration.
+The same holds for the sections `repo-setup` rewrote to match the choices made during setup.
 
 ### A file this repository deleted during setup
 
@@ -172,7 +175,8 @@ and all of them have to agree.
 
 ## 6. Verify
 
-Two failures survive a clean merge without any tool complaining:
+Some failures survive a clean merge without any tool complaining.
+Two of them have a command behind them:
 
 ```console
 uv run .agents/skills/sync-template/scripts/check_pins.py
@@ -189,6 +193,18 @@ Where a conflict was resolved inside a file that carries pins, read the resolved
 A hook reported as skipped proves nothing, since hooks are filtered by file type while CI runs its linters unconditionally.
 When a version pin changed for a tool whose hook was skipped,
 check its configuration by hand for a constraint that the pin no longer satisfies.
+
+One more failure has no command behind it: wording that assumes this repository is still in its template state.
+`repo-setup` rewrote the README sections falsified by the choices made during setup.
+Step 7 of that skill lists them, and step 8 removes the entry for the skill itself once it is deleted.
+Setup may have deleted the skill: read it from the template remote,
+with `git show template/main:.agents/skills/repo-setup/SKILL.md`.
+A later merge can bring the template's original wording back; where it did, restore what this repository had.
+This is the one place to edit what Git merged without reporting a conflict.
+
+A code block illustrating file contents is not covered by that.
+It shows what a file can look like rather than what this repository ships, so keep the template's version.
+A command the README tells the reader to run is not an illustration, and follows the rule above.
 
 ## 7. Record the base and commit
 

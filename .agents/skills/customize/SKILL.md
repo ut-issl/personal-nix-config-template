@@ -87,8 +87,7 @@ Apply the README's conventions:
 - A graphical application: follow "Install Desktop Applications" in `README.md`.
   It goes in `home-modules/user/desktop.nix`, which is already gated on `config.local.desktop.enable`,
   so that it stays out of the hosts the user only reaches through a terminal.
-  One that renders through OpenGL also needs the `targets.genericLinux.gpu.enable` line
-  in that module uncommented.
+  One that renders through OpenGL also needs `targets.genericLinux.gpu.enable` turned on in that module.
 - A new module under `home-modules/user/` is imported automatically, but it has to be tracked by Git.
   A module for only some hosts or only one shell wraps its settings in `lib.mkIf`:
   `lib.mkIf config.local.desktop.enable` for the desktop-only ones, as `home-modules/user/desktop.nix` does,
