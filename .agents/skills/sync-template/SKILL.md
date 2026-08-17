@@ -25,6 +25,8 @@ a remote named `upstream` outranks `origin`, and `gh` would silently act on the 
 
 **Trust the result of Git's three-way merge, and intervene only where Git reports a conflict.**
 
+Step 6 names the single exception, where a clean merge can undo a decision this repository already made.
+
 A template commit is internally consistent: a version bump travels with the change that requires it,
 and Git keeps the two together for every line this repository has not touched.
 So never revert an incoming version bump because this repository has not reached that version yet.
@@ -198,6 +200,7 @@ Step 7 of that skill lists them, and step 8 removes the entry for the skill itse
 Setup may have deleted the skill: read it from the template remote,
 with `git show template/main:.agents/skills/repo-setup/SKILL.md`.
 A later merge can bring the template's original wording back; where it did, restore what this repository had.
+This is the one place to edit what Git merged without reporting a conflict.
 
 A code block illustrating file contents is not covered by that.
 It shows what a file can look like rather than what this repository ships, so keep the template's version.
