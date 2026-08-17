@@ -43,6 +43,7 @@
           system ? defaultSystem,
           username ? requireEnv "USER",
           homeDirectory ? requireEnv "HOME",
+          enableDesktop ? false,
           extraModules ? [ ],
         }:
         let
@@ -54,6 +55,7 @@
             issl.homeModules.default
             ./home-modules
             {
+              local.desktop.enable = enableDesktop;
               home = {
                 inherit username homeDirectory;
                 stateVersion = "26.05";
@@ -71,24 +73,35 @@
 
       homeConfigurations = {
         user = mkHomeConfiguration { };
+        user-desktop = mkHomeConfiguration { enableDesktop = true; };
       };
 
       formatter = forAllSystems (system: (mkPkgs system).nixfmt);
 
-      checks = forAllSystems (system: {
-        home =
-          (mkHomeConfiguration {
-            inherit system;
-            username = "user";
-            homeDirectory = "/tmp/user-home";
-          }).activationPackage;
-        home-bash-only =
-          (mkHomeConfiguration {
-            inherit system;
-            username = "user";
-            homeDirectory = "/tmp/user-home";
-            extraModules = [ { issl.zsh.enable = false; } ];
-          }).activationPackage;
-      });
+      checks = forAllSystems (
+        system:
+        let
+          mkArgs =
+            args:
+            {
+              inherit system;
+              username = "user";
+              homeDirectory = "/tmp/user-home";
+            }
+            // args;
+          mkCheck = args: (mkHomeConfiguration (mkArgs args)).activationPackage;
+          mkConfig = args: (mkHomeConfiguration (mkArgs args)).config;
+        in
+        {
+          home = mkCheck { };
+          home-desktop = mkCheck { enableDesktop = true; };
+          home-bash-only = mkCheck { extraModules = [ { issl.zsh.enable = false; } ]; };
+          desktop-axis =
+            assert nixpkgs.lib.assertMsg
+              (!(mkConfig { }).local.desktop.enable && (mkConfig { enableDesktop = true; }).local.desktop.enable)
+              "local.desktop.enable is switched by the configuration you apply, not by a definition in a module.";
+            (mkPkgs system).emptyFile;
+        }
+      );
     };
 }
