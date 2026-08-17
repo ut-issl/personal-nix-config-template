@@ -89,11 +89,19 @@ For other Git settings and any further customization, see [Customize Your Config
 Zsh is enabled by default, for the whole repository rather than per host.
 To make this repository Bash-only instead, follow [Choose Your Shell](#choose-your-shell) first.
 
-Apply the configuration:
+This template provides one configuration per kind of host:
+
+- `.#user`: WSL, or a machine you reach only through a terminal
+- `.#user-desktop`: a machine you use through its graphical desktop
+
+The same repository serves all of your machines, so apply whichever matches the host in front of you:
 
 ```console
 nix --extra-experimental-features "nix-command flakes" run .#home-manager -- switch --flake .#user --impure
 ```
+
+Use `.#user-desktop` in that command on a desktop host.
+[Install Desktop Applications](#install-desktop-applications) covers what belongs in that configuration.
 
 > [!NOTE]
 > The `--extra-experimental-features` flag is only needed on this first run,
@@ -149,8 +157,15 @@ The `customize` skill can assist with these customizations interactively; see [A
 A new module under [`home-modules/user/`](home-modules/user/) is imported automatically.
 It has to be tracked by Git, because a flake only sees tracked files.
 
-A module that should apply only when Zsh is enabled wraps its settings in `lib.mkIf config.issl.zsh.enable`,
+A module that should apply only to some of your hosts, or only to one shell, wraps its settings in `lib.mkIf`:
+`lib.mkIf config.local.desktop.enable` for the desktop-only ones,
+as [`home-modules/user/desktop.nix`](home-modules/user/desktop.nix) does,
+and `lib.mkIf config.issl.zsh.enable` for the Zsh-only ones,
 as [`home-modules/user/zsh.nix`](home-modules/user/zsh.nix) does.
+
+Do not define `local.desktop.enable` in a module.
+Whether a host is a desktop is decided by the configuration you apply,
+and the flake check rejects any module definition that would change it.
 
 ### Choose Your Shell
 
@@ -225,22 +240,35 @@ A graphical application installed through Nix appears in the desktop launcher li
 because the shared ISSL environment makes its desktop entry visible through `XDG_DATA_DIRS`.
 Log out and back in after the switch that installs it, so that the desktop environment picks it up.
 
+Such an application is only worth installing on a host you actually use graphically,
+so it belongs in [`home-modules/user/desktop.nix`](home-modules/user/desktop.nix),
+which is already gated on `config.local.desktop.enable`.
+It then reaches `.#user-desktop` and stays out of `.#user`.
+
 An application that renders through OpenGL needs one more setting.
 It looks for the GPU drivers under `/run/opengl-driver`, which Ubuntu does not provide,
 so a set of drivers from Nixpkgs has to be linked there once per machine.
-Turn that on in the module that installs the application, for example `home-modules/user/desktop.nix`:
+The `targets.genericLinux.gpu.enable` line is already in `home-modules/user/desktop.nix`, commented out.
+Uncomment it, add `pkgs` to the module's arguments, and add your application:
 
 ```nix
-{ pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
-  home.packages = [
-    pkgs.gthumb
-    pkgs.vlc
-  ];
+  config = lib.mkIf config.local.desktop.enable {
+    home.packages = [
+      pkgs.obs-studio
+      pkgs.vlc
+    ];
 
-  # This needs a one-time privileged setup on each machine.
-  targets.genericLinux.gpu.enable = true;
+    # This needs a one-time privileged setup on each machine.
+    targets.genericLinux.gpu.enable = true;
+  };
 }
 ```
 
@@ -282,6 +310,8 @@ Re-apply whenever you change your configuration:
 home-manager switch --flake .#user --impure
 ```
 
+Use `.#user-desktop` instead on a machine you use through its graphical desktop.
+
 ### Validate Changes
 
 Run:
@@ -295,6 +325,8 @@ You can also build the activation package directly:
 ```console
 nix build .#homeConfigurations.user.activationPackage --impure
 ```
+
+Build `.#homeConfigurations.user-desktop.activationPackage` instead to inspect a desktop-only change.
 
 ## Development Tooling
 

@@ -85,11 +85,16 @@ Apply the README's conventions:
   prefer the Home Manager `programs.<tool>` options when they exist,
   otherwise combine `home.packages` with `home.file` / `xdg.configFile`.
 - A graphical application: follow "Install Desktop Applications" in `README.md`.
-  One that renders through OpenGL also needs `targets.genericLinux.gpu.enable = true`,
-  so it belongs in a dedicated module rather than alongside the packages that carry no settings.
+  It goes in `home-modules/user/desktop.nix`, which is already gated on `config.local.desktop.enable`,
+  so that it stays out of the hosts the user only reaches through a terminal.
+  One that renders through OpenGL also needs the `targets.genericLinux.gpu.enable` line
+  in that module uncommented.
 - A new module under `home-modules/user/` is imported automatically, but it has to be tracked by Git.
-  A module that applies only when Zsh is enabled wraps its settings in `lib.mkIf config.issl.zsh.enable`,
-  as `home-modules/user/zsh.nix` does.
+  A module for only some hosts or only one shell wraps its settings in `lib.mkIf`:
+  `lib.mkIf config.local.desktop.enable` for the desktop-only ones, as `home-modules/user/desktop.nix` does,
+  and `lib.mkIf config.issl.zsh.enable` for the Zsh-only ones, as `home-modules/user/zsh.nix` does.
+  Never define `local.desktop.enable` itself in a module; `flake.nix` sets it per configuration,
+  and the flake check rejects any module definition that would change it.
 
 If more than one placement is reasonable, present the options briefly with a recommendation
 and let the user choose before editing.
@@ -120,6 +125,8 @@ Then validate:
   nix build .#homeConfigurations.user.activationPackage --impure
   ```
 
+  Build `.#homeConfigurations.user-desktop.activationPackage` instead for a desktop-only change.
+
   The build result shows what the configuration actually produces:
 
   - `result/home-path/bin` holds the binaries the configuration installs.
@@ -132,11 +139,14 @@ Then validate:
 ## 7. Offer to apply
 
 Applying is optional and requires an explicit yes.
-Offer to run:
+Ask which configuration this host uses (`.#user` or `.#user-desktop`) if not already known,
+then offer to run the switch with that target:
 
 ```console
 home-manager switch --flake .#user --impure
 ```
+
+Substitute `.#user-desktop` when that is the host's configuration.
 
 If the user declines or `home-manager` is not available, point to the "Apply Your Changes" section of `README.md`.
 After a successful switch, verify the result where easy (e.g. the new command is on `PATH`).
