@@ -241,9 +241,10 @@ because the shared ISSL environment makes its desktop entry visible through `XDG
 Log out and back in after the switch that installs it, so that the desktop environment picks it up.
 
 Such an application is only worth installing on a host you actually use graphically,
-so it belongs in [`home-modules/user/desktop.nix`](home-modules/user/desktop.nix),
-which is already gated on `config.local.desktop.enable`.
-It then reaches `.#user-desktop` and stays out of `.#user`.
+so it goes behind `config.local.desktop.enable`, which sends it to `.#user-desktop` and keeps it out of `.#user`.
+[`home-modules/user/desktop.nix`](home-modules/user/desktop.nix) is already gated and is where it goes by default.
+Where a module of yours already covers the subject,
+put it there instead and wrap the graphical part in `lib.mkIf config.local.desktop.enable`.
 
 An application that renders through OpenGL needs one more setting.
 It looks for the GPU drivers under `/run/opengl-driver`, which Ubuntu does not provide,

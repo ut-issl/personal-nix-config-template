@@ -85,9 +85,11 @@ Apply the README's conventions:
   prefer the Home Manager `programs.<tool>` options when they exist,
   otherwise combine `home.packages` with `home.file` / `xdg.configFile`.
 - A graphical application: follow "Install Desktop Applications" in `README.md`.
-  It goes in `home-modules/user/desktop.nix`, which is already gated on `config.local.desktop.enable`,
-  so that it stays out of the hosts the user only reaches through a terminal.
-  One that renders through OpenGL also needs `targets.genericLinux.gpu.enable` turned on in that module.
+  It goes behind `config.local.desktop.enable`,
+  so that it stays out of the hosts the user only reaches through a terminal:
+  in `home-modules/user/desktop.nix`, which is already gated,
+  or, where a module already covers its subject, in that module wrapped in `lib.mkIf config.local.desktop.enable`.
+  One that renders through OpenGL also needs `targets.genericLinux.gpu.enable` turned on behind the same gate.
 - A new module under `home-modules/user/` is imported automatically, but it has to be tracked by Git.
   A module for only some hosts or only one shell wraps its settings in `lib.mkIf`:
   `lib.mkIf config.local.desktop.enable` for the desktop-only ones, as `home-modules/user/desktop.nix` does,
