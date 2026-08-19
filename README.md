@@ -81,8 +81,7 @@ For other Git settings and any further customization, see [Customize Your Config
 > On a fresh Ubuntu account these are just the default skeleton files,
 > so there is nothing of yours to lose and you can safely proceed.
 >
-> If you have customized any of them and want to keep your version,
-> first remove the `force = true` lines in [`home-modules/user/bash.nix`](home-modules/user/bash.nix#L49-L53)
+> If you have customized any of them and want to keep your version, first remove the `force = true` lines in [`home-modules/user/bash.nix`](home-modules/user/bash.nix#L49-L53)
 > (and [`home-modules/user/zsh.nix`](home-modules/user/zsh.nix#L79) for Zsh),
 > then append `-b backup` to the first switch command below.
 > That moves each existing file to `<file>.backup` instead of overwriting it.
@@ -121,8 +120,7 @@ it checks your Git identity, asks which shell you want,
 and sets up the [development tooling](#development-tooling) (pre-commit hooks and the opt-in features).
 
 You can run it on the host you just set up, where Codex is installed by the applied configuration,
-or on any other machine where an agent is already available
-(e.g. when preparing this repository from your current environment).
+or on any other machine where an agent is already available (e.g. when preparing this repository from your current environment).
 
 ### `customize`
 
@@ -177,8 +175,7 @@ If you want a Bash-only environment, uncomment the line in [`home-modules/user/s
 issl.zsh.enable = false;
 ```
 
-Then add `zsh-enabled: false` to the `with:` block of the `user-repo` job
-in [`.github/workflows/test.yaml`](.github/workflows/test.yaml).
+Then add `zsh-enabled: false` to the `with:` block of the `user-repo` job in [`.github/workflows/test.yaml`](.github/workflows/test.yaml).
 Without it the environment tests still look for Zsh and fail.
 
 ### Extend an Existing Module
@@ -244,13 +241,11 @@ once you log out and back in after the switch that installs it.
 Such an application is only worth installing on a host you actually use graphically,
 so it goes behind `config.local.desktop.enable`, which sends it to `.#user-desktop` and keeps it out of `.#user`.
 [`home-modules/user/desktop.nix`](home-modules/user/desktop.nix) is already gated and is where it goes by default.
-Where a module of yours already covers the subject,
-put it there instead and wrap the graphical part in `lib.mkIf config.local.desktop.enable`.
+Where a module of yours already covers the subject, put it there instead and wrap the graphical part in `lib.mkIf config.local.desktop.enable`.
 
 An application that renders through OpenGL needs one more setting,
 because Ubuntu does not provide the GPU drivers where a Nix-built application looks for them.
-Turn `targets.genericLinux.gpu.enable` on in that module, add `pkgs` to its arguments,
-and add your application:
+Turn `targets.genericLinux.gpu.enable` on in that module, add `pkgs` to its arguments, and add your application:
 
 ```nix
 {
@@ -299,8 +294,7 @@ Update the pinned versions your configuration depends on:
 nix flake update
 ```
 
-Then re-apply your configuration, as described in [Apply Your Changes](#apply-your-changes),
-to pick up the new versions.
+Then re-apply your configuration, as described in [Apply Your Changes](#apply-your-changes), to pick up the new versions.
 
 ### Apply Your Changes
 
