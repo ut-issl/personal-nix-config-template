@@ -151,6 +151,9 @@ Update the following as needed:
   find the CI and Test badge lines (the ones whose URLs contain `ut-issl/personal-nix-config-template/actions/workflows/`).
   Replace all four occurrences of `ut-issl/personal-nix-config-template`
   (one in the image URL and one in the link URL of each badge) with the user's `<owner>/<repo>`.
+- Remove the paragraph above the numbered steps of "Getting Started"
+  that tells the reader to create their own repository from this template.
+  This repository has already been created from it.
 - Check the "Development Tooling" section intro sentence
   "Pre-commit hooks are part of the everyday workflow,
   while Renovate and Conventional Commits enforcement are opt-in."
