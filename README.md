@@ -22,6 +22,9 @@ and lets each user manage personal startup files and additional settings declara
 The ISSL shared files are deployed under `~/.config/issl` by the imported shared module.
 The personal modules source or include those files from the Home Manager-managed user files.
 
+For how this path fits into the shared environment, and for what that shared module provides, see
+[setup with a personal config repository](https://github.com/ut-issl/issl-ubuntu-environment-setup/blob/v0.8.2/docs/11-setup-with-a-personal-config-repository.md).
+
 > [!WARNING]
 > This repository is an early-stage prototype and is under active development.
 > It may be made private or deleted without prior notice.
@@ -30,11 +33,10 @@ The personal modules source or include those files from the Home Manager-managed
 
 ## Getting Started
 
-### 1. Create Your Repository
+Create your own repository from this template using the **Use this template** button on GitHub,
+then follow the steps below in it.
 
-Create your own repository from this template using the **Use this template** button on GitHub.
-
-### 2. Prepare the Host
+### 1. Prepare the Host
 
 Run the shared host bootstrap script:
 
@@ -47,7 +49,7 @@ Complete the GitHub SSH setup when prompted.
 
 Open a new shell afterward so that `nix` is available on your `PATH`.
 
-### 3. Clone Your Repository
+### 2. Clone Your Repository
 
 Clone your repository using Git and OpenSSH provided through Nix:
 
@@ -57,10 +59,9 @@ nix --extra-experimental-features "nix-command flakes" shell nixpkgs#git nixpkgs
 cd <your-repository>
 ```
 
-### 4. Configure Your Git Identity
+### 3. Configure Your Git Identity
 
-Edit [`home-modules/user/git.nix`](home-modules/user/git.nix) and set your Git identity
-so that commits created from this environment have the correct author information.
+Edit [`home-modules/user/git.nix`](home-modules/user/git.nix) and set your Git identity.
 
 Uncomment and update these lines:
 
@@ -71,7 +72,7 @@ user.email = "you@example.com";
 
 For other Git settings and any further customization, see [Customize Your Configuration](#customize-your-configuration).
 
-### 5. Apply the Configuration
+### 4. Apply the Configuration
 
 > [!CAUTION]
 > The first `home-manager switch` **overwrites** the shell startup files that this configuration manages:
@@ -80,8 +81,7 @@ For other Git settings and any further customization, see [Customize Your Config
 > On a fresh Ubuntu account these are just the default skeleton files,
 > so there is nothing of yours to lose and you can safely proceed.
 >
-> If you have customized any of them and want to keep your version,
-> first remove the `force = true` lines in [`home-modules/user/bash.nix`](home-modules/user/bash.nix#L49-L53)
+> If you have customized any of them and want to keep your version, first remove the `force = true` lines in [`home-modules/user/bash.nix`](home-modules/user/bash.nix#L49-L53)
 > (and [`home-modules/user/zsh.nix`](home-modules/user/zsh.nix#L79) for Zsh),
 > then append `-b backup` to the first switch command below.
 > That moves each existing file to `<file>.backup` instead of overwriting it.
@@ -120,8 +120,7 @@ it checks your Git identity, asks which shell you want,
 and sets up the [development tooling](#development-tooling) (pre-commit hooks and the opt-in features).
 
 You can run it on the host you just set up, where Codex is installed by the applied configuration,
-or on any other machine where an agent is already available
-(e.g. when preparing this repository from your current environment).
+or on any other machine where an agent is already available (e.g. when preparing this repository from your current environment).
 
 ### `customize`
 
@@ -176,8 +175,7 @@ If you want a Bash-only environment, uncomment the line in [`home-modules/user/s
 issl.zsh.enable = false;
 ```
 
-Then add `zsh-enabled: false` to the `with:` block of the `user-repo` job
-in [`.github/workflows/test.yaml`](.github/workflows/test.yaml).
+Then add `zsh-enabled: false` to the `with:` block of the `user-repo` job in [`.github/workflows/test.yaml`](.github/workflows/test.yaml).
 Without it the environment tests still look for Zsh and fail.
 
 ### Extend an Existing Module
@@ -213,6 +211,7 @@ Put them in a module such as [`home-modules/user/packages.nix`](home-modules/use
 
 > [!NOTE]
 > The shared ISSL configuration enables `allowUnfree`, so unfree packages such as `claude-code` install without extra setup.
+> See [package management practices](https://github.com/ut-issl/issl-ubuntu-environment-setup/blob/v0.8.2/docs/13-package-management-practices.md#unfree-packages).
 
 ### Add a Module for a New Tool
 
@@ -237,20 +236,16 @@ For example, `home-modules/user/julia.nix`:
 ### Install Desktop Applications
 
 A graphical application installed through Nix appears in the desktop launcher like any other,
-because the shared ISSL environment makes its desktop entry visible through `XDG_DATA_DIRS`.
-Log out and back in after the switch that installs it, so that the desktop environment picks it up.
+once you log out and back in after the switch that installs it.
 
 Such an application is only worth installing on a host you actually use graphically,
 so it goes behind `config.local.desktop.enable`, which sends it to `.#user-desktop` and keeps it out of `.#user`.
 [`home-modules/user/desktop.nix`](home-modules/user/desktop.nix) is already gated and is where it goes by default.
-Where a module of yours already covers the subject,
-put it there instead and wrap the graphical part in `lib.mkIf config.local.desktop.enable`.
+Where a module of yours already covers the subject, put it there instead and wrap the graphical part in `lib.mkIf config.local.desktop.enable`.
 
-An application that renders through OpenGL needs one more setting.
-It looks for the GPU drivers under `/run/opengl-driver`, which Ubuntu does not provide,
-so a set of drivers from Nixpkgs has to be linked there once per machine.
-Turn `targets.genericLinux.gpu.enable` on in that module, add `pkgs` to its arguments,
-and add your application:
+An application that renders through OpenGL needs one more setting,
+because Ubuntu does not provide the GPU drivers where a Nix-built application looks for them.
+Turn `targets.genericLinux.gpu.enable` on in that module, add `pkgs` to its arguments, and add your application:
 
 ```nix
 {
@@ -299,8 +294,7 @@ Update the pinned versions your configuration depends on:
 nix flake update
 ```
 
-Then re-apply your configuration, as described in [Apply Your Changes](#apply-your-changes),
-to pick up the new versions.
+Then re-apply your configuration, as described in [Apply Your Changes](#apply-your-changes), to pick up the new versions.
 
 ### Apply Your Changes
 
