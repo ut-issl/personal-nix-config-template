@@ -53,6 +53,7 @@ repos:
     rev: 4f7fb84c204d04a8b458ad18ca6cd63417d524a9  # frozen: v0.2.55
     hooks:
       - id: rumdl
+        args: ["--fix"]
 
   - repo: https://github.com/tombi-toml/tombi-pre-commit
     rev: d5ad5564cf6df6b7aa4f87c647db8dc16f0af823  # frozen: v1.4.0
