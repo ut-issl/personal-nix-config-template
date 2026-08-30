@@ -37,12 +37,12 @@ jobs:
         flake-target:
           - user
           - user-desktop
-    uses: ut-issl/issl-ubuntu-environment-setup/.github/workflows/test-config-repository.yaml@18e63447d0727e25c302c43fe6bd3aba114d77dc # v0.8.3
+    uses: ut-issl/issl-ubuntu-environment-setup/.github/workflows/test-config-repository.yaml@1969f65a8fffadcc2eb410de896c0f0e736f4f85 # v0.8.4
     with:
       os: ${{ matrix.os }}
       flake-target: ${{ matrix.flake-target }}
       common-repository: ut-issl/issl-ubuntu-environment-setup
-      common-ref: 18e63447d0727e25c302c43fe6bd3aba114d77dc # v0.8.3
+      common-ref: 1969f65a8fffadcc2eb410de896c0f0e736f4f85 # v0.8.4
       user-repository: ${{ github.repository }}
       user-ref: ${{ github.sha }}
       override-issl-input: false
