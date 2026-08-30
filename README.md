@@ -54,7 +54,7 @@ Open a new shell afterward so that `nix` is available on your `PATH`.
 Clone your repository using Git and OpenSSH provided through Nix:
 
 ```console
-nix --extra-experimental-features "nix-command flakes" shell nixpkgs#git nixpkgs#openssh \
+nix --extra-experimental-features "nix-command flakes" shell nixpkgs#git nixpkgs#openssh_gssapi \
   --command git clone git@github.com:<your-account>/<your-repository>.git
 cd <your-repository>
 ```
