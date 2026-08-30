@@ -97,14 +97,15 @@ This template provides one configuration per kind of host:
 The same repository serves all of your machines, so apply whichever matches the host in front of you:
 
 ```console
-nix --extra-experimental-features "nix-command flakes" run .#home-manager -- switch --flake .#user --impure
+NIX_CONFIG="experimental-features = nix-command flakes" \
+  nix run .#home-manager -- switch --flake .#user --impure
 ```
 
 Use `.#user-desktop` in that command on a desktop host.
 [Install Desktop Applications](#install-desktop-applications) covers what belongs in that configuration.
 
 > [!NOTE]
-> The `--extra-experimental-features` flag is only needed on this first run,
+> `NIX_CONFIG` is only needed on this first run,
 > because the shared ISSL configuration enables those features once it is applied.
 
 ## Agent Skills
