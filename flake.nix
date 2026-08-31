@@ -96,6 +96,10 @@
           home = mkCheck { };
           home-desktop = mkCheck { enableDesktop = true; };
           home-bash-only = mkCheck { extraModules = [ { issl.zsh.enable = false; } ]; };
+          home-desktop-gpu = mkCheck {
+            enableDesktop = true;
+            extraModules = [ { targets.genericLinux.gpu.enable = true; } ];
+          };
           desktop-axis =
             assert nixpkgs.lib.assertMsg
               (!(mkConfig { }).local.desktop.enable && (mkConfig { enableDesktop = true; }).local.desktop.enable)
