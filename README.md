@@ -154,6 +154,10 @@ Any change you make here takes effect only after you re-apply your configuration
 
 The `customize` skill can assist with these customizations interactively; see [Agent Skills](#agent-skills).
 
+Recipes for optional setups live in [`examples/`](examples/).
+Each recipe says where its lines belong:
+some are merged into the modules you already have, and some become a module of your own.
+
 A new module under [`home-modules/user/`](home-modules/user/) is imported automatically.
 It has to be tracked by Git, because a flake only sees tracked files.
 
@@ -389,6 +393,9 @@ Conversely, to enforce REUSE compliance in your own repository, remove the `if` 
 
 The scaffolding provided by this template is licensed under either [MIT](LICENSES/MIT.txt) or [Apache-2.0](LICENSES/Apache-2.0.txt)
 at your option, declared per file following the [REUSE](https://reuse.software) specification (see [REUSE.toml](REUSE.toml)).
+
+The Nix fragments under [`examples/`](examples/) are licensed under [MIT-0](LICENSES/MIT-0.txt) instead,
+so that you can take them into your own modules without carrying a notice along.
 
 Files you add to your personal configuration are yours, and you may license them however you like.
 If you add files under paths already annotated in `REUSE.toml`, update the corresponding REUSE metadata as needed.
