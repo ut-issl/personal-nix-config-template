@@ -57,6 +57,12 @@ Check the usual suspects: `dpkg -S` for `apt`, `~/.cargo/bin` for `cargo install
 Then offer to migrate it into this configuration, except system-level `apt` packages, which stay with `apt`.
 The old installation is removed only at the very end (see step 8).
 
+If a recipe under `examples/` covers the request, follow it instead of working the setup out again.
+Its `README.md` states what the setup needs outside this repository,
+and its Nix fragments name the modules their lines belong to.
+Merge those lines into the modules, and leave `examples/` itself untouched:
+it comes from the template, so edits there conflict on the next sync.
+
 ## 3. Research the package and its options
 
 For a new tool:
