@@ -21,4 +21,5 @@ so a recipe that no longer works with the shared configuration fails there.
 
 ## Recipes
 
+- [`gnuplot`](gnuplot/) — install [gnuplot](http://www.gnuplot.info) with a startup file of plotting defaults.
 - [`starship`](starship/) — replace the shared prompt with [Starship](https://starship.rs).
