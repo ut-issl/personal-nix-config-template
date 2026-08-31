@@ -62,10 +62,11 @@ in
         '')
       ];
 
+      # History-based suggestions as you type. Set it to false to turn them off.
+      autosuggestion.enable = true;
+
       # Add personal Home Manager options for Zsh below.
       # The commented lines below are examples. Uncomment and adjust them if you want these preferences.
-
-      # autosuggestion.enable = true;
 
       # autocd = true;
 
