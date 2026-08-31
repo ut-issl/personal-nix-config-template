@@ -23,7 +23,7 @@ The ISSL shared files are deployed under `~/.config/issl` by the imported shared
 The personal modules source or include those files from the Home Manager-managed user files.
 
 For how this path fits into the shared environment, and for what that shared module provides, see
-[setup with a personal config repository](https://github.com/ut-issl/issl-ubuntu-environment-setup/blob/v0.8.4/docs/11-setup-with-a-personal-config-repository.md).
+[setup with a personal config repository](https://github.com/ut-issl/issl-ubuntu-environment-setup/blob/v0.8.6/docs/11-setup-with-a-personal-config-repository.md).
 
 > [!WARNING]
 > This repository is an early-stage prototype and is under active development.
@@ -41,7 +41,7 @@ then follow the steps below in it.
 Run the shared host bootstrap script:
 
 ```console
-bash <(curl -fsSL https://github.com/ut-issl/issl-ubuntu-environment-setup/releases/download/v0.8.4/bootstrap-host.sh)
+bash <(curl -fsSL https://github.com/ut-issl/issl-ubuntu-environment-setup/releases/download/v0.8.6/bootstrap-host.sh)
 ```
 
 The bootstrap script installs Nix and starts `nix-daemon` on systems without systemd.
@@ -212,7 +212,7 @@ Put them in a module such as [`home-modules/user/packages.nix`](home-modules/use
 
 > [!NOTE]
 > The shared ISSL configuration enables `allowUnfree`, so unfree packages such as `claude-code` install without extra setup.
-> See [package management practices](https://github.com/ut-issl/issl-ubuntu-environment-setup/blob/v0.8.4/docs/13-package-management-practices.md#unfree-packages).
+> See [package management practices](https://github.com/ut-issl/issl-ubuntu-environment-setup/blob/v0.8.6/docs/13-package-management-practices.md#unfree-packages).
 
 ### Add a Module for a New Tool
 
@@ -282,7 +282,7 @@ Run it again whenever a switch reports that the drivers need an update.
 
 > [!NOTE]
 > Applications the desktop already provides, such as the browser and the mail client, are best left as they are.
-> See [package management practices](https://github.com/ut-issl/issl-ubuntu-environment-setup/blob/v0.8.4/docs/13-package-management-practices.md#gui-applications)
+> See [package management practices](https://github.com/ut-issl/issl-ubuntu-environment-setup/blob/v0.8.6/docs/13-package-management-practices.md#gui-applications)
 > for the other cases that are better left to the distribution.
 
 ## Apply and Maintain Your Configuration
