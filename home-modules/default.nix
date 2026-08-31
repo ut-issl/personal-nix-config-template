@@ -6,7 +6,10 @@
 { lib, ... }:
 
 {
-  imports = lib.mapAttrsToList (name: _: ./user + "/${name}") (
+  imports = [
+    ./base.nix
+  ]
+  ++ lib.mapAttrsToList (name: _: ./user + "/${name}") (
     lib.filterAttrs (
       name: type:
       if type == "directory" then
@@ -15,17 +18,4 @@
         lib.hasSuffix ".nix" name
     ) (builtins.readDir ./user)
   );
-
-  options.local.desktop.enable = lib.mkOption {
-    type = lib.types.bool;
-    default = false;
-    example = true;
-    description = ''
-      Whether this host runs a graphical desktop, as opposed to WSL or a headless server.
-      Modules under `user/` gate their desktop-only settings on this option,
-      and `flake.nix` sets it per Home Manager configuration.
-    '';
-  };
-
-  config.xdg.enable = true;
 }

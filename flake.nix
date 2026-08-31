@@ -44,6 +44,7 @@
           username ? requireEnv "USER",
           homeDirectory ? requireEnv "HOME",
           enableDesktop ? false,
+          includeUserModules ? true,
           extraModules ? [ ],
         }:
         let
@@ -53,7 +54,7 @@
           inherit pkgs;
           modules = [
             issl.homeModules.default
-            ./home-modules
+            (if includeUserModules then ./home-modules else ./home-modules/base.nix)
             {
               local.desktop.enable = enableDesktop;
               home = {
@@ -127,6 +128,7 @@
           check:
           mkCheck {
             enableDesktop = true;
+            includeUserModules = false;
             extraModules = exampleModules (nixpkgs.lib.removePrefix "example-" check);
           }
         )
