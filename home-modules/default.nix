@@ -5,17 +5,37 @@
 
 { lib, ... }:
 
+let
+  entries = builtins.readDir ./.;
+
+  scaffolding = [
+    "default.nix"
+    "base.nix"
+  ];
+
+  strayModules = lib.attrNames (
+    lib.filterAttrs (
+      name: type: type != "directory" && !(builtins.elem name scaffolding) && lib.hasSuffix ".nix" name
+    ) entries
+  );
+in
 {
   imports = [
     ./base.nix
   ]
-  ++ lib.mapAttrsToList (name: _: ./user + "/${name}") (
-    lib.filterAttrs (
-      name: type:
-      if type == "directory" then
-        builtins.pathExists (./user + "/${name}/default.nix")
-      else
-        lib.hasSuffix ".nix" name
-    ) (builtins.readDir ./user)
-  );
+  ++
+    lib.throwIf (strayModules != [ ])
+      "home-modules/ takes one directory per module: move ${lib.concatStringsSep ", " strayModules} to <name>/<name>.nix"
+      (
+        lib.mapAttrsToList (
+          name: _:
+          let
+            module = ./. + "/${name}/${name}.nix";
+          in
+          if builtins.pathExists module then
+            module
+          else
+            throw "home-modules/${name}/ must contain ${name}.nix"
+        ) (lib.filterAttrs (_: type: type == "directory") entries)
+      );
 }
