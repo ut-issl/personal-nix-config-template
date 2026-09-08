@@ -42,13 +42,13 @@ The shared ISSL environment installs many tools and deploys their base settings 
 Before adding anything, check whether the tool is already provided:
 
 - the shared modules: `home-modules/` of `ut-issl/issl-ubuntu-environment-setup` at the version pinned in `flake.nix`;
-- this repository's own modules under `home-modules/user/`;
+- this repository's own modules under `home-modules/`;
 - on an applied machine, whether the command is already on `PATH` — and if so, where it resolves to.
 
 If the command resolves into the Nix store (directly or via `~/.nix-profile`),
 the tool is already provided; only the personal settings need to be layered on top.
 Follow the existing pattern: the shared files are loaded first, personal additions come after
-(see `home-modules/user/bash.nix` or `git.nix` for examples).
+(see `home-modules/bash/bash.nix` or `home-modules/git/git.nix` for examples).
 
 If the command resolves outside the Nix store, find out how it was installed —
 the user may not remember or even know it is there.
@@ -83,23 +83,28 @@ For a new tool:
 
 Apply the README's conventions:
 
-- The tool already has a module under `home-modules/user/` (bash, zsh, git, python, rust):
+- A module under `home-modules/` already covers the subject (such as bash, zsh, git, python, rust):
   extend that module at the comments marked for personal additions instead of creating a new one.
-- A package with no settings: add it to `home.packages` in `home-modules/user/packages.nix`
-  (create the file if it does not exist yet).
-- A package together with its settings: create a dedicated module `home-modules/user/<tool>.nix`;
+  A package belongs there too when the module covers what it is for.
+- None does, and the tool brings its own configuration:
+  create `home-modules/<tool>/<tool>.nix`, named after the tool;
   prefer the Home Manager `programs.<tool>` options when they exist,
   otherwise combine `home.packages` with `home.file` / `xdg.configFile`.
+- None does, and it is only a package: put it in a module named after what such packages are for,
+  as the shared environment names `utils` and `dev`;
+  create `home-modules/<purpose>/<purpose>.nix` if no module of that purpose exists yet.
 - A graphical application: follow "Install Desktop Applications" in `README.md`.
   It goes behind `config.local.desktop.enable`,
   so that it stays out of the hosts the user only reaches through a terminal:
-  in `home-modules/user/desktop.nix`, which is already gated,
+  in `home-modules/desktop/desktop.nix`, which is already gated,
   or, where a module already covers its subject, in that module wrapped in `lib.mkIf config.local.desktop.enable`.
   One that renders through OpenGL also needs `targets.genericLinux.gpu.enable` turned on behind the same gate.
-- A new module under `home-modules/user/` is imported automatically, but it has to be tracked by Git.
+- A new module directory under `home-modules/` is imported automatically, but it has to be tracked by Git.
+  The directory and the Nix file inside it carry the same name,
+  and a configuration file the module deploys sits beside that file.
   A module for only some hosts or only one shell wraps its settings in `lib.mkIf`:
-  `lib.mkIf config.local.desktop.enable` for the desktop-only ones, as `home-modules/user/desktop.nix` does,
-  and `lib.mkIf config.issl.zsh.enable` for the Zsh-only ones, as `home-modules/user/zsh.nix` does.
+  `lib.mkIf config.local.desktop.enable` for the desktop-only ones, as `home-modules/desktop/desktop.nix` does,
+  and `lib.mkIf config.issl.zsh.enable` for the Zsh-only ones, as `home-modules/zsh/zsh.nix` does.
   Never define `local.desktop.enable` itself in a module; `flake.nix` sets it per configuration,
   and the flake check rejects any module definition that would change it.
 

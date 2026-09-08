@@ -61,7 +61,7 @@ cd <your-repository>
 
 ### 3. Configure Your Git Identity
 
-Edit [`home-modules/user/git.nix`](home-modules/user/git.nix) and set your Git identity.
+Edit [`home-modules/git/git.nix`](home-modules/git/git.nix) and set your Git identity.
 
 Uncomment and update these lines:
 
@@ -81,8 +81,8 @@ For other Git settings and any further customization, see [Customize Your Config
 > On a fresh Ubuntu account these are just the default skeleton files,
 > so there is nothing of yours to lose and you can safely proceed.
 >
-> If you have customized any of them and want to keep your version, first remove the `force = true` lines in [`home-modules/user/bash.nix`](home-modules/user/bash.nix#L49-L53)
-> (and [`home-modules/user/zsh.nix`](home-modules/user/zsh.nix#L79) for Zsh),
+> If you have customized any of them and want to keep your version, first remove the `force = true` lines in [`home-modules/bash/bash.nix`](home-modules/bash/bash.nix#L49-L53)
+> (and [`home-modules/zsh/zsh.nix`](home-modules/zsh/zsh.nix#L80) for Zsh),
 > then append `-b backup` to the first switch command below.
 > That moves each existing file to `<file>.backup` instead of overwriting it.
 
@@ -141,7 +141,10 @@ Run it whenever you want to take the template's latest changes.
 
 ## Customize Your Configuration
 
-All personal customization lives under [`home-modules/user/`](home-modules/user/).
+All personal customization lives in the modules under [`home-modules/`](home-modules/).
+A module is a directory named after what it configures,
+holding `<name>/<name>.nix` together with any configuration file it deploys.
+`default.nix` and `base.nix` sit beside them and belong to the template rather than to your configuration.
 The shared ISSL environment already installs many tools and deploys their base settings under `~/.config/issl`,
 so your modules only need to layer your personal settings on top.
 
@@ -158,14 +161,14 @@ Recipes for optional setups live in [`examples/`](examples/).
 Each recipe says where its lines belong:
 some are merged into the modules you already have, and some become a module of your own.
 
-A new module under [`home-modules/user/`](home-modules/user/) is imported automatically.
+A new module directory under [`home-modules/`](home-modules/) is imported automatically.
 It has to be tracked by Git, because a flake only sees tracked files.
 
 A module that should apply only to some of your hosts, or only to one shell, wraps its settings in `lib.mkIf`:
 `lib.mkIf config.local.desktop.enable` for the desktop-only ones,
-as [`home-modules/user/desktop.nix`](home-modules/user/desktop.nix) does,
+as [`home-modules/desktop/desktop.nix`](home-modules/desktop/desktop.nix) does,
 and `lib.mkIf config.issl.zsh.enable` for the Zsh-only ones,
-as [`home-modules/user/zsh.nix`](home-modules/user/zsh.nix) does.
+as [`home-modules/zsh/zsh.nix`](home-modules/zsh/zsh.nix) does.
 
 Do not define `local.desktop.enable` in a module.
 Whether a host is a desktop is decided by the configuration you apply,
@@ -174,7 +177,7 @@ and the flake check rejects any module definition that would change it.
 ### Choose Your Shell
 
 The shared ISSL environment enables Zsh by default, and its Bash configuration applies either way.
-If you want a Bash-only environment, uncomment the line in [`home-modules/user/shell.nix`](home-modules/user/shell.nix):
+If you want a Bash-only environment, uncomment the line in [`home-modules/shell/shell.nix`](home-modules/shell/shell.nix):
 
 ```nix
 issl.zsh.enable = false;
@@ -187,44 +190,31 @@ Without it the environment tests still look for Zsh and fail.
 
 Several tools already have a user module that sources or includes the shared ISSL files.
 These modules load the shared settings first and leave space for your personal settings afterward.
-Add your settings to the existing module rather than creating a new one:
+Add your settings to the existing module rather than creating a new one.
+[`home-modules/`](home-modules/) holds every module this repository ships,
+and many of the settings you are likely to change already have a place in one of them.
+For example:
 
-- Git: [`home-modules/user/git.nix`](home-modules/user/git.nix)
-- Bash: [`home-modules/user/bash.nix`](home-modules/user/bash.nix)
-- Zsh: [`home-modules/user/zsh.nix`](home-modules/user/zsh.nix)
-- Python startup: [`home-modules/user/python.nix`](home-modules/user/python.nix)
-- Cargo: [`home-modules/user/rust.nix`](home-modules/user/rust.nix)
+- Git: [`home-modules/git/git.nix`](home-modules/git/git.nix)
+- Bash: [`home-modules/bash/bash.nix`](home-modules/bash/bash.nix)
+- Zsh: [`home-modules/zsh/zsh.nix`](home-modules/zsh/zsh.nix)
+- Python startup: [`home-modules/python/python.nix`](home-modules/python/python.nix)
+- Cargo: [`home-modules/rust/rust.nix`](home-modules/rust/rust.nix)
 
-Each file includes comments that show where to add personal settings and examples you can adapt.
+Each of those modules includes comments that show where to add personal settings and examples you can adapt.
 
-### Install Extra Packages
+A package belongs in an existing module too when one of them already covers its subject.
+For example, to install `lazygit`, add `pkgs` to the arguments of
+[`home-modules/git/git.nix`](home-modules/git/git.nix) and list `pkgs.lazygit` in `home.packages` there.
 
-List the packages you want in `home.packages`.
+### Add a Module of Your Own
+
+When no module of yours covers the subject, add one.
 Any package from [Nixpkgs](https://search.nixos.org/packages) is available through `pkgs`.
-Put them in a module such as [`home-modules/user/packages.nix`](home-modules/user/):
 
-```nix
-{ pkgs, ... }:
-
-{
-  home.packages = [
-    pkgs.claude-code
-    pkgs.lazygit
-  ];
-}
-```
-
-> [!NOTE]
-> The shared ISSL configuration enables `allowUnfree`, so unfree packages such as `claude-code` install without extra setup.
-> See [package management practices](https://github.com/ut-issl/issl-ubuntu-environment-setup/blob/v0.8.8/docs/13-package-management-practices.md#unfree-packages).
-
-### Add a Module for a New Tool
-
-When a package also comes with its own configuration,
-it is easier to manage if you install the package and add its settings together in a dedicated module,
-rather than listing the package alongside the others.
-
-For example, `home-modules/user/julia.nix`:
+Name the module after the tool when the tool brings its own configuration,
+so that the package and its settings are managed together.
+For example, `home-modules/julia/julia.nix`:
 
 ```nix
 { pkgs, ... }:
@@ -238,6 +228,28 @@ For example, `home-modules/user/julia.nix`:
 }
 ```
 
+Name it after the purpose when it collects packages that share one,
+so that the next package of the same kind has somewhere to go.
+The shared environment groups its own that way, with `utils` for general command-line tools
+and `dev` for the ones that serve any language.
+For example, `home-modules/agents/agents.nix`:
+
+```nix
+{ pkgs, ... }:
+
+{
+  home.packages = [ pkgs.claude-code ];
+}
+```
+
+> [!NOTE]
+> The shared ISSL configuration enables `allowUnfree`, so unfree packages such as `claude-code` install without extra setup.
+> See [package management practices](https://github.com/ut-issl/issl-ubuntu-environment-setup/blob/v0.8.8/docs/13-package-management-practices.md#unfree-packages).
+
+The directory and the file have to carry the same name.
+A directory holding no `<name>.nix`, and a Nix file placed directly under `home-modules/`,
+are both reported by path when you validate.
+
 ### Install Desktop Applications
 
 A graphical application installed through Nix appears in the desktop launcher like any other,
@@ -245,7 +257,7 @@ once you log out and back in after the switch that installs it.
 
 Such an application is only worth installing on a host you actually use graphically,
 so it goes behind `config.local.desktop.enable`, which sends it to `.#user-desktop` and keeps it out of `.#user`.
-[`home-modules/user/desktop.nix`](home-modules/user/desktop.nix) is already gated and is where it goes by default.
+[`home-modules/desktop/desktop.nix`](home-modules/desktop/desktop.nix) is already gated and is where it goes by default.
 Where a module of yours already covers the subject, put it there instead and wrap the graphical part in `lib.mkIf config.local.desktop.enable`.
 
 An application that renders through OpenGL needs one more setting,

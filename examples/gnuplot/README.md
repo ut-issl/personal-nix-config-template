@@ -5,7 +5,7 @@ This recipe installs it and gives it a startup file that sets the defaults you w
 
 ## Fragments
 
-- `gnuplot.nix` — add as `home-modules/user/gnuplot.nix`.
+- `gnuplot.nix` — add as `home-modules/gnuplot/gnuplot.nix`.
 
 ## The startup file
 

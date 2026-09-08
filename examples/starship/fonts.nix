@@ -1,4 +1,4 @@
-# Add this file as `home-modules/user/fonts.nix`.
+# Add this file as `home-modules/fonts/fonts.nix`.
 
 {
   config,

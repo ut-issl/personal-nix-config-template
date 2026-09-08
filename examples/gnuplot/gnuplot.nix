@@ -1,4 +1,4 @@
-# Add this file as `home-modules/user/gnuplot.nix`.
+# Add this file as `home-modules/gnuplot/gnuplot.nix`.
 
 { pkgs, ... }:
 
