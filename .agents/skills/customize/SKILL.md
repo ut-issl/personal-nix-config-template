@@ -83,13 +83,16 @@ For a new tool:
 
 Apply the README's conventions:
 
-- The tool already has a module under `home-modules/` (bash, zsh, git, python, rust):
+- A module under `home-modules/` already covers the subject (such as bash, zsh, git, python, rust):
   extend that module at the comments marked for personal additions instead of creating a new one.
-- A package with no settings: add it to `home.packages` in `home-modules/packages/packages.nix`
-  (create the directory and the file if they do not exist yet).
-- A package together with its settings: create a dedicated module `home-modules/<tool>/<tool>.nix`;
+  A package belongs there too when the module covers what it is for.
+- None does, and the tool brings its own configuration:
+  create `home-modules/<tool>/<tool>.nix`, named after the tool;
   prefer the Home Manager `programs.<tool>` options when they exist,
   otherwise combine `home.packages` with `home.file` / `xdg.configFile`.
+- None does, and it is only a package: put it in a module named after what such packages are for,
+  as the shared environment names `utils` and `dev`;
+  create `home-modules/<purpose>/<purpose>.nix` if no module of that purpose exists yet.
 - A graphical application: follow "Install Desktop Applications" in `README.md`.
   It goes behind `config.local.desktop.enable`,
   so that it stays out of the hosts the user only reaches through a terminal:

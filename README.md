@@ -190,7 +190,10 @@ Without it the environment tests still look for Zsh and fail.
 
 Several tools already have a user module that sources or includes the shared ISSL files.
 These modules load the shared settings first and leave space for your personal settings afterward.
-Add your settings to the existing module rather than creating a new one:
+Add your settings to the existing module rather than creating a new one.
+[`home-modules/`](home-modules/) holds every module this repository ships,
+and many of the settings you are likely to change already have a place in one of them.
+For example:
 
 - Git: [`home-modules/git/git.nix`](home-modules/git/git.nix)
 - Bash: [`home-modules/bash/bash.nix`](home-modules/bash/bash.nix)
@@ -198,35 +201,19 @@ Add your settings to the existing module rather than creating a new one:
 - Python startup: [`home-modules/python/python.nix`](home-modules/python/python.nix)
 - Cargo: [`home-modules/rust/rust.nix`](home-modules/rust/rust.nix)
 
-Each file includes comments that show where to add personal settings and examples you can adapt.
+Each of those modules includes comments that show where to add personal settings and examples you can adapt.
 
-### Install Extra Packages
+A package belongs in an existing module too when one of them already covers its subject.
+For example, to install `lazygit`, add `pkgs` to the arguments of
+[`home-modules/git/git.nix`](home-modules/git/git.nix) and list `pkgs.lazygit` in `home.packages` there.
 
-List the packages you want in `home.packages`.
+### Add a Module of Your Own
+
+When no module of yours covers the subject, add one.
 Any package from [Nixpkgs](https://search.nixos.org/packages) is available through `pkgs`.
-Put them in a module such as [`home-modules/packages/packages.nix`](home-modules/):
 
-```nix
-{ pkgs, ... }:
-
-{
-  home.packages = [
-    pkgs.claude-code
-    pkgs.lazygit
-  ];
-}
-```
-
-> [!NOTE]
-> The shared ISSL configuration enables `allowUnfree`, so unfree packages such as `claude-code` install without extra setup.
-> See [package management practices](https://github.com/ut-issl/issl-ubuntu-environment-setup/blob/v0.8.8/docs/13-package-management-practices.md#unfree-packages).
-
-### Add a Module for a New Tool
-
-When a package also comes with its own configuration,
-it is easier to manage if you install the package and add its settings together in a dedicated module,
-rather than listing the package alongside the others.
-
+Name the module after the tool when the tool brings its own configuration,
+so that the package and its settings are managed together.
 For example, `home-modules/julia/julia.nix`:
 
 ```nix
@@ -240,6 +227,24 @@ For example, `home-modules/julia/julia.nix`:
   '';
 }
 ```
+
+Name it after the purpose when it collects packages that share one,
+so that the next package of the same kind has somewhere to go.
+The shared environment groups its own that way, with `utils` for general command-line tools
+and `dev` for the ones that serve any language.
+For example, `home-modules/agents/agents.nix`:
+
+```nix
+{ pkgs, ... }:
+
+{
+  home.packages = [ pkgs.claude-code ];
+}
+```
+
+> [!NOTE]
+> The shared ISSL configuration enables `allowUnfree`, so unfree packages such as `claude-code` install without extra setup.
+> See [package management practices](https://github.com/ut-issl/issl-ubuntu-environment-setup/blob/v0.8.8/docs/13-package-management-practices.md#unfree-packages).
 
 The directory and the file have to carry the same name.
 A directory holding no `<name>.nix`, and a Nix file placed directly under `home-modules/`,
