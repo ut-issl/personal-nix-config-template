@@ -12,7 +12,7 @@
     example = true;
     description = ''
       Whether this host runs a graphical desktop, as opposed to WSL or a headless server.
-      Modules under `user/` gate their desktop-only settings on this option,
+      Modules under `home-modules/` gate their desktop-only settings on this option,
       and `flake.nix` sets it per Home Manager configuration.
     '';
   };

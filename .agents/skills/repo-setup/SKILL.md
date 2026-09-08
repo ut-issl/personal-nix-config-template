@@ -6,7 +6,7 @@ description: >-
   and README update to match the new repository.
   Use when the user asks to set up, initialize, or bootstrap the repository or its tooling.
   May also be used proactively,
-  but only when home-modules/user/git.nix still has the personal identity lines commented out
+  but only when home-modules/git/git.nix still has the personal identity lines commented out
   (a clear sign the repository is fresh from the template); otherwise wait for an explicit request.
 ---
 
@@ -35,7 +35,7 @@ Converse in the language the user writes in, but keep all edits (comments, commi
 
 ## 1. Configure your Git identity
 
-Check `home-modules/user/git.nix`; if the `user.name` and `user.email` lines are already set, skip this step.
+Check `home-modules/git/git.nix`; if the `user.name` and `user.email` lines are already set, skip this step.
 
 Otherwise, ask the user for the name and email address to use as the Git author identity,
 then uncomment the `user.name` and `user.email` lines under the "Personal identity" comment
@@ -53,16 +53,16 @@ Ask which shell the user wants.
 
 For a Bash-only environment:
 
-- Uncomment the `issl.zsh.enable = false;` line in `home-modules/user/shell.nix`.
+- Uncomment the `issl.zsh.enable = false;` line in `home-modules/shell/shell.nix`.
 - Add `zsh-enabled: false` to the `with:` block of the `user-repo` job in `.github/workflows/test.yaml`,
   so that the environment tests expect a Bash-only result.
 
-Mention that `home-modules/user/zsh.nix` stays in place but takes effect only when Zsh is enabled,
+Mention that `home-modules/zsh/zsh.nix` stays in place but takes effect only when Zsh is enabled,
 so undoing both edits brings Zsh back.
 
-To keep Zsh, delete `home-modules/user/shell.nix`; it carries nothing but the opt-out.
+To keep Zsh, delete `home-modules/shell/shell.nix`; it carries nothing but the opt-out.
 Mention that turning Zsh off later means putting `issl.zsh.enable = false;` back in a module under
-`home-modules/user/` and adding `zsh-enabled: false` to `.github/workflows/test.yaml`.
+`home-modules/` and adding `zsh-enabled: false` to `.github/workflows/test.yaml`.
 
 Either way, delete the `home-bash-only` entry from `checks` in `flake.nix`:
 this repository now runs one shell, so the check would either duplicate `home`
@@ -173,15 +173,15 @@ Update the following as needed:
   "This is opt-in: uncomment `lint-commit-messages` in `ci.yaml`…",
   replace it with a note that the enforcement is enabled
   (the CI jobs and the pre-commit hook are already configured).
-- If `home-modules/user/shell.nix` was deleted but the "Choose Your Shell" subsection is still there,
+- If `home-modules/shell/shell.nix` was deleted but the "Choose Your Shell" subsection is still there,
   remove that subsection and the paragraph in "Apply the Configuration" beginning "Zsh is enabled by default",
   and make the startup-file caution above it list `~/.zshenv` unconditionally.
-- If the `issl.zsh.enable = false;` line in `home-modules/user/shell.nix` is uncommented
+- If the `issl.zsh.enable = false;` line in `home-modules/shell/shell.nix` is uncommented
   but "Choose Your Shell" still reads as an instruction, rewrite that subsection and the paragraph
   in "Apply the Configuration" beginning "Zsh is enabled by default", so that they state this repository
   is Bash-only and that going back means commenting the line out again
   and dropping `zsh-enabled: false` from `.github/workflows/test.yaml`;
-  then drop `~/.zshenv` and the `zsh.nix` parenthetical from the startup-file caution.
+  then drop `~/.zshenv` and the `zsh/zsh.nix` parenthetical from the startup-file caution.
 - If `reuse.yaml` was deleted but the "REUSE Compliance" subsection still references it,
   remove the entire subsection.
 - If the `if` guard was removed from `reuse.yaml`

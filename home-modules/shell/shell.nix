@@ -7,7 +7,7 @@ _:
 
 {
   # Which interactive shell you use. The shared ISSL environment enables Zsh by default,
-  # and the Bash configuration in `bash.nix` applies either way.
+  # and the Bash configuration in `bash/bash.nix` applies either way.
   # Keep the line below commented out for Zsh; uncomment it for a Bash-only environment.
 
   # issl.zsh.enable = false;

@@ -5,8 +5,8 @@ It takes over in both Bash and Zsh, and the shared prompt steps aside on its own
 
 ## Fragments
 
-- `shell.nix` — add to `home-modules/user/shell.nix`.
-- `fonts.nix` — add as `home-modules/user/fonts.nix`, and only if you want the icons described below.
+- `shell.nix` — add to `home-modules/shell/shell.nix`.
+- `fonts.nix` — add as `home-modules/fonts/fonts.nix`, and only if you want the icons described below.
   It installs a Nerd Font behind `config.local.desktop.enable`, so it applies to a desktop host alone.
 
 ## Icons and fonts
