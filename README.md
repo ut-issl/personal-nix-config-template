@@ -82,7 +82,7 @@ For other Git settings and any further customization, see [Customize Your Config
 > so there is nothing of yours to lose and you can safely proceed.
 >
 > If you have customized any of them and want to keep your version, first remove the `force = true` lines in [`home-modules/bash/bash.nix`](home-modules/bash/bash.nix#L49-L53)
-> (and [`home-modules/zsh/zsh.nix`](home-modules/zsh/zsh.nix#L79) for Zsh),
+> (and [`home-modules/zsh/zsh.nix`](home-modules/zsh/zsh.nix#L80) for Zsh),
 > then append `-b backup` to the first switch command below.
 > That moves each existing file to `<file>.backup` instead of overwriting it.
 
