@@ -95,7 +95,8 @@ def normalize(version: str) -> str:
     # A prek hook release such as "v3.13.1-1" pins upstream shfmt "v3.13.1".
     # That trailing revision is noise only where a plain version is left behind:
     # a prerelease such as "-rc.1" or "-alpha-1" is what tells two pins apart.
-    core = version.lstrip("v")
+    # A tag such as "lychee-v0.24.2" names its project ahead of the version.
+    core = re.sub(r"^[A-Za-z][A-Za-z-]*-(?=v\d)", "", version).lstrip("v")
     stripped = re.sub(r"-\d+$", "", core)
     return stripped if re.fullmatch(r"\d+(\.\d+)*", stripped) else core
 

@@ -20,6 +20,7 @@ path = [
   ".rumdl.toml",
   ".typos.toml",
   ".yamllint.yaml",
+  "lychee.toml",
   ".github/**",
   "examples/**.md",
 ]
