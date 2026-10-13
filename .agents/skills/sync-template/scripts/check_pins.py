@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["json5==0.15.0"]
+# dependencies = ["json5==0.17.3"]
 # ///
 """Check that Renovate can still track every pinned dependency.
 
