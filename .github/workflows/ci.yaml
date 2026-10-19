@@ -83,13 +83,13 @@ jobs:
             toml:
               - '**/*.toml'
             yaml:
-              - '**/*.yml'
               - '**/*.yaml'
+              - '**/*.yml'
               - '.yamllint.yaml'
             python:
               - '**/*.py'
-              - 'pyproject.toml'
               - '.python-version'
+              - 'pyproject.toml'
               - 'uv.lock'
               - '.ruff.toml'
 
