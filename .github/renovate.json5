@@ -195,6 +195,17 @@
       versioning: 'regex:^lychee-v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$',
     },
     {
+      matchFileNames: [
+        '.agents/**',
+        '.github/workflows/**',
+        '.pre-commit-config.yaml',
+      ],
+      labels: [
+        'automated',
+        'dev-dependencies',
+      ],
+    },
+    {
       matchDepNames: [
         'commitizen-tools/commitizen',
       ],
