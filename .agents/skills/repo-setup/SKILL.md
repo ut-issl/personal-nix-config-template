@@ -71,13 +71,14 @@ Leave the `extraModules` argument of `mkHomeConfiguration` alone; the module lis
 
 ## 3. Install pre-commit hooks
 
-If the git hooks are already installed (both `.git/hooks/pre-commit` and `.git/hooks/pre-push` exist), skip this step.
+If the git hooks are already installed
+(`.git/hooks/pre-commit`, `.git/hooks/commit-msg`, and `.git/hooks/pre-push` all exist), skip this step.
 
 Otherwise, ask the user whether to install them now.
 If yes, run:
 
 ```console
-prek install --hook-type pre-commit --hook-type pre-push
+prek install
 ```
 
 If `prek` is not on PATH, run the same command via `uvx prek` instead.
@@ -97,8 +98,7 @@ If the user opts in:
 
 ## 5. Enforce Conventional Commits (opt-in)
 
-If all three blocks below are already uncommented,
-offer to install the `commit-msg` hook if it is missing, then proceed to the next step.
+If all three blocks below are already uncommented, skip this step.
 
 Explain: this enforces [Conventional Commits](https://www.conventionalcommits.org) on commit messages and PR titles
 via [Commitizen](https://github.com/commitizen-tools/commitizen).
@@ -110,12 +110,7 @@ If the user opts in, uncomment all of the following blocks:
 - the `lint-pr-title` job in `.github/workflows/manage-pull-requests.yaml`
 - the `commitizen` repo block in `.pre-commit-config.yaml`
 
-The `commitizen` hook runs at the `commit-msg` stage, which step 3 does not install.
-Install it additionally (skip if `.git/hooks/commit-msg` already exists), with the same fallback rules as step 3:
-
-```console
-prek install --hook-type commit-msg
-```
+The `commitizen` hooks run at the `commit-msg` and `pre-push` stages, which step 3 already installs.
 
 ## 6. Decide how to handle the REUSE workflow (opt-in)
 
@@ -164,9 +159,6 @@ Update the following as needed:
   but the "Renovate" subsection still says "It is disabled by default",
   replace that sentence with a note that Renovate is enabled
   and the Renovate GitHub App must be installed for this repository to take effect.
-- If the commitizen block in `.pre-commit-config.yaml` is uncommented
-  but the "Pre-commit Hooks" subsection's `prek install` command does not yet include `--hook-type commit-msg`,
-  add it so the documented command installs all three hook types at once.
 - If all three Conventional Commits blocks are uncommented
   (both CI jobs and the commitizen pre-commit hook)
   but the "Conventional Commits" subsection still contains the sentence that begins with
