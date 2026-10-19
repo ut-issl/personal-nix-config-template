@@ -40,7 +40,6 @@ repos:
     rev: 7f9d0819ca1c008ade73f4b41fa9d258d48f605b  # frozen: v1.51.1
     hooks:
       - id: typos
-        args: ["--force-exclude"]
 
   - repo: https://github.com/scop/pre-commit-shfmt
     rev: 05c1426671b9237fb5e1444dd63aa5731bec0dfb  # frozen: v3.13.1-1
