@@ -357,10 +357,11 @@ with the hooks defined in [`.pre-commit-config.yaml`](.pre-commit-config.yaml).
 Install the hooks once after cloning:
 
 ```console
-prek install --hook-type pre-commit --hook-type pre-push
+prek install
 ```
 
 If you prefer `pre-commit`, substitute `uvx pre-commit` for `prek` in the command above.
+The hook types to install are set by `default_install_hook_types` in `.pre-commit-config.yaml`.
 The `check-prek` CI job runs the same hooks on every pull request.
 
 ### Renovate
