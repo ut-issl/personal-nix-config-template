@@ -117,9 +117,7 @@ repos:
         exclude: \.zsh$
 
   # - repo: https://github.com/commitizen-tools/commitizen
-  #   rev: 286da5488db79f4cf5261e14a3c8976d89b5aa70  # frozen: v4.16.3
+  #   rev: 57217c394fff5064bedd48421fe4b6f5f73aad47  # frozen: v4.19.2
   #   hooks:
   #     - id: commitizen
   #     - id: commitizen-branch
-  #       stages:
-  #         - pre-push
