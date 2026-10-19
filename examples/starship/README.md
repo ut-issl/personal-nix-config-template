@@ -38,7 +38,7 @@ programs.starship.presets = [ "plain-text-symbols" ];
 
 or by writing the configuration file yourself:
 
-```console
+```sh
 starship preset plain-text-symbols -o ~/.config/starship.toml
 ```
 

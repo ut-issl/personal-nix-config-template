@@ -77,7 +77,7 @@ If the git hooks are already installed
 Otherwise, ask the user whether to install them now.
 If yes, run:
 
-```console
+```sh
 prek install
 ```
 

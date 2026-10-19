@@ -40,7 +40,7 @@ then follow the steps below in it.
 
 Run the shared host bootstrap script:
 
-```console
+```bash
 bash <(curl -fsSL https://github.com/ut-issl/issl-ubuntu-environment-setup/releases/download/v0.8.10/bootstrap-host.sh)
 ```
 
@@ -53,7 +53,7 @@ Open a new shell afterward so that `nix` is available on your `PATH`.
 
 Clone your repository using Git and OpenSSH provided through Nix:
 
-```console
+```sh
 nix --extra-experimental-features "nix-command flakes" shell nixpkgs#git nixpkgs#openssh_gssapi \
   --command git clone git@github.com:<your-account>/<your-repository>.git
 cd <your-repository>
@@ -96,7 +96,7 @@ This template provides one configuration per kind of host:
 
 The same repository serves all of your machines, so apply whichever matches the host in front of you:
 
-```console
+```sh
 NIX_CONFIG="experimental-features = nix-command flakes" \
   nix run .#home-manager -- switch --flake .#user --impure
 ```
@@ -288,7 +288,7 @@ Turn `targets.genericLinux.gpu.enable` on in that module, add `pkgs` to its argu
 The next switch warns that the drivers are not set up yet.
 Run the setup command it installs:
 
-```console
+```sh
 sudo ~/.nix-profile/bin/non-nixos-gpu-setup
 ```
 
@@ -307,7 +307,7 @@ Run it again whenever a switch reports that the drivers need an update.
 
 Update the pinned versions your configuration depends on:
 
-```console
+```sh
 nix flake update
 ```
 
@@ -318,7 +318,7 @@ Then re-apply your configuration, as described in [Apply Your Changes](#apply-yo
 After the first-time setup, the `home-manager` command is available directly.
 Re-apply whenever you change your configuration:
 
-```console
+```sh
 home-manager switch --flake .#user --impure
 ```
 
@@ -328,13 +328,13 @@ Use `.#user-desktop` instead on a machine you use through its graphical desktop.
 
 Run:
 
-```console
+```sh
 nix flake check --show-trace
 ```
 
 You can also build the activation package directly:
 
-```console
+```sh
 nix build .#homeConfigurations.user.activationPackage --impure
 ```
 
@@ -356,7 +356,7 @@ with the hooks defined in [`.pre-commit-config.yaml`](.pre-commit-config.yaml).
 
 Install the hooks once after cloning:
 
-```console
+```sh
 prek install
 ```
 
@@ -387,7 +387,7 @@ since the PR title becomes the subject of the squashed commit by default.
 
 To author Conventional Commits interactively:
 
-```console
+```sh
 cz commit
 ```
 
