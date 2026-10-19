@@ -200,6 +200,9 @@
         '.github/workflows/**',
         '.pre-commit-config.yaml',
       ],
+      matchDepNames: [
+        '!ut-issl/issl-ubuntu-environment-setup',
+      ],
       labels: [
         'automated',
         'dev-dependencies',
