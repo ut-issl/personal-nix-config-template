@@ -57,6 +57,7 @@ jobs:
           files_yaml: |
             github_actions:
               - '.github/workflows/**'
+              - '.github/problem-matchers/actionlint.json'
             github_actions_ci:
               - '.github/workflows/ci.yaml'
             pre_commit_config:
@@ -100,7 +101,6 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: read
-      pull-requests: write
 
     steps:
       - name: Check out the repository
@@ -109,19 +109,10 @@ jobs:
           persist-credentials: false
 
       - name: Lint GitHub Actions
-        if: github.event_name != 'pull_request'
         run: |
           go install github.com/rhysd/actionlint/cmd/actionlint@914e7df21a07ef503a81201c76d2b11c789d3fca # v1.7.12
+          echo '::add-matcher::.github/problem-matchers/actionlint.json'
           "$(go env GOPATH)/bin/actionlint" -color
-
-      - name: Lint GitHub Actions (reviewdog)
-        if: github.event_name == 'pull_request'
-        uses: reviewdog/action-actionlint@8b682e1e7e512151d73a6b9449cbff173846226e # v1.74.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          reporter: github-pr-review
-          filter_mode: nofilter
-          fail_level: error
 
   audit-zizmor:
     name: Audit with zizmor
@@ -526,7 +517,6 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: read
-      pull-requests: write
 
     steps:
       - name: Check out the repository
@@ -535,24 +525,15 @@ jobs:
           persist-credentials: false
 
       - name: Install uv
-        if: github.event_name != 'pull_request'
         uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
         with:
           version: '0.12.23'
+          enable-cache: false
 
       - name: Lint YAML
-        if: github.event_name != 'pull_request'
-        run: uvx --from="yamllint==1.38.0" yamllint .
-
-      - name: Lint YAML (reviewdog)
-        if: github.event_name == 'pull_request'
-        uses: reviewdog/action-yamllint@3224b47de22a2fd9c8c0fbc120e6d0049d1f5060 # v1.25.2
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          reporter: github-pr-review
-          filter_mode: nofilter
-          fail_level: error
-          yamllint_flags: .
+        run: |
+          git ls-files -z '*.yaml' '*.yml' \
+            | xargs -0 -r uvx --from="yamllint==1.38.0" yamllint --format=github --strict
 
   lint-python:
     name: Lint Python
@@ -652,7 +633,6 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: read
-      pull-requests: write
 
     steps:
       - name: Check out the repository
@@ -661,18 +641,7 @@ jobs:
           persist-credentials: false
 
       - name: Check spelling
-        if: github.event_name != 'pull_request'
         uses: crate-ci/typos@7f9d0819ca1c008ade73f4b41fa9d258d48f605b # v1.51.1
-
-      - name: Check spelling (reviewdog)
-        if: github.event_name == 'pull_request'
-        uses: reviewdog/action-typos@d5eb1bbcd1b3bfde596f6eeb470322727862fe98 # v1.19.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          reporter: github-pr-review
-          filter_mode: nofilter
-          fail_level: error
-          typos_flags: .
 
   # lint-commit-messages:
   #   name: Lint commit messages
