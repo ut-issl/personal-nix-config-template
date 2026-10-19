@@ -107,7 +107,7 @@ Linting the PR title is especially useful with squash merging, since the PR titl
 If the user opts in, uncomment all of the following blocks:
 
 - the `lint-commit-messages` job in `.github/workflows/ci.yaml`
-- the `lint-pr-title` job in `.github/workflows/manage-pull-requests.yaml`
+- the `lint-pull-request-title` job in `.github/workflows/manage-pull-requests.yaml`
 - the `commitizen` repo block in `.pre-commit-config.yaml`
 
 The `commitizen` hook runs at the `commit-msg` stage, which step 3 does not install.
