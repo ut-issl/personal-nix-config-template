@@ -97,7 +97,7 @@ If the user opts in:
 
 ## 5. Enforce Conventional Commits (opt-in)
 
-If all three blocks below are already uncommented,
+If all four blocks below are already uncommented,
 offer to install the `commit-msg` hook if it is missing, then proceed to the next step.
 
 Explain: this enforces [Conventional Commits](https://www.conventionalcommits.org) on commit messages and PR titles
@@ -108,6 +108,7 @@ If the user opts in, uncomment all of the following blocks:
 
 - the `lint-commit-messages` job in `.github/workflows/ci.yaml`
 - the `lint-pull-request-title` job in `.github/workflows/manage-pull-requests.yaml`
+- the `defaults` block in `.github/workflows/manage-pull-requests.yaml`
 - the `commitizen` repo block in `.pre-commit-config.yaml`
 
 The `commitizen` hook runs at the `commit-msg` stage, which step 3 does not install.
@@ -167,8 +168,8 @@ Update the following as needed:
 - If the commitizen block in `.pre-commit-config.yaml` is uncommented
   but the "Pre-commit Hooks" subsection's `prek install` command does not yet include `--hook-type commit-msg`,
   add it so the documented command installs all three hook types at once.
-- If all three Conventional Commits blocks are uncommented
-  (both CI jobs and the commitizen pre-commit hook)
+- If all four Conventional Commits blocks are uncommented
+  (both CI jobs, the `defaults` block of `manage-pull-requests.yaml`, and the commitizen pre-commit hook)
   but the "Conventional Commits" subsection still contains the sentence that begins with
   "This is opt-in: uncomment `lint-commit-messages` in `ci.yaml`…",
   replace it with a note that the enforcement is enabled

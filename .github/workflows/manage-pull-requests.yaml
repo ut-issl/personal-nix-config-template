@@ -8,6 +8,10 @@ on:
       - reopened
       - edited
 
+# defaults:
+#   run:
+#     shell: bash
+
 permissions: {}
 
 jobs:
