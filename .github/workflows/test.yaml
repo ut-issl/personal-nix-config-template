@@ -1,28 +1,30 @@
 name: Test
 
 on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+    paths:
+      - '.github/workflows/test.yaml'
+      - 'flake.nix'
+      - 'flake.lock'
+      - 'home-modules/**'
   push:
     branches:
-      - main
+      - 'main'
     paths:
-      - .github/workflows/test.yaml
-      - flake.nix
-      - flake.lock
-      - home-modules/**
-  pull_request:
-    types: [opened, synchronize, reopened]
-    paths:
-      - .github/workflows/test.yaml
-      - flake.nix
-      - flake.lock
-      - home-modules/**
+      - '.github/workflows/test.yaml'
+      - 'flake.nix'
+      - 'flake.lock'
+      - 'home-modules/**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   user-repo:
@@ -37,6 +39,8 @@ jobs:
         flake-target:
           - user
           - user-desktop
+    permissions:
+      contents: read
     uses: ut-issl/issl-ubuntu-environment-setup/.github/workflows/test-config-repository.yaml@089f8f8da2627ff345ae2eac1b6da7b3559ada28 # v0.8.10
     with:
       os: ${{ matrix.os }}

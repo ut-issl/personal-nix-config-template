@@ -98,7 +98,7 @@ If the user opts in:
 
 ## 5. Enforce Conventional Commits (opt-in)
 
-If all three blocks below are already uncommented, skip this step.
+If all four blocks below are already uncommented, skip this step.
 
 Explain: this enforces [Conventional Commits](https://www.conventionalcommits.org) on commit messages and PR titles
 via [Commitizen](https://github.com/commitizen-tools/commitizen).
@@ -107,7 +107,8 @@ Linting the PR title is especially useful with squash merging, since the PR titl
 If the user opts in, uncomment all of the following blocks:
 
 - the `lint-commit-messages` job in `.github/workflows/ci.yaml`
-- the `lint-pr-title` job in `.github/workflows/manage-pull-requests.yaml`
+- the `lint-pull-request-title` job in `.github/workflows/manage-pull-requests.yaml`
+- the `defaults` block in `.github/workflows/manage-pull-requests.yaml`
 - the `commitizen` repo block in `.pre-commit-config.yaml`
 
 The `commitizen` hooks run at the `commit-msg` and `pre-push` stages, which step 3 already installs.
@@ -159,8 +160,8 @@ Update the following as needed:
   but the "Renovate" subsection still says "It is disabled by default",
   replace that sentence with a note that Renovate is enabled
   and the Renovate GitHub App must be installed for this repository to take effect.
-- If all three Conventional Commits blocks are uncommented
-  (both CI jobs and the commitizen pre-commit hook)
+- If all four Conventional Commits blocks are uncommented
+  (both CI jobs, the `defaults` block of `manage-pull-requests.yaml`, and the commitizen pre-commit hook)
   but the "Conventional Commits" subsection still contains the sentence that begins with
   "This is opt-in: uncomment `lint-commit-messages` in `ci.yaml`…",
   replace it with a note that the enforcement is enabled

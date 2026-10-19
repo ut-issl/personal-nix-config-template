@@ -362,7 +362,7 @@ prek install
 
 If you prefer `pre-commit`, substitute `uvx pre-commit` for `prek` in the command above.
 The hook types to install are set by `default_install_hook_types` in `.pre-commit-config.yaml`.
-The `check-prek` CI job runs the same hooks on every pull request.
+The `run-prek-hooks` CI job runs the same hooks on every pull request.
 
 ### Renovate
 
@@ -377,7 +377,7 @@ The `validate-renovate-config` CI job checks the configuration whenever it chang
 Commit messages and pull request titles can be checked against [Conventional Commits](https://www.conventionalcommits.org)
 via [Commitizen](https://github.com/commitizen-tools/commitizen).
 This is opt-in: uncomment [`lint-commit-messages` in `ci.yaml`](.github/workflows/ci.yaml)
-and [`lint-pr-title` in `manage-pull-requests.yaml`](.github/workflows/manage-pull-requests.yaml) to enable it.
+and [`lint-pull-request-title` and the `defaults` block in `manage-pull-requests.yaml`](.github/workflows/manage-pull-requests.yaml) to enable it.
 Linting the PR title is especially useful with squash merging,
 since the PR title becomes the subject of the squashed commit by default.
 
