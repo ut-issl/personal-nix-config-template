@@ -133,7 +133,7 @@ Then validate:
   this builds the activation packages in `checks`, so it also catches build failures.
 - Then build the activation package to inspect the result:
 
-  ```console
+  ```sh
   nix build .#homeConfigurations.user.activationPackage --impure
   ```
 
@@ -154,7 +154,7 @@ Applying is optional and requires an explicit yes.
 Ask which configuration this host uses (`.#user` or `.#user-desktop`) if not already known,
 then offer to run the switch with that target:
 
-```console
+```sh
 home-manager switch --flake .#user --impure
 ```
 

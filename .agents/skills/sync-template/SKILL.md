@@ -53,7 +53,7 @@ If the user wants to hold a dependency back, record it in `.github/renovate.json
 
 ## 1. Check for an open sync pull request
 
-```console
+```sh
 gh pr list --repo <owner>/<repo> --state open --head chore/sync-template --json number,url
 ```
 
@@ -69,7 +69,7 @@ The merge needs a clean working tree, so ask the user to commit or stash anythin
 Add the remote unless one already points at the template, in which case use that name throughout.
 Where the name `template` is taken by something else, `git remote add` fails: pick another name and use that.
 
-```console
+```sh
 git remote -v
 git remote add template https://github.com/ut-issl/personal-nix-config-template.git
 git fetch template
@@ -79,14 +79,14 @@ Take the first of the three sources below that yields a commit.
 
 **`.template-base`.** Every sync rewrites it, so this is the normal answer:
 
-```console
+```sh
 grep -m1 -oE '^[0-9a-f]{40}$' .template-base
 ```
 
 **The last sync's pull request**, for a repository that has lost the file.
 GitHub keeps a pull request's pre-merge head even after a squash deleted the branch:
 
-```console
+```sh
 gh pr list --repo <owner>/<repo> --state merged --head chore/sync-template --json number --limit 1
 git fetch origin refs/pull/<number>/head && git show FETCH_HEAD:.template-base
 ```
@@ -98,7 +98,7 @@ since a repository with several roots has merged an unrelated history and is not
 The initial commit is a verbatim copy of the template,
 so with that hash as `<initial>` the base is the template commit with the same tree:
 
-```console
+```sh
 for commit in $(git log --format=%H template/main); do
   git diff --quiet "$commit" <initial> && echo "$commit" && break
 done
@@ -112,7 +112,7 @@ A value that fails is stale or corrupt: say so and fall through to the next sour
 
 ## 3. Review what is new
 
-```console
+```sh
 git log --oneline <base>..template/main
 ```
 
@@ -130,7 +130,7 @@ An earlier run leaves the branch behind, locally where `git switch -c` refuses t
 or on `origin` alone where nothing stops it, so look for both before doing anything else.
 Either is safe to overwrite once its sync has landed, which is true when `main` carries the same `.template-base`:
 
-```console
+```sh
 git show origin/main:.template-base
 git show <the leftover branch>:.template-base
 ```
@@ -141,7 +141,7 @@ When the two differ, stop and ask: the branch holds conflict resolutions that ne
 
 The graft below makes the template an ordinary merge source; step 8 folds it away again.
 
-```console
+```sh
 git rev-parse HEAD
 git switch -c chore/sync-template
 git merge -s ours --allow-unrelated-histories <base> -m "chore: graft the template base"
@@ -208,7 +208,7 @@ Skip it when step 4 ended in `Already up to date.`, since nothing came in.
 
 First enumerate the mechanisms this sync introduces, from the code diff:
 
-```console
+```sh
 git diff --stat <base> MERGE_HEAD -- ':(exclude)flake.lock'
 git diff <base> MERGE_HEAD -- ':(exclude)flake.lock'
 ```
@@ -228,7 +228,7 @@ Most syncs introduce none; say so in a sentence and go on to step 7.
 Then enumerate what the merge could not reach, once the step 5 resolutions are staged,
 from everything this repository still differs from the template tip by:
 
-```console
+```sh
 git diff --stat MERGE_HEAD
 ```
 
@@ -262,7 +262,7 @@ Where a mechanism tells one flake output from another, the per-file verdicts are
 with `nix` available, read what the outputs actually contain before showing the verdicts,
 probing whatever content the distinction governs — for one that splits packages:
 
-```console
+```sh
 nix eval --impure --json .#homeConfigurations.user.config.home.packages --apply 'map (p: p.name)'
 ```
 
@@ -283,7 +283,7 @@ An **unsure** verdict nobody answers is not an edit either: leave the file alone
 Some failures survive a clean merge without any tool complaining.
 Two of them have a command behind them:
 
-```console
+```sh
 uv run .agents/skills/sync-template/scripts/check_pins.py
 prek run --all-files --skip no-commit-to-branch
 ```
@@ -349,7 +349,7 @@ since the command they have been running stops working.
 
 Then fold the merge into a single ordinary commit, which keeps that tree and that message:
 
-```console
+```sh
 git reset --soft <branch point>
 git commit -C ORIG_HEAD
 ```
