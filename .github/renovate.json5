@@ -195,6 +195,20 @@
       versioning: 'regex:^lychee-v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$',
     },
     {
+      matchFileNames: [
+        '.agents/**',
+        '.github/workflows/**',
+        '.pre-commit-config.yaml',
+      ],
+      matchDepNames: [
+        '!ut-issl/issl-ubuntu-environment-setup',
+      ],
+      labels: [
+        'automated',
+        'dev-dependencies',
+      ],
+    },
+    {
       matchDepNames: [
         'commitizen-tools/commitizen',
       ],
@@ -280,22 +294,6 @@
       overridePackageName: 'zizmorcore/zizmor',
       minimumReleaseAge: '4 days',
       pinDigests: false,
-    },
-    {
-      matchFileNames: [
-        '.github/workflows/**',
-      ],
-      addLabels: [
-        'ci',
-      ],
-    },
-    {
-      matchManagers: [
-        'pre-commit',
-      ],
-      addLabels: [
-        'pre-commit',
-      ],
     },
     {
       matchFileNames: [
