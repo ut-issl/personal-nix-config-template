@@ -21,8 +21,7 @@ Never run `home-manager switch` without an explicit yes from the user (see step 
 Never write secrets (tokens, private keys, credentials) into the repository.
 
 This repository manages globally available user tools with Nix and Home Manager,
-following the shared package management practices
-(`docs/13-package-management-practices.md` in `ut-issl/issl-ubuntu-environment-setup`).
+following the shared package management practices (`docs/13-package-management-practices.md` in `ut-issl/issl-ubuntu-environment-setup`).
 Never install the requested tool with `apt`, `cargo install`, `uv tool install`, `npm install -g`, or the like;
 if the request is really a project-local dependency or a system-level package,
 say that it does not belong in this repository and point to those practices instead.
@@ -86,16 +85,14 @@ Apply the README's conventions:
 - A module under `home-modules/` already covers the subject (such as bash, zsh, git, python, rust):
   extend that module at the comments marked for personal additions instead of creating a new one.
   A package belongs there too when the module covers what it is for.
-- None does, and the tool brings its own configuration:
-  create `home-modules/<tool>/<tool>.nix`, named after the tool;
+- None does, and the tool brings its own configuration: create `home-modules/<tool>/<tool>.nix`, named after the tool;
   prefer the Home Manager `programs.<tool>` options when they exist,
   otherwise combine `home.packages` with `home.file` / `xdg.configFile`.
 - None does, and it is only a package: put it in a module named after what such packages are for,
   as the shared environment names `utils` and `dev`;
   create `home-modules/<purpose>/<purpose>.nix` if no module of that purpose exists yet.
 - A graphical application: follow "Install Desktop Applications" in `README.md`.
-  It goes behind `config.local.desktop.enable`,
-  so that it stays out of the hosts the user only reaches through a terminal:
+  It goes behind `config.local.desktop.enable`, so that it stays out of the hosts the user only reaches through a terminal:
   in `home-modules/desktop/desktop.nix`, which is already gated,
   or, where a module already covers its subject, in that module wrapped in `lib.mkIf config.local.desktop.enable`.
   One that renders through OpenGL also needs `targets.genericLinux.gpu.enable` turned on behind the same gate.
@@ -117,8 +114,7 @@ Read the dotfiles the user wants to port and go through their content together:
 
 - Skip parts the shared ISSL environment already provides.
 - Translate parts that map to Home Manager options into those options.
-- Keep the rest as verbatim blocks in the matching extra hooks
-  (e.g. `bashrcExtra`, `initContent`) or as `home.file` content.
+- Keep the rest as verbatim blocks in the matching extra hooks (e.g. `bashrcExtra`, `initContent`) or as `home.file` content.
 - Preserve the layering: shared settings load first, ported personal settings after.
 - Filter out secrets and machine-specific leftovers; confirm anything questionable with the user.
 
