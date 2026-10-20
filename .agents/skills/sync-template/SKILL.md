@@ -258,7 +258,7 @@ with `nix` available, read what the outputs actually contain before showing the 
 probing whatever content the distinction governs — for one that splits packages:
 
 ```sh
-nix eval --impure --json .#homeConfigurations.user.config.home.packages --apply 'map (p: p.name)'
+nix eval --apply 'map (p: p.name)' --json --impure .#homeConfigurations.user.config.home.packages
 ```
 
 Run it for each configuration the mechanism distinguishes, and hold the results against what the distinction promises;
