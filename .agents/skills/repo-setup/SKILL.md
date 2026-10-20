@@ -93,7 +93,7 @@ Action SHAs, tool versions pinned in `.github/workflows/ci.yaml`, and pre-commit
 
 If the user opts in:
 
-- Delete the `enabled: false,` line (including its trailing comment) from `.github/renovate.json5`.
+- Delete the `enabled: false,` line from `.github/renovate.json5`.
 - Remind the user that the Renovate GitHub App must be installed for this repository to take effect.
 
 ## 5. Enforce Conventional Commits (opt-in)
