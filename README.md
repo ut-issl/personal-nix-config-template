@@ -329,7 +329,7 @@ nix flake check --show-trace
 You can also build the activation package directly:
 
 ```sh
-nix build .#homeConfigurations.user.activationPackage --impure
+nix build --impure .#homeConfigurations.user.activationPackage
 ```
 
 Build `.#homeConfigurations.user-desktop.activationPackage` instead to inspect a desktop-only change.

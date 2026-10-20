@@ -130,7 +130,7 @@ Then validate:
 - Then build the activation package to inspect the result:
 
   ```sh
-  nix build .#homeConfigurations.user.activationPackage --impure
+  nix build --impure .#homeConfigurations.user.activationPackage
   ```
 
   Build `.#homeConfigurations.user-desktop.activationPackage` instead for a desktop-only change.
