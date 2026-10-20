@@ -24,6 +24,7 @@ Usage: uv run .agents/skills/sync-template/scripts/check_pins.py [repository-roo
 import os
 import re
 import sys
+import tomllib
 from fnmatch import fnmatchcase
 from pathlib import Path
 
@@ -76,14 +77,20 @@ ENV_QUERY = re.compile(r'jobs\.\*\.steps\[\$exists\(env\.(\w+)\)\]\.\{ "currentV
 WITH_QUERY = re.compile(
     r'jobs\.\*\.steps\[\$substringBefore\(uses, "@"\) = "([^"]+)"\]\.\{ "currentValue": with\.([\w-]+) \}'
 )
+# The JSONata query form that reads a version from a top-level string of a TOML file:
+# the first group of a regular expression matched against the value of the key.
+TOML_QUERY = re.compile(r'\{ "currentValue": \$match\(`([^`]+)`, /(.+)/\)\.groups\[0\] \}')
 
 
 def is_readable(manager: dict) -> bool:
     """Tell whether this script can evaluate the manager, which for JSONata means one of the forms above."""
     if manager.get("customType") != "jsonata":
         return True
-    return manager.get("fileFormat") == "yaml" and all(
-        ENV_QUERY.fullmatch(query) or WITH_QUERY.fullmatch(query) for query in manager["matchStrings"]
+    forms = {"yaml": (ENV_QUERY, WITH_QUERY), "toml": (TOML_QUERY,)}.get(manager.get("fileFormat"), ())
+    queries = manager["matchStrings"]
+    # A TOML query reads "groups[0]", which a regular expression without a capturing group lacks.
+    return all(any(form.fullmatch(query) for form in forms) for query in queries) and all(
+        to_python_regex(match[2]).groups for match in map(TOML_QUERY.fullmatch, queries) if match
     )
 
 
@@ -115,9 +122,26 @@ def queried_values(manager: dict, text: str) -> list[str]:
     return [str(value) for value in values if value is not None]
 
 
+def queried_toml_values(manager: dict, text: str) -> list[str]:
+    """Evaluate the manager's JSONata queries on one TOML file and return every currentValue."""
+    try:
+        document = tomllib.loads(text)
+    except tomllib.TOMLDecodeError:
+        return []
+    values = []
+    for query in manager["matchStrings"]:
+        match = TOML_QUERY.fullmatch(query)
+        value = document.get(match[1])
+        if isinstance(value, str) and (found := to_python_regex(match[2]).search(value)):
+            values.append(found[1])
+    return values
+
+
 def captured_values(manager: dict, text: str) -> list[str]:
     """Apply the manager's matchStrings to one file and return every currentValue."""
     if manager.get("customType") == "jsonata":
+        if manager["fileFormat"] == "toml":
+            return queried_toml_values(manager, text)
         return queried_values(manager, text)
     # The "recursive" strategy narrows the search space with each matchString in turn;
     # every other strategy applies each matchString to the whole file.
@@ -138,7 +162,7 @@ def captured_values(manager: dict, text: str) -> list[str]:
 
 
 def uncommented(text: str) -> str:
-    """Strip YAML comment markers so that a commented-out block reads as active."""
+    """Strip comment markers so that a commented-out block reads as active."""
     return re.sub(r"^(\s*)#[ ]?", r"\1", text, flags=re.MULTILINE)
 
 
