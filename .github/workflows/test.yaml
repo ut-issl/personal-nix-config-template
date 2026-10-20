@@ -46,7 +46,7 @@ jobs:
       os: ${{ matrix.os }}
       flake-target: ${{ matrix.flake-target }}
       common-repository: ut-issl/issl-ubuntu-environment-setup
-      common-ref: 089f8f8da2627ff345ae2eac1b6da7b3559ada28 # v0.8.10
+      common-ref: '089f8f8da2627ff345ae2eac1b6da7b3559ada28' # v0.8.10
       user-repository: ${{ github.repository }}
       user-ref: ${{ github.sha }}
       override-issl-input: false
