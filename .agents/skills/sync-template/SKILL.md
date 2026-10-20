@@ -325,7 +325,7 @@ Nothing else may live in the file: step 2 reads the first line that is exactly f
 
 The template does not ship this file, which is why it never conflicts
 and why the template's own `REUSE.toml` does not mention it.
-When `.github/workflows/reuse.yaml` is present and no longer guarded by `if: github.repository == 'ut-issl/personal-nix-config-template'`,
+When `.github/workflows/lint-reuse-compliance.yaml` is present and no longer guarded by `if: github.repository == 'ut-issl/personal-nix-config-template'`,
 add it to the `path` list of the CC0 entry that already covers `flake.lock`, so the same pull request stays compliant,
 unless it is there already:
 
