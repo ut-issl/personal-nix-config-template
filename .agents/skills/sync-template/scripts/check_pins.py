@@ -1,15 +1,18 @@
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["json5==0.15.0"]
+# dependencies = [
+#     "json5==0.15.0",
+#     "pyyaml==6.0.3",
+# ]
 # ///
 """Check that Renovate can still track every pinned dependency.
 
 Two things break silently when template updates are merged:
 
-- A custom manager whose regular expression no longer matches anything.
+- A custom manager whose query or regular expression no longer matches anything.
   Renovate keeps such a manager without reporting an error, so the dependency
   simply stops being updated.
-- A group whose members drift apart, for example the ruff version inlined in
+- A group whose members drift apart, for example the ruff version pinned in
   the CI workflow and the ruff revision pinned in the prek configuration.
 
 Neither is caught by `renovate-config-validator`, which only checks syntax, nor
@@ -25,6 +28,7 @@ from fnmatch import fnmatchcase
 from pathlib import Path
 
 import json5
+import yaml
 
 ROOT = Path(sys.argv[1] if len(sys.argv) > 1 else ".").resolve()
 
@@ -66,8 +70,55 @@ def matching_files(patterns: list[str]) -> list[Path]:
     return [path for path, relative in FILES if any(matches_path(pattern, relative) for pattern in patterns)]
 
 
+# The two JSONata query forms that read a version from a workflow step:
+# a "<PACKAGE>_VERSION" key of the step's env, and an input of the action the step uses.
+ENV_QUERY = re.compile(r'jobs\.\*\.steps\[\$exists\(env\.(\w+)\)\]\.\{ "currentValue": env\.\1 \}')
+WITH_QUERY = re.compile(
+    r'jobs\.\*\.steps\[\$substringBefore\(uses, "@"\) = "([^"]+)"\]\.\{ "currentValue": with\.([\w-]+) \}'
+)
+
+
+def is_readable(manager: dict) -> bool:
+    """Tell whether this script can evaluate the manager, which for JSONata means one of the forms above."""
+    if manager.get("customType") != "jsonata":
+        return True
+    return manager.get("fileFormat") == "yaml" and all(
+        ENV_QUERY.fullmatch(query) or WITH_QUERY.fullmatch(query) for query in manager["matchStrings"]
+    )
+
+
+def queried_values(manager: dict, text: str) -> list[str]:
+    """Evaluate the manager's JSONata queries on one workflow and return every currentValue."""
+    try:
+        document = yaml.safe_load(text)
+    except yaml.YAMLError:
+        return []
+    jobs = document.get("jobs") if isinstance(document, dict) else None
+    steps = [
+        step
+        for job in (jobs.values() if isinstance(jobs, dict) else [])
+        if isinstance(job, dict)
+        for step in job.get("steps") or []
+        if isinstance(step, dict)
+    ]
+    values = []
+    for query in manager["matchStrings"]:
+        if match := ENV_QUERY.fullmatch(query):
+            values += [(step.get("env") or {}).get(match[1]) for step in steps]
+        elif match := WITH_QUERY.fullmatch(query):
+            # "$substringBefore" returns the whole string when it holds no "@".
+            values += [
+                (step.get("with") or {}).get(match[2])
+                for step in steps
+                if str(step.get("uses", "")).split("@")[0] == match[1]
+            ]
+    return [str(value) for value in values if value is not None]
+
+
 def captured_values(manager: dict, text: str) -> list[str]:
     """Apply the manager's matchStrings to one file and return every currentValue."""
+    if manager.get("customType") == "jsonata":
+        return queried_values(manager, text)
     # The "recursive" strategy narrows the search space with each matchString in turn;
     # every other strategy applies each matchString to the whole file.
     strategy = manager.get("matchStringsStrategy")
@@ -114,6 +165,10 @@ failures: list[str] = []
 print("Custom managers")
 for manager in config.get("customManagers", []):
     name = manager.get("depNameTemplate", "<unnamed>")
+    if not is_readable(manager):
+        print(f"  UNREAD    {name}: this script cannot evaluate its query")
+        failures.append(name)
+        continue
     paths = matching_files(manager["managerFilePatterns"])
     if not paths:
         print(f"  NO FILE   {name}: managerFilePatterns match no file")
