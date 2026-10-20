@@ -70,12 +70,12 @@
         '/^\\.github/workflows/test\\.ya?ml$/',
       ],
       matchStrings: [
-        'common-ref: (?<currentDigest>[a-f0-9]{40}) # (?<currentValue>v[^\\s]+)',
+        "common-ref: '(?<currentDigest>[a-f0-9]{40})' # (?<currentValue>v[^\\s]+)",
       ],
       depNameTemplate: 'ut-issl/issl-ubuntu-environment-setup',
       datasourceTemplate: 'github-tags',
       versioningTemplate: 'semver',
-      autoReplaceStringTemplate: 'common-ref: {{{newDigest}}} # {{{newValue}}}',
+      autoReplaceStringTemplate: "common-ref: '{{{newDigest}}}' # {{{newValue}}}",
     },
     {
       customType: 'regex',
