@@ -144,6 +144,19 @@
     {
       customType: 'jsonata',
       managerFilePatterns: [
+        '/^\\.ruff\\.toml$/',
+      ],
+      fileFormat: 'toml',
+      matchStrings: [
+        '{ "currentValue": $match(`required-version`, /^==(.+)$/).groups[0] }',
+      ],
+      depNameTemplate: 'astral-sh/ruff',
+      datasourceTemplate: 'pypi',
+      packageNameTemplate: 'ruff',
+    },
+    {
+      customType: 'jsonata',
+      managerFilePatterns: [
         '/^\\.github/workflows/.*\\.ya?ml$/',
       ],
       fileFormat: 'yaml',
@@ -223,6 +236,7 @@
         '.agents/**',
         '.github/workflows/**',
         '.pre-commit-config.yaml',
+        '.ruff.toml',
       ],
       matchDepNames: [
         '!ut-issl/issl-ubuntu-environment-setup',
@@ -314,6 +328,15 @@
         'astral-sh/ruff-pre-commit',
       ],
       groupName: 'ruff',
+    },
+    {
+      matchDepNames: [
+        'astral-sh/ruff',
+      ],
+      matchUpdateTypes: [
+        'patch',
+      ],
+      automerge: true,
     },
     {
       matchDepNames: [
