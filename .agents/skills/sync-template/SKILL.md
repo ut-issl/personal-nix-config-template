@@ -293,6 +293,8 @@ and groups whose members have drifted apart or lost a pin altogether.
 A manager reported as `inactive` is fine: it belongs to an opt-in feature that is still commented out.
 It only reports a manager that matches nothing at all, so a single pin left in a form Renovate no longer reads
 still counts as `ok` while its siblings match.
+A manager reported as `UNREAD` has a jsonata query in a form the script cannot evaluate, which says nothing about its pins.
+Fix it by writing the manager in a form the script reads, or by teaching the script the new form.
 Where a conflict was resolved inside a file that carries pins, read the resolved lines against the template's.
 
 A hook reported as skipped proves nothing,
