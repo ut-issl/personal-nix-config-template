@@ -257,7 +257,7 @@
       groupName: 'commitizen',
     },
     {
-      description: 'Follow only full vX.Y.Z release tags of the shared environment, which are what its pins name, so that no prerelease or other tag is proposed; skip the release-age gate, as these releases come from the same organization and should reach this repository at once; and re-lock flake.lock after the bump, which only self-hosted Renovate runs, while hosted runs still re-lock at switch time and through the weekly lock file maintenance that config:best-practices enables',
+      description: 'Take only full vX.Y.Z releases of the shared environment, which its pins name, without the release-age gate, as these releases come from the same organization; flake.lock is re-locked in the branch only by self-hosted Renovate',
       matchDepNames: [
         'ut-issl/issl-ubuntu-environment-setup',
       ],
