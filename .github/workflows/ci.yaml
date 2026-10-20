@@ -88,6 +88,7 @@ jobs:
             shell:
               - '**/*.sh'
               - '**/*.bash'
+              - '.shellcheckrc'
               - '.github/problem-matchers/shellcheck.json'
             zsh:
               - '**/*.zsh'
@@ -597,7 +598,7 @@ jobs:
         run: |
           echo '::add-matcher::.github/problem-matchers/shellcheck.json'
           git ls-files -z '*.sh' '*.bash' \
-            | xargs -0 -r uvx --from="shellcheck-py==${SHELLCHECK_PY_VERSION}" shellcheck --format=gcc --external-sources
+            | xargs -0 -r uvx --from="shellcheck-py==${SHELLCHECK_PY_VERSION}" shellcheck --format=gcc
 
   format-zsh:
     name: Format Zsh

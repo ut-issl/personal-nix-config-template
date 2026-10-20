@@ -18,6 +18,7 @@ path = [
   ".pre-commit-config.yaml",
   ".ruff.toml",
   ".rumdl.toml",
+  ".shellcheckrc",
   ".typos.toml",
   ".yamllint.yaml",
   "lychee.toml",
