@@ -16,8 +16,7 @@ The fragments carry no SPDX header, and MIT-0 asks for none to be carried over w
 If your repository enforces REUSE compliance,
 give the module you end up with a header of the same shape as the other modules under `home-modules/`.
 
-Every fragment is evaluated by `nix flake check`,
-so a recipe that no longer works with the shared configuration fails there.
+Every fragment is evaluated by `nix flake check`, so a recipe that no longer works with the shared configuration fails there.
 
 ## Recipes
 

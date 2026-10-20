@@ -40,8 +40,7 @@ a convention its imports now depend on.
 Step 6 carries such a mechanism the rest of the way, and it alone may edit what the merge never reached.
 Its license is the incoming diff of this sync and nothing older:
 an edit this repository could equally have made before the sync is customization, and belongs to the `customize` skill.
-A sync does not re-run `repo-setup` either:
-setup work a merge newly makes applicable is the user's to run, not this skill's.
+A sync does not re-run `repo-setup` either: setup work a merge newly makes applicable is the user's to run, not this skill's.
 
 A template commit is internally consistent: a version bump travels with the change that requires it,
 and Git keeps the two together for every line this repository has not touched.
@@ -155,8 +154,7 @@ The graft reports `Already up to date.` and does nothing when the base is alread
 `--allow-unrelated-histories` is required even with `-s ours`.
 
 If `git merge --no-commit --no-ff template/main` reports `Already up to date.`, the template is contained already.
-Skip the conflict resolution, and record what `git rev-parse template/main` prints then,
-since there will be no `MERGE_HEAD`.
+Skip the conflict resolution, and record what `git rev-parse template/main` prints then, since there will be no `MERGE_HEAD`.
 Confirm it first with `git merge-base --is-ancestor <it> HEAD`, the containment this path rests on.
 
 ## 5. Resolve the conflicts
@@ -183,8 +181,7 @@ The same holds for the sections `repo-setup` rewrote to match the choices made d
 ### A copyright header
 
 A header names who wrote the content, not which side of the merge won.
-Keep this repository's header where the surviving content is its own,
-even when the form around it came from the template.
+Keep this repository's header where the surviving content is its own, even when the form around it came from the template.
 Where the surviving content is the template's, take the template's header.
 
 ### A file or section this repository deleted during setup
@@ -195,8 +192,7 @@ Keep the deletion, but read the template's change and tell the user if it adds s
 
 Follow the template.
 The version appears in `flake.nix`, `flake.lock`, twice in `.github/workflows/test.yaml`
-and in `README.md` (the bootstrap command, and any link into the shared documentation),
-and all of them have to agree.
+and in `README.md` (the bootstrap command, and any link into the shared documentation), and all of them have to agree.
 Search for the version string rather than trusting that list, which ages as the README grows.
 
 ## 6. Land what the merge introduced
@@ -216,8 +212,7 @@ git diff <base> MERGE_HEAD -- ':(exclude)flake.lock'
 A mechanism is a change the template applied to its own files
 that puts an obligation on files of the same kind it cannot see:
 a new option together with the gate its own modules now wrap themselves in,
-a flake output or check added, renamed, or removed,
-a naming or placement convention the imports depend on.
+a flake output or check added, renamed, or removed, a naming or placement convention the imports depend on.
 A withdrawal counts as much as an introduction,
 since an option or output the template dropped leaves this repository's references to it dangling.
 A version bump is not a mechanism, and neither is a change confined to shared content, which the merge already settled.
@@ -273,8 +268,7 @@ Run it again once the edits are in, so the step 9 summary reports what the outpu
 Without `nix`, say the check was skipped, so the review of the pull request knows to look there.
 
 Show the user the verdicts before editing anything, one line each, and edit only once they agree.
-A wrong verdict on that list is visible and correctable;
-a file never listed is the silent failure this step exists against.
+A wrong verdict on that list is visible and correctable; a file never listed is the silent failure this step exists against.
 If the user declines an edit, leave the file as the merge produced it and keep the verdict for the step 9 summary.
 An **unsure** verdict nobody answers is not an edit either: leave the file alone and carry the question into that summary.
 
@@ -291,22 +285,20 @@ prek run --all-files --skip no-commit-to-branch
 The first reports custom managers in `.github/renovate.json5` that no longer match anything,
 and groups whose members have drifted apart or lost a pin altogether.
 A manager reported as `inactive` is fine: it belongs to an opt-in feature that is still commented out.
-It only reports a manager that matches nothing at all, so a single pin left in a form Renovate no longer reads
-still counts as `ok` while its siblings match.
+It only reports a manager that matches nothing at all,
+so a single pin left in a form Renovate no longer reads still counts as `ok` while its siblings match.
 A manager reported as `UNREAD` has a jsonata query in a form the script cannot evaluate, which says nothing about its pins.
 Fix it by writing the manager in a form the script reads, or by teaching the script the new form.
 Where a conflict was resolved inside a file that carries pins, read the resolved lines against the template's.
 
-A hook reported as skipped proves nothing,
-since hooks are filtered by file type while CI runs its linters unconditionally.
+A hook reported as skipped proves nothing, since hooks are filtered by file type while CI runs its linters unconditionally.
 When a version pin changed for a tool whose hook was skipped,
 check its configuration by hand for a constraint that the pin no longer satisfies.
 
 One more failure has no command behind it: wording that assumes this repository is still in its template state.
 `repo-setup` rewrote the README sections falsified by the choices made during setup.
 Step 7 of that skill lists them, and its step 8 removes the entry for the skill itself once it is deleted.
-Setup may have deleted the skill: read it from the template remote,
-with `git show template/main:.agents/skills/repo-setup/SKILL.md`.
+Setup may have deleted the skill: read it from the template remote, with `git show template/main:.agents/skills/repo-setup/SKILL.md`.
 A later merge can bring the template's original wording back; where it did, restore what this repository had.
 This is the one place to overrule what a clean merge decided:
 step 5 drops only what the side it chose already says, and step 6 edits only what the merge never reached.
@@ -320,8 +312,8 @@ A command the README tells the reader to run is not an illustration, and follows
 Write the template commit this sync took into `.template-base`, replacing whatever the file held,
 and create the file when it is not there yet.
 Take it from `git rev-parse MERGE_HEAD`, or from the commit step 4 settled on when the merge was already up to date.
-Never from `template/main` directly, which may have moved since step 4: recording a commit that was not merged
-would skip everything between the two, silently and for good.
+Never from `template/main` directly, which may have moved since step 4:
+recording a commit that was not merged would skip everything between the two, silently and for good.
 
 ```text
 # Last commit of ut-issl/personal-nix-config-template merged into this repository; updated by each template sync.
@@ -333,8 +325,7 @@ Nothing else may live in the file: step 2 reads the first line that is exactly f
 
 The template does not ship this file, which is why it never conflicts
 and why the template's own `REUSE.toml` does not mention it.
-When `.github/workflows/reuse.yaml` is present and no longer guarded by
-`if: github.repository == 'ut-issl/personal-nix-config-template'`,
+When `.github/workflows/reuse.yaml` is present and no longer guarded by `if: github.repository == 'ut-issl/personal-nix-config-template'`,
 add it to the `path` list of the CC0 entry that already covers `flake.lock`, so the same pull request stays compliant,
 unless it is there already:
 
@@ -364,8 +355,7 @@ Ask whether to push the branch and open the pull request.
 Put the step 3 summary in the body, the only place the incoming changes appear:
 the template's commits are not on the branch, so the pull request cannot list them.
 Add what step 6 landed and the mechanism behind each edit,
-since the diff shows the change but not why the sync required it;
-the not-applicable verdicts stay out of the body.
+since the diff shows the change but not why the sync required it; the not-applicable verdicts stay out of the body.
 A remote branch left by a landed sync makes the push non-fast-forward;
 overwriting it with `--force-with-lease` is safe once the step 4 comparison says so.
 If the user declines, stop at the commit on the branch.

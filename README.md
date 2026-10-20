@@ -82,8 +82,7 @@ For other Git settings and any further customization, see [Customize Your Config
 > so there is nothing of yours to lose and you can safely proceed.
 >
 > If you have customized any of them and want to keep your version, first remove the `force = true` lines in [`home-modules/bash/bash.nix`](home-modules/bash/bash.nix#L49-L53)
-> (and [`home-modules/zsh/zsh.nix`](home-modules/zsh/zsh.nix#L80) for Zsh),
-> then append `-b backup` to the first switch command below.
+> (and [`home-modules/zsh/zsh.nix`](home-modules/zsh/zsh.nix#L80) for Zsh), then append `-b backup` to the first switch command below.
 > That moves each existing file to `<file>.backup` instead of overwriting it.
 
 Zsh is enabled by default, for the whole repository rather than per host.
@@ -110,14 +109,12 @@ Use `.#user-desktop` in that command on a desktop host.
 
 ## Agent Skills
 
-This repository ships skills for coding agents that support [Agent Skills](https://agentskills.io)
-(e.g. Codex or Claude Code).
+This repository ships skills for coding agents that support [Agent Skills](https://agentskills.io) (e.g. Codex or Claude Code).
 Invoke a skill with `$<name>` in Codex or `/<name>` in Claude Code.
 
 ### `repo-setup`
 
-Interactively walks you through the repository setup:
-it checks your Git identity, asks which shell you want,
+Interactively walks you through the repository setup: it checks your Git identity, asks which shell you want,
 and sets up the [development tooling](#development-tooling) (pre-commit hooks and the opt-in features).
 
 You can run it on the host you just set up, where Codex is installed by the applied configuration,
@@ -165,10 +162,8 @@ A new module directory under [`home-modules/`](home-modules/) is imported automa
 It has to be tracked by Git, because a flake only sees tracked files.
 
 A module that should apply only to some of your hosts, or only to one shell, wraps its settings in `lib.mkIf`:
-`lib.mkIf config.local.desktop.enable` for the desktop-only ones,
-as [`home-modules/desktop/desktop.nix`](home-modules/desktop/desktop.nix) does,
-and `lib.mkIf config.issl.zsh.enable` for the Zsh-only ones,
-as [`home-modules/zsh/zsh.nix`](home-modules/zsh/zsh.nix) does.
+`lib.mkIf config.local.desktop.enable` for the desktop-only ones, as [`home-modules/desktop/desktop.nix`](home-modules/desktop/desktop.nix) does,
+and `lib.mkIf config.issl.zsh.enable` for the Zsh-only ones, as [`home-modules/zsh/zsh.nix`](home-modules/zsh/zsh.nix) does.
 
 Do not define `local.desktop.enable` in a module.
 Whether a host is a desktop is decided by the configuration you apply,
@@ -204,8 +199,8 @@ For example:
 Each of those modules includes comments that show where to add personal settings and examples you can adapt.
 
 A package belongs in an existing module too when one of them already covers its subject.
-For example, to install `lazygit`, add `pkgs` to the arguments of
-[`home-modules/git/git.nix`](home-modules/git/git.nix) and list `pkgs.lazygit` in `home.packages` there.
+For example, to install `lazygit`, add `pkgs` to the arguments of [`home-modules/git/git.nix`](home-modules/git/git.nix)
+and list `pkgs.lazygit` in `home.packages` there.
 
 ### Add a Module of Your Own
 
@@ -298,8 +293,7 @@ Run it again whenever a switch reports that the drivers need an update.
 
 > [!NOTE]
 > Applications the desktop already provides, such as the browser and the mail client, are best left as they are.
-> See [package management practices](https://github.com/ut-issl/issl-ubuntu-environment-setup/blob/v0.8.10/docs/13-package-management-practices.md#gui-applications)
-> for the other cases that are better left to the distribution.
+> See [package management practices](https://github.com/ut-issl/issl-ubuntu-environment-setup/blob/v0.8.10/docs/13-package-management-practices.md#gui-applications) for the other cases that are better left to the distribution.
 
 ## Apply and Maintain Your Configuration
 
@@ -374,8 +368,7 @@ The `validate-renovate-config` CI job checks the configuration whenever it chang
 
 ### Conventional Commits
 
-Commit messages and pull request titles can be checked against [Conventional Commits](https://www.conventionalcommits.org)
-via [Commitizen](https://github.com/commitizen-tools/commitizen).
+Commit messages and pull request titles can be checked against [Conventional Commits](https://www.conventionalcommits.org) via [Commitizen](https://github.com/commitizen-tools/commitizen).
 This is opt-in: uncomment [`lint-commit-messages` in `ci.yaml`](.github/workflows/ci.yaml)
 and [`lint-pull-request-title` in `manage-pull-requests.yaml`](.github/workflows/manage-pull-requests.yaml) to enable it.
 Linting the PR title is especially useful with squash merging,
@@ -396,8 +389,7 @@ cz commit
 The [`reuse.yaml`](.github/workflows/reuse.yaml) CI workflow checks that every file carries
 copyright and licensing information following the [REUSE](https://reuse.software) specification (see [License](#license)).
 
-This check is scoped to the template repository itself:
-an `if` guard on the `lint-reuse` job limits it to `ut-issl/personal-nix-config-template`,
+This check is scoped to the template repository itself: an `if` guard on the `lint-reuse` job limits it to `ut-issl/personal-nix-config-template`,
 so it does nothing in repositories derived from this template and can be left in place.
 If you would rather not keep it, delete [`reuse.yaml`](.github/workflows/reuse.yaml).
 Conversely, to enforce REUSE compliance in your own repository, remove the `if` guard from the `lint-reuse` job.

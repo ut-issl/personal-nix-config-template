@@ -38,8 +38,7 @@ Converse in the language the user writes in, but keep all edits (comments, commi
 Check `home-modules/git/git.nix`; if the `user.name` and `user.email` lines are already set, skip this step.
 
 Otherwise, ask the user for the name and email address to use as the Git author identity,
-then uncomment the `user.name` and `user.email` lines under the "Personal identity" comment
-and fill in the user's answers.
+then uncomment the `user.name` and `user.email` lines under the "Personal identity" comment and fill in the user's answers.
 
 ## 2. Choose your shell
 
@@ -61,12 +60,11 @@ Mention that `home-modules/zsh/zsh.nix` stays in place but takes effect only whe
 so undoing both edits brings Zsh back.
 
 To keep Zsh, delete `home-modules/shell/shell.nix`; it carries nothing but the opt-out.
-Mention that turning Zsh off later means putting `issl.zsh.enable = false;` back in a module under
-`home-modules/` and adding `zsh-enabled: false` to `.github/workflows/test.yaml`.
+Mention that turning Zsh off later means putting `issl.zsh.enable = false;` back in a module under `home-modules/`
+and adding `zsh-enabled: false` to `.github/workflows/test.yaml`.
 
 Either way, delete the `home-bash-only` entry from `checks` in `flake.nix`:
-this repository now runs one shell, so the check would either duplicate `home`
-or build a configuration nobody here applies.
+this repository now runs one shell, so the check would either duplicate `home` or build a configuration nobody here applies.
 Leave the `extraModules` argument of `mkHomeConfiguration` alone; the module list still references it.
 
 ## 3. Install pre-commit hooks
@@ -100,8 +98,7 @@ If the user opts in:
 
 If all three blocks below are already uncommented, skip this step.
 
-Explain: this enforces [Conventional Commits](https://www.conventionalcommits.org) on commit messages and PR titles
-via [Commitizen](https://github.com/commitizen-tools/commitizen).
+Explain: this enforces [Conventional Commits](https://www.conventionalcommits.org) on commit messages and PR titles via [Commitizen](https://github.com/commitizen-tools/commitizen).
 Linting the PR title is especially useful with squash merging, since the PR title becomes the squashed commit subject.
 
 If the user opts in, uncomment all of the following blocks:
@@ -142,16 +139,14 @@ skip the owner/repo-specific items (H1, badges) but still check the remaining it
 Update the following as needed:
 
 - Replace the H1 heading (`# personal-nix-config-template`) with the repository name derived from `origin`.
-- In the badge block near the top,
-  find the CI and Test badge lines (the ones whose URLs contain `ut-issl/personal-nix-config-template/actions/workflows/`).
+- In the badge block near the top, find the CI and Test badge lines (the ones whose URLs contain `ut-issl/personal-nix-config-template/actions/workflows/`).
   Replace all four occurrences of `ut-issl/personal-nix-config-template`
   (one in the image URL and one in the link URL of each badge) with the user's `<owner>/<repo>`.
 - Remove the paragraph above the numbered steps of "Getting Started"
   that tells the reader to create their own repository from this template.
   This repository has already been created from it.
 - Check the "Development Tooling" section intro sentence
-  "Pre-commit hooks are part of the everyday workflow,
-  while Renovate and Conventional Commits enforcement are opt-in."
+  "Pre-commit hooks are part of the everyday workflow, while Renovate and Conventional Commits enforcement are opt-in."
   If the actual state of Renovate (`.github/renovate.json5`) or Conventional Commits
   (the CI jobs and commitizen block) no longer matches the "opt-in" claim,
   update the sentence to reflect which features are now enabled and which remain opt-in.
@@ -159,23 +154,20 @@ Update the following as needed:
   but the "Renovate" subsection still says "It is disabled by default",
   replace that sentence with a note that Renovate is enabled
   and the Renovate GitHub App must be installed for this repository to take effect.
-- If all three Conventional Commits blocks are uncommented
-  (both CI jobs and the commitizen pre-commit hook)
+- If all three Conventional Commits blocks are uncommented (both CI jobs and the commitizen pre-commit hook)
   but the "Conventional Commits" subsection still contains the sentence that begins with
   "This is opt-in: uncomment `lint-commit-messages` in `ci.yaml`…",
-  replace it with a note that the enforcement is enabled
-  (the CI jobs and the pre-commit hook are already configured).
+  replace it with a note that the enforcement is enabled (the CI jobs and the pre-commit hook are already configured).
 - If `home-modules/shell/shell.nix` was deleted but the "Choose Your Shell" subsection is still there,
   remove that subsection and the paragraph in "Apply the Configuration" beginning "Zsh is enabled by default",
   and make the startup-file caution above it list `~/.zshenv` unconditionally.
 - If the `issl.zsh.enable = false;` line in `home-modules/shell/shell.nix` is uncommented
-  but "Choose Your Shell" still reads as an instruction, rewrite that subsection and the paragraph
-  in "Apply the Configuration" beginning "Zsh is enabled by default", so that they state this repository
-  is Bash-only and that going back means commenting the line out again
+  but "Choose Your Shell" still reads as an instruction,
+  rewrite that subsection and the paragraph in "Apply the Configuration" beginning "Zsh is enabled by default",
+  so that they state this repository is Bash-only and that going back means commenting the line out again
   and dropping `zsh-enabled: false` from `.github/workflows/test.yaml`;
   then drop `~/.zshenv` and the `zsh/zsh.nix` parenthetical from the startup-file caution.
-- If `reuse.yaml` was deleted but the "REUSE Compliance" subsection still references it,
-  remove the entire subsection.
+- If `reuse.yaml` was deleted but the "REUSE Compliance" subsection still references it, remove the entire subsection.
 - If the `if` guard was removed from `reuse.yaml`
   but the "REUSE Compliance" subsection still says "This check is scoped to the template repository itself",
   replace the paragraph about the scoping and the `if` guard
