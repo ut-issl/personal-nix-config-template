@@ -1,4 +1,4 @@
-name: REUSE
+name: Lint REUSE compliance
 
 on:
   pull_request:
@@ -17,7 +17,7 @@ concurrency:
 permissions: {}
 
 jobs:
-  lint-reuse:
+  lint-reuse-compliance:
     name: Lint REUSE compliance
     if: github.repository == 'ut-issl/personal-nix-config-template'
     runs-on: ubuntu-latest

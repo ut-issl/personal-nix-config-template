@@ -111,17 +111,17 @@ The `commitizen` hooks run at the `commit-msg` and `pre-push` stages, which step
 
 ## 6. Decide how to handle the REUSE workflow (opt-in)
 
-If `.github/workflows/reuse.yaml` is already deleted or its `if` guard is already removed, skip this step.
+If `.github/workflows/lint-reuse-compliance.yaml` is already deleted or its `if` guard is already removed, skip this step.
 
-Explain: `.github/workflows/reuse.yaml` checks [REUSE](https://reuse.software) compliance,
-but its `lint-reuse` job is guarded to run only in the upstream template repository,
+Explain: `.github/workflows/lint-reuse-compliance.yaml` checks [REUSE](https://reuse.software) compliance,
+but its `lint-reuse-compliance` job is guarded to run only in the upstream template repository,
 so it does nothing in this repository and can safely be left in place.
 
 Ask the user which they prefer:
 
 - Leave it as is (default; nothing to do).
-- Delete `.github/workflows/reuse.yaml` to drop the workflow entirely.
-- Remove the `if` guard from the `lint-reuse` job to enforce REUSE compliance in this repository.
+- Delete `.github/workflows/lint-reuse-compliance.yaml` to drop the workflow entirely.
+- Remove the `if` guard from the `lint-reuse-compliance` job to enforce REUSE compliance in this repository.
   In that case, remind the user that every file they add must carry REUSE-compliant licensing information,
   and add `.template-base` to the CC0 annotation in `REUSE.toml` when that file exists.
 
@@ -167,11 +167,12 @@ Update the following as needed:
   so that they state this repository is Bash-only and that going back means commenting the line out again
   and dropping `zsh-enabled: false` from `.github/workflows/test.yaml`;
   then drop `~/.zshenv` and the `zsh/zsh.nix` parenthetical from the startup-file caution.
-- If `reuse.yaml` was deleted but the "REUSE Compliance" subsection still references it, remove the entire subsection.
-- If the `if` guard was removed from `reuse.yaml`
+- If `lint-reuse-compliance.yaml` was deleted but the "REUSE Compliance" subsection still references it,
+  remove the entire subsection.
+- If the `if` guard was removed from `lint-reuse-compliance.yaml`
   but the "REUSE Compliance" subsection still says "This check is scoped to the template repository itself",
   replace the paragraph about the scoping and the `if` guard
-  (from "This check is scoped…" through "…remove the `if` guard from the `lint-reuse` job.")
+  (from "This check is scoped…" through "…remove the `if` guard from the `lint-reuse-compliance` job.")
   with a short note that the check now runs in this repository.
 - Review the rest of `README.md` for any remaining template-specific wording
   (e.g. phrasing that describes the template repository rather than the user's own repository)
