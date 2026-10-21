@@ -1,7 +1,8 @@
 # REUSE configuration — https://reuse.software
 #
-# The substantive scaffolding (flake.nix, home-modules/** and README.md) carries
-# inline SPDX headers. This file declares licensing for the remaining files.
+# The substantive scaffolding (flake.nix, the Nix files under home-modules and
+# README.md) carries inline SPDX headers. This file declares licensing for the
+# remaining files.
 #
 # Generated files carry no copyright notice and are dedicated to the public
 # domain to the extent possible under CC0-1.0.
@@ -14,6 +15,7 @@ path = [
   ".claude/**",
   ".cz.toml",
   ".gitattributes",
+  ".github/**",
   ".gitignore",
   ".pre-commit-config.yaml",
   ".ruff.toml",
@@ -21,9 +23,9 @@ path = [
   ".shellcheckrc",
   ".typos.toml",
   ".yamllint.yaml",
-  "lychee.toml",
-  ".github/**",
   "examples/**.md",
+  "home-modules/.shellcheckrc",
+  "lychee.toml",
 ]
 SPDX-FileCopyrightText = [
   "2026 Intelligent Space Systems Laboratory, The University of Tokyo",
