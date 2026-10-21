@@ -41,12 +41,12 @@ jobs:
           - user-desktop
     permissions:
       contents: read
-    uses: ut-issl/issl-ubuntu-environment-setup/.github/workflows/test-config-repository.yaml@089f8f8da2627ff345ae2eac1b6da7b3559ada28 # v0.8.10
+    uses: ut-issl/issl-ubuntu-environment-setup/.github/workflows/test-config-repository.yaml@fe5eb6887eaee86ed05b4b774e12311bd8ae71e4 # v0.8.11
     with:
       os: ${{ matrix.os }}
       flake-target: ${{ matrix.flake-target }}
       common-repository: ut-issl/issl-ubuntu-environment-setup
-      common-ref: '089f8f8da2627ff345ae2eac1b6da7b3559ada28' # v0.8.10
+      common-ref: 'fe5eb6887eaee86ed05b4b774e12311bd8ae71e4' # v0.8.11
       user-repository: ${{ github.repository }}
       user-ref: ${{ github.sha }}
       override-issl-input: false
