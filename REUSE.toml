@@ -1,7 +1,8 @@
 # REUSE configuration — https://reuse.software
 #
-# The substantive scaffolding (flake.nix, home-modules/** and README.md) carries
-# inline SPDX headers. This file declares licensing for the remaining files.
+# The substantive scaffolding (flake.nix, the Nix files under home-modules and
+# README.md) carries inline SPDX headers. This file declares licensing for the
+# remaining files.
 #
 # Generated files carry no copyright notice and are dedicated to the public
 # domain to the extent possible under CC0-1.0.
@@ -23,6 +24,7 @@ path = [
   ".typos.toml",
   ".yamllint.yaml",
   "examples/**.md",
+  "home-modules/.shellcheckrc",
   "lychee.toml",
 ]
 SPDX-FileCopyrightText = [
