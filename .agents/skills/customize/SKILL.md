@@ -66,14 +66,14 @@ it comes from the template, so edits there conflict on the next sync.
 
 For a new tool:
 
-- Look the package up in nixpkgs at the pinned revision:
+- Look the package up in Nixpkgs at the pinned revision:
   read the `nixpkgs` entry's `locked.rev` from `flake.lock` and run `nix search github:NixOS/nixpkgs/<rev> <name>`.
   Without Nix, use <https://search.nixos.org/packages>, noting that its channel may differ from the pin.
 - Check whether Home Manager has a matching module (`programs.<tool>` or `services.<tool>`):
   on an applied machine `man home-configuration.nix` documents the installed version and is the source of truth;
   otherwise use the Home Manager manual for the matching release.
 - Unfree packages are fine: the shared ISSL configuration already sets `allowUnfree = true`.
-- If the package is not in nixpkgs, report the options honestly and let the user decide:
+- If the package is not in Nixpkgs, report the options honestly and let the user decide:
   do without it, add another flake input that provides it, or manage it outside Nix —
   the last is the user's own call and out of scope for this skill.
   Never add flake inputs or overlays without an explicit yes.

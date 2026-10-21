@@ -69,7 +69,7 @@ Leave the `extraModules` argument of `mkHomeConfiguration` alone; the module lis
 
 ## 3. Install pre-commit hooks
 
-If the git hooks are already installed
+If the Git hooks are already installed
 (`.git/hooks/pre-commit`, `.git/hooks/commit-msg`, and `.git/hooks/pre-push` all exist), skip this step.
 
 Otherwise, ask the user whether to install them now.

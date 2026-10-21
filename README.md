@@ -123,7 +123,7 @@ or on any other machine where an agent is already available (e.g. when preparing
 ### `customize`
 
 Assists [customizing your configuration](#customize-your-configuration) interactively —
-from researching nixpkgs and the Home Manager options to editing the modules and validating the result.
+from researching Nixpkgs and the Home Manager options to editing the modules and validating the result.
 State what you want when invoking it (e.g. `$customize add lazygit`).
 
 ### `sync-template`
