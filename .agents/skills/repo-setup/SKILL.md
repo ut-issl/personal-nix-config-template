@@ -69,7 +69,7 @@ Leave the `extraModules` argument of `mkHomeConfiguration` alone; the module lis
 
 ## 3. Install pre-commit hooks
 
-If the git hooks are already installed
+If the Git hooks are already installed
 (`.git/hooks/pre-commit`, `.git/hooks/commit-msg`, and `.git/hooks/pre-push` all exist), skip this step.
 
 Otherwise, ask the user whether to install them now.
@@ -148,13 +148,13 @@ Update the following as needed:
 - Check the "Development Tooling" section intro sentence
   "Pre-commit hooks are part of the everyday workflow, while Renovate and Conventional Commits enforcement are opt-in."
   If the actual state of Renovate (`.github/renovate.json5`) or Conventional Commits
-  (the CI jobs and commitizen block) no longer matches the "opt-in" claim,
+  (the CI jobs and `commitizen` block) no longer matches the "opt-in" claim,
   update the sentence to reflect which features are now enabled and which remain opt-in.
 - If Renovate was enabled (no `enabled: false` line in `.github/renovate.json5`)
   but the "Renovate" subsection still says "It is disabled by default",
   replace that sentence with a note that Renovate is enabled
   and the Renovate GitHub App must be installed for this repository to take effect.
-- If all three Conventional Commits blocks are uncommented (both CI jobs and the commitizen pre-commit hook)
+- If all three Conventional Commits blocks are uncommented (both CI jobs and the `commitizen` pre-commit hook)
   but the "Conventional Commits" subsection still contains the sentence that begins with
   "This is opt-in: uncomment `lint-commit-messages` in `ci.yaml`…",
   replace it with a note that the enforcement is enabled (the CI jobs and the pre-commit hook are already configured).
