@@ -14,6 +14,7 @@ path = [
   ".claude/**",
   ".cz.toml",
   ".gitattributes",
+  ".github/**",
   ".gitignore",
   ".pre-commit-config.yaml",
   ".ruff.toml",
@@ -21,9 +22,8 @@ path = [
   ".shellcheckrc",
   ".typos.toml",
   ".yamllint.yaml",
-  "lychee.toml",
-  ".github/**",
   "examples/**.md",
+  "lychee.toml",
 ]
 SPDX-FileCopyrightText = [
   "2026 Intelligent Space Systems Laboratory, The University of Tokyo",
