@@ -82,7 +82,7 @@ For a new tool:
 
 Apply the README's conventions:
 
-- A module under `home-modules/` already covers the subject (such as bash, zsh, git, python, rust):
+- A module under `home-modules/` already covers the subject (such as `bash`, `zsh`, `git`, `python`, `rust`):
   extend that module at the comments marked for personal additions instead of creating a new one.
   A package belongs there too when the module covers what it is for.
 - None does, and the tool brings its own configuration: create `home-modules/<tool>/<tool>.nix`, named after the tool;
