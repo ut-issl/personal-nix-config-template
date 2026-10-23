@@ -256,9 +256,9 @@ jobs:
           persist-credentials: false
 
       - name: Install Tombi
-        uses: tombi-toml/setup-tombi@914d33b074caeed5939ca21b02282be9cef31c38 # v1.8.6
+        uses: tombi-toml/setup-tombi@dbb85e6c7616772f590af0db4a7c455dfe61fec7 # v1.8.9
         with:
-          version: '1.8.6'
+          version: '1.8.9'
 
       - name: Format TOML
         run: tombi format
@@ -296,9 +296,9 @@ jobs:
           persist-credentials: false
 
       - name: Install Tombi
-        uses: tombi-toml/setup-tombi@914d33b074caeed5939ca21b02282be9cef31c38 # v1.8.6
+        uses: tombi-toml/setup-tombi@dbb85e6c7616772f590af0db4a7c455dfe61fec7 # v1.8.9
         with:
-          version: '1.8.6'
+          version: '1.8.9'
 
       - name: Lint TOML
         run: tombi lint --error-on-warnings --diagnostics-format=github
