@@ -187,7 +187,7 @@ jobs:
       - name: Validate Renovate config
         env:
           LOG_FORMAT: json
-          RENOVATE_VERSION: '44.165.1'
+          RENOVATE_VERSION: '44.178.3'
         run: |
           npx --package="renovate@${RENOVATE_VERSION}" --yes renovate-config-validator \
             --strict --no-global .github/renovate.json5 \
