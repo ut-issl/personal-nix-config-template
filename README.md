@@ -24,6 +24,7 @@ The personal modules source or include those files from the Home Manager-managed
 
 For how this path fits into the shared environment, and for what that shared module provides, see
 [setup with a personal config repository](https://github.com/ut-issl/issl-environment/blob/v0.9.0/docs/11-setup-with-a-personal-config-repository.md).
+For the platforms the shared environment supports, see [supported platforms](https://github.com/ut-issl/issl-environment/blob/v0.9.0/docs/10-user-guide.md#supported-platforms).
 
 > [!WARNING]
 > This repository is an early-stage prototype and is under active development.
@@ -256,7 +257,8 @@ so it goes behind `config.local.desktop.enable`, which sends it to `.#user-deskt
 Where a module of yours already covers the subject, put it there instead and wrap the graphical part in `lib.mkIf config.local.desktop.enable`.
 
 An application that renders through OpenGL needs one more setting,
-because Ubuntu does not provide the GPU drivers where a Nix-built application looks for them.
+because distributions other than NixOS, such as Ubuntu,
+do not provide the GPU drivers where a Nix-built application looks for them.
 Turn `targets.genericLinux.gpu.enable` on in that module, add `pkgs` to its arguments, and add your application:
 
 ```nix
