@@ -14,16 +14,16 @@ SPDX-License-Identifier: MIT OR Apache-2.0
 [![CI](https://github.com/ut-issl/personal-nix-config-template/actions/workflows/ci.yaml/badge.svg)](https://github.com/ut-issl/personal-nix-config-template/actions/workflows/ci.yaml)
 [![Test](https://github.com/ut-issl/personal-nix-config-template/actions/workflows/test.yaml/badge.svg)](https://github.com/ut-issl/personal-nix-config-template/actions/workflows/test.yaml)
 
-Personal Home Manager configuration template for the ISSL Ubuntu environment.
+Personal Home Manager configuration template for the ISSL environment.
 
-This template imports the shared configuration from [`ut-issl/issl-ubuntu-environment-setup`](https://github.com/ut-issl/issl-ubuntu-environment-setup)
+This template imports the shared configuration from [`ut-issl/issl-environment`](https://github.com/ut-issl/issl-environment)
 and lets each user manage personal startup files and additional settings declaratively.
 
 The ISSL shared files are deployed under `~/.config/issl` by the imported shared module.
 The personal modules source or include those files from the Home Manager-managed user files.
 
 For how this path fits into the shared environment, and for what that shared module provides, see
-[setup with a personal config repository](https://github.com/ut-issl/issl-ubuntu-environment-setup/blob/v0.8.11/docs/11-setup-with-a-personal-config-repository.md).
+[setup with a personal config repository](https://github.com/ut-issl/issl-environment/blob/v0.8.11/docs/11-setup-with-a-personal-config-repository.md).
 
 > [!WARNING]
 > This repository is an early-stage prototype and is under active development.
@@ -41,7 +41,7 @@ then follow the steps below in it.
 Run the shared host bootstrap script:
 
 ```bash
-bash <(curl -fsSL https://github.com/ut-issl/issl-ubuntu-environment-setup/releases/download/v0.8.11/bootstrap-host.sh)
+bash <(curl -fsSL https://github.com/ut-issl/issl-environment/releases/download/v0.8.11/bootstrap-host.sh)
 ```
 
 The bootstrap script installs Nix and starts `nix-daemon` on systems without systemd.
@@ -239,7 +239,7 @@ For example, `home-modules/agents/agents.nix`:
 
 > [!NOTE]
 > The shared ISSL configuration enables `allowUnfree`, so unfree packages such as `claude-code` install without extra setup.
-> See [package management practices](https://github.com/ut-issl/issl-ubuntu-environment-setup/blob/v0.8.11/docs/13-package-management-practices.md#unfree-packages).
+> See [package management practices](https://github.com/ut-issl/issl-environment/blob/v0.8.11/docs/13-package-management-practices.md#unfree-packages).
 
 The directory and the file have to carry the same name.
 A directory holding no `<name>.nix`, and a Nix file placed directly under `home-modules/`,
@@ -293,7 +293,7 @@ Run it again whenever a switch reports that the drivers need an update.
 
 > [!NOTE]
 > Applications the desktop already provides, such as the browser and the mail client, are best left as they are.
-> See [package management practices](https://github.com/ut-issl/issl-ubuntu-environment-setup/blob/v0.8.11/docs/13-package-management-practices.md#gui-applications) for the other cases that are better left to the distribution.
+> See [package management practices](https://github.com/ut-issl/issl-environment/blob/v0.8.11/docs/13-package-management-practices.md#gui-applications) for the other cases that are better left to the distribution.
 
 ## Apply and Maintain Your Configuration
 

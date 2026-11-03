@@ -4,10 +4,10 @@
 # SPDX-License-Identifier: MIT OR Apache-2.0
 
 {
-  description = "Personal Home Manager configuration template for the ISSL Ubuntu environment";
+  description = "Personal Home Manager configuration template for the ISSL environment";
 
   inputs = {
-    issl.url = "github:ut-issl/issl-ubuntu-environment-setup/v0.8.11";
+    issl.url = "github:ut-issl/issl-environment/v0.8.11";
     nixpkgs.follows = "issl/nixpkgs";
     home-manager.follows = "issl/home-manager";
   };

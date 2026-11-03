@@ -57,10 +57,10 @@
         '/^README\\.md$/',
       ],
       matchStrings: [
-        'issl-ubuntu-environment-setup/releases/download/(?<currentValue>v[^/\\s]+)/bootstrap-host\\.sh',
-        'issl-ubuntu-environment-setup/blob/(?<currentValue>v[^/\\s]+)/',
+        'issl-environment/releases/download/(?<currentValue>v[^/\\s]+)/bootstrap-host\\.sh',
+        'issl-environment/blob/(?<currentValue>v[^/\\s]+)/',
       ],
-      depNameTemplate: 'ut-issl/issl-ubuntu-environment-setup',
+      depNameTemplate: 'ut-issl/issl-environment',
       datasourceTemplate: 'github-tags',
       versioningTemplate: 'semver',
     },
@@ -72,7 +72,7 @@
       matchStrings: [
         "common-ref: '(?<currentDigest>[a-f0-9]{40})' # (?<currentValue>v[^\\s]+)",
       ],
-      depNameTemplate: 'ut-issl/issl-ubuntu-environment-setup',
+      depNameTemplate: 'ut-issl/issl-environment',
       datasourceTemplate: 'github-tags',
       versioningTemplate: 'semver',
       autoReplaceStringTemplate: "common-ref: '{{{newDigest}}}' # {{{newValue}}}",
@@ -83,9 +83,9 @@
         '/^flake\\.nix$/',
       ],
       matchStrings: [
-        'github:ut-issl/issl-ubuntu-environment-setup/(?<currentValue>v[^"\\s]+)',
+        'github:ut-issl/issl-environment/(?<currentValue>v[^"\\s]+)',
       ],
-      depNameTemplate: 'ut-issl/issl-ubuntu-environment-setup',
+      depNameTemplate: 'ut-issl/issl-environment',
       datasourceTemplate: 'github-tags',
       versioningTemplate: 'semver',
     },
@@ -239,7 +239,7 @@
         '.ruff.toml',
       ],
       matchDepNames: [
-        '!ut-issl/issl-ubuntu-environment-setup',
+        '!ut-issl/issl-environment',
       ],
       labels: [
         'automated',
@@ -273,7 +273,7 @@
     {
       description: 'Take only full vX.Y.Z releases of the shared environment, which its pins name, without the release-age gate, as these releases come from the same organization; flake.lock is re-locked in the branch only by self-hosted Renovate',
       matchDepNames: [
-        'ut-issl/issl-ubuntu-environment-setup',
+        'ut-issl/issl-environment',
       ],
       allowedVersions: '/^v\\d+\\.\\d+\\.\\d+$/',
       minimumReleaseAge: '0 days',
