@@ -31,14 +31,14 @@
         "lastModified": 1792515538,
         "narHash": "sha256-IyqRiHQSspnqjVHl88t++OM2JMIUpDb01emAXN6fG+M=",
         "owner": "ut-issl",
-        "repo": "issl-ubuntu-environment-setup",
+        "repo": "issl-environment",
         "rev": "fe5eb6887eaee86ed05b4b774e12311bd8ae71e4",
         "type": "github"
       },
       "original": {
         "owner": "ut-issl",
         "ref": "v0.8.11",
-        "repo": "issl-ubuntu-environment-setup",
+        "repo": "issl-environment",
         "type": "github"
       }
     },

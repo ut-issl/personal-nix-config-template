@@ -21,7 +21,7 @@ Never run `home-manager switch` without an explicit yes from the user (see step 
 Never write secrets (tokens, private keys, credentials) into the repository.
 
 This repository manages globally available user tools with Nix and Home Manager,
-following the shared package management practices (`docs/13-package-management-practices.md` in `ut-issl/issl-ubuntu-environment-setup`).
+following the shared package management practices (`docs/13-package-management-practices.md` in `ut-issl/issl-environment`).
 Never install the requested tool with `apt`, `cargo install`, `uv tool install`, `npm install -g`, or the like;
 if the request is really a project-local dependency or a system-level package,
 say that it does not belong in this repository and point to those practices instead.
@@ -40,7 +40,7 @@ but clearly report at the end that local validation was skipped and the change i
 The shared ISSL environment installs many tools and deploys their base settings under `~/.config/issl`.
 Before adding anything, check whether the tool is already provided:
 
-- the shared modules: `home-modules/` of `ut-issl/issl-ubuntu-environment-setup` at the version pinned in `flake.nix`;
+- the shared modules: `home-modules/` of `ut-issl/issl-environment` at the version pinned in `flake.nix`;
 - this repository's own modules under `home-modules/`;
 - on an applied machine, whether the command is already on `PATH` — and if so, where it resolves to.
 
