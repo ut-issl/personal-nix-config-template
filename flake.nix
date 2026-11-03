@@ -7,7 +7,7 @@
   description = "Personal Home Manager configuration template for the ISSL environment";
 
   inputs = {
-    issl.url = "github:ut-issl/issl-environment/v0.8.11";
+    issl.url = "github:ut-issl/issl-environment/v0.9.0";
     nixpkgs.follows = "issl/nixpkgs";
     home-manager.follows = "issl/home-manager";
   };
