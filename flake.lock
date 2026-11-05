@@ -25,19 +25,20 @@
     "issl": {
       "inputs": {
         "home-manager": "home-manager",
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs",
+        "nixpkgs-unstable": "nixpkgs-unstable"
       },
       "locked": {
-        "lastModified": 1793814552,
-        "narHash": "sha256-WS9aZxxLdtpOXBMeHsgS5U/+2MnJCbK4P/7LRw9FvxA=",
+        "lastModified": 1793861937,
+        "narHash": "sha256-b+bHrbKGvWobKP0JXcCgzsRK4RyTsSjhNQfBimVhXgo=",
         "owner": "ut-issl",
         "repo": "issl-environment",
-        "rev": "782f5e51c0f5f86379b8e89269dbd593bca4ee72",
+        "rev": "5328bd62313a7ce038e16b2e4d45444ab93ab5b5",
         "type": "github"
       },
       "original": {
         "owner": "ut-issl",
-        "ref": "v0.10.0",
+        "ref": "v0.11.0",
         "repo": "issl-environment",
         "type": "github"
       }
@@ -54,6 +55,22 @@
       "original": {
         "owner": "NixOS",
         "ref": "nixos-26.05",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs-unstable": {
+      "locked": {
+        "lastModified": 1793795574,
+        "narHash": "sha256-pgG/CO+txdf2sA2z6DsM+2G3F9ajfIp/3BMC4wfKMDY=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "13e53762c5afaf384d4614e94527a9ccfafe41d0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixpkgs-unstable",
         "repo": "nixpkgs",
         "type": "github"
       }
