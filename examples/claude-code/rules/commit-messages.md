@@ -104,7 +104,7 @@ build(deps): update dependency tokio to 1.40
 ```
 
 ```text
-build(deps-dev):update dependency ruff to 0.15.13
+build(deps-dev): update dependency ruff to 0.15.13
 ```
 
 ```text
