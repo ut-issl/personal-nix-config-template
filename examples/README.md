@@ -12,7 +12,10 @@ A name with no module of its own under `home-modules/` is one you add as `<name>
 
 Take the lines into your own modules rather than the files themselves:
 the first line of a fragment names its destination and is not part of the setting.
-The fragments carry no SPDX header, and MIT-0 asks for none to be carried over when you adopt one.
+A recipe may also hold files that a fragment deploys, beside the fragment or in a directory of their own.
+Copy them into your module directory as they are, since the fragment refers to them by a relative path.
+The fragments and the files they deploy carry no SPDX header,
+and MIT-0 asks for none to be carried over when you adopt them.
 If your repository enforces REUSE compliance,
 give the module you end up with a header of the same shape as the other modules under `home-modules/`.
 
@@ -20,5 +23,6 @@ Every fragment is evaluated by `nix flake check`, so a recipe that no longer wor
 
 ## Recipes
 
+- [`claude-code`](claude-code/) — install [Claude Code](https://code.claude.com/docs) with instructions, rules, and a skill of your own.
 - [`gnuplot`](gnuplot/) — install [gnuplot](http://www.gnuplot.info) with a startup file of plotting defaults.
 - [`starship`](starship/) — replace the shared prompt with [Starship](https://starship.rs).

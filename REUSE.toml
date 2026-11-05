@@ -10,6 +10,14 @@
 version = 1
 
 [[annotations]]
+path = ["examples/**"]
+SPDX-FileCopyrightText = [
+  "2026 Intelligent Space Systems Laboratory, The University of Tokyo",
+  "2026 Riki Nakamura",
+]
+SPDX-License-Identifier = "MIT-0"
+
+[[annotations]]
 path = [
   ".agents/**",
   ".claude/**",
@@ -23,7 +31,8 @@ path = [
   ".shellcheckrc",
   ".typos.toml",
   ".yamllint.yaml",
-  "examples/**.md",
+  "examples/*/README.md",
+  "examples/README.md",
   "home-modules/.shellcheckrc",
   "lychee.toml",
 ]
@@ -32,14 +41,6 @@ SPDX-FileCopyrightText = [
   "2026 Riki Nakamura",
 ]
 SPDX-License-Identifier = "MIT OR Apache-2.0"
-
-[[annotations]]
-path = ["examples/**.nix"]
-SPDX-FileCopyrightText = [
-  "2026 Intelligent Space Systems Laboratory, The University of Tokyo",
-  "2026 Riki Nakamura",
-]
-SPDX-License-Identifier = "MIT-0"
 
 [[annotations]]
 path = ["flake.lock"]
