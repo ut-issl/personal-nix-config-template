@@ -258,6 +258,7 @@ Such an application is only worth installing on a host you actually use graphica
 so it goes behind `config.local.desktop.enable`, which sends it to `.#user-desktop` and keeps it out of `.#user`.
 [`home-modules/desktop/desktop.nix`](home-modules/desktop/desktop.nix) is already gated and is where it goes by default.
 Where a module of yours already covers the subject, put it there instead and wrap the graphical part in `lib.mkIf config.local.desktop.enable`.
+The [`pdf`](examples/pdf/) recipe shows such a module.
 
 An application that renders through OpenGL needs one more setting,
 because distributions other than NixOS, such as Ubuntu,
