@@ -24,6 +24,7 @@ names = [
   "Nix",
   "Nixpkgs",
   "OpenGL",
+  "PDF Arranger",
   "Python",
   "Qt",
   "Renovate",
