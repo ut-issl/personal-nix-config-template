@@ -61,6 +61,7 @@ Its `README.md` states what the setup needs outside this repository,
 and its Nix fragments name the modules their lines belong to.
 Merge those lines into the modules, and leave `examples/` itself untouched:
 it comes from the template, so edits there conflict on the next sync.
+Copy any file a fragment deploys into the module directory as well, at the relative path that the fragment refers to.
 
 ## 3. Research the package and its options
 

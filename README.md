@@ -404,7 +404,7 @@ Conversely, to enforce REUSE compliance in your own repository, remove the `if` 
 The scaffolding provided by this template is licensed under either [MIT](LICENSES/MIT.txt) or [Apache-2.0](LICENSES/Apache-2.0.txt)
 at your option, declared per file following the [REUSE](https://reuse.software) specification (see [REUSE.toml](REUSE.toml)).
 
-The Nix fragments under [`examples/`](examples/) are licensed under [MIT-0](LICENSES/MIT-0.txt) instead,
+The Nix fragments under [`examples/`](examples/), and the files they deploy, are licensed under [MIT-0](LICENSES/MIT-0.txt) instead,
 so that you can take them into your own modules without carrying a notice along.
 
 Files you add to your personal configuration are yours, and you may license them however you like.
