@@ -20,5 +20,6 @@ Every fragment is evaluated by `nix flake check`, so a recipe that no longer wor
 
 ## Recipes
 
+- [`claude-code`](claude-code/) — install [Claude Code](https://code.claude.com/docs).
 - [`gnuplot`](gnuplot/) — install [gnuplot](http://www.gnuplot.info) with a startup file of plotting defaults.
 - [`starship`](starship/) — replace the shared prompt with [Starship](https://starship.rs).

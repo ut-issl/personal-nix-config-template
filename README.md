@@ -228,18 +228,21 @@ Name it after the purpose when it collects packages that share one,
 so that the next package of the same kind has somewhere to go.
 The shared environment groups its own that way, with `utils` for general command-line tools
 and `dev` for the ones that serve any language.
-For example, `home-modules/agents/agents.nix`:
+For example, `home-modules/media/media.nix`:
 
 ```nix
 { pkgs, ... }:
 
 {
-  home.packages = [ pkgs.claude-code ];
+  home.packages = [
+    pkgs.ffmpeg
+    pkgs.imagemagick
+  ];
 }
 ```
 
 > [!NOTE]
-> The shared ISSL configuration enables `allowUnfree`, so unfree packages such as `claude-code` install without extra setup.
+> The shared ISSL configuration enables `allowUnfree`, so unfree packages install without extra setup.
 > See [package management practices](https://github.com/ut-issl/issl-environment/blob/v0.10.0/docs/13-package-management-practices.md#unfree-packages).
 
 The directory and the file have to carry the same name.
