@@ -8,8 +8,8 @@
 {
   config = lib.mkIf config.local.desktop.enable {
     # Settings for a host used through its graphical desktop, applied by `.#user-desktop`.
-    # Uncomment the line below once something installed here renders through OpenGL;
-    # it asks for a one-time privileged setup on each machine.
+    # The line below is for applications installed here that render through OpenGL;
+    # it needs a one-time privileged setup on each machine.
     # See "Install Desktop Applications" in `README.md`.
 
     # targets.genericLinux.gpu.enable = true;
