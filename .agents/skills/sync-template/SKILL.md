@@ -62,7 +62,9 @@ Its base has not reached `main` yet, so a second sync would repeat the same merg
 ## 2. Work out the base to merge from
 
 This step only decides which commit the base is; step 4 puts it in place.
-Run it from `main`, not behind `origin`, since step 4 branches from `HEAD`.
+Run it from `main`, not behind `origin`, since step 4 branches from `HEAD`:
+after `git fetch --prune origin`, `git merge-base --is-ancestor origin/main HEAD` has to succeed,
+and otherwise ask the user to update `main` first.
 The merge needs a clean working tree, so ask the user to commit or stash anything outstanding first.
 
 Add the remote unless one already points at the template, in which case use that name throughout.
@@ -129,7 +131,6 @@ An earlier run leaves the branch behind, locally where `git switch -c` refuses t
 or on `origin` alone where nothing stops it, so look for both before doing anything else:
 
 ```sh
-git fetch --prune origin
 git branch --list chore/sync-template
 git branch --remotes --list origin/chore/sync-template
 ```
@@ -144,6 +145,8 @@ git show <the leftover branch>:.template-base
 Do not test this with `--is-ancestor`, which only a merge-commit landing satisfies.
 `git show` reports `fatal:` where the file does not exist, which counts as differing rather than as breakage.
 When the two differ, stop and ask: the branch holds conflict resolutions that never reached `main`.
+When they agree, delete a local leftover with `git branch -D chore/sync-template` before the commands below;
+a leftover on `origin` alone is overwritten by the push in step 9.
 
 The graft below makes the template an ordinary merge source; step 8 folds it away again.
 
