@@ -367,7 +367,8 @@ The `run-prek-hooks` CI job runs the same hooks on every pull request.
 ### Renovate
 
 [Renovate](https://docs.renovatebot.com) is preconfigured in [`.github/renovate.json5`](.github/renovate.json5)
-to track Action SHAs, pinned tool versions inside [`ci.yaml`](.github/workflows/ci.yaml), and pre-commit hooks.
+to track the pinned ISSL environment version, Action SHAs,
+pinned tool versions inside [`ci.yaml`](.github/workflows/ci.yaml), and pre-commit hooks.
 It is disabled by default; to opt in, change the `enabled: false` line to `true` (or remove it),
 and make sure the Renovate GitHub App is installed for the repository.
 The `validate-renovate-config` CI job checks the configuration whenever it changes.
@@ -375,8 +376,9 @@ The `validate-renovate-config` CI job checks the configuration whenever it chang
 ### Conventional Commits
 
 Commit messages and pull request titles can be checked against [Conventional Commits](https://www.conventionalcommits.org) via [Commitizen](https://github.com/commitizen-tools/commitizen).
-This is opt-in: uncomment [`lint-commit-messages` in `ci.yaml`](.github/workflows/ci.yaml)
-and [`lint-pull-request-title` in `manage-pull-requests.yaml`](.github/workflows/manage-pull-requests.yaml) to enable it.
+This is opt-in: uncomment [`lint-commit-messages` in `ci.yaml`](.github/workflows/ci.yaml),
+[`lint-pull-request-title` in `manage-pull-requests.yaml`](.github/workflows/manage-pull-requests.yaml),
+and the `commitizen` hooks in [`.pre-commit-config.yaml`](.pre-commit-config.yaml) to enable it.
 Linting the PR title is especially useful with squash merging,
 since the PR title becomes the subject of the squashed commit by default.
 
