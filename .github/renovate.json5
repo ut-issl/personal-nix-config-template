@@ -2,6 +2,7 @@
   $schema: 'https://docs.renovatebot.com/renovate-schema.json',
   extends: [
     'config:best-practices',
+    ':semanticCommitTypeAll(build)',
   ],
   enabled: false,
   minimumReleaseAge: '3 days',
@@ -241,6 +242,7 @@
       matchDepNames: [
         '!ut-issl/issl-environment',
       ],
+      semanticCommitScope: 'deps-dev',
       labels: [
         'automated',
         'dev-dependencies',

@@ -120,7 +120,7 @@ git log --oneline <base>..template/main
 Use the base from step 2, not `HEAD`, which is unrelated to the template once a sync has been squashed.
 
 Summarize what changed, grouped by what it means for the user rather than commit by commit;
-a `chore(deps)` commit may also carry the configuration change that the new version needs.
+a dependency update commit may also carry the configuration change that the new version needs.
 Then ask the user whether to merge now.
 
 If there is nothing new, say so and stop.
