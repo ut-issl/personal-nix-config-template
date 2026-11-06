@@ -13,12 +13,16 @@ description: >-
 
 Help the user customize their personal Home Manager configuration, one request at a time:
 install a tool, configure a program, or port settings from existing dotfiles.
+When one message asks for several things, take them all through steps 1 to 4 first and present the plan once,
+then implement and validate them together.
 
 Follow the conventions of the "Customize Your Configuration" section of `README.md`.
 Converse in the language the user writes in, but keep all edits (code, comments, commit messages, etc.) in English.
 Leave all changes uncommitted; committing and pushing are up to the user unless explicitly requested.
 Never run `home-manager switch` without an explicit yes from the user (see step 7).
 Never write secrets (tokens, private keys, credentials) into the repository.
+If the user pastes one into the conversation, recommend revoking it,
+and where the program supports it, have the configuration read it at run time from a file outside the repository.
 
 This repository manages globally available user tools with Nix and Home Manager,
 following the shared package management practices (`docs/13-package-management-practices.md` in `ut-issl/issl-environment`).
@@ -42,7 +46,9 @@ Before adding anything, check whether the tool is already provided:
 
 - the shared modules: `home-modules/` of `ut-issl/issl-environment` at the version pinned in `flake.nix`;
 - this repository's own modules under `home-modules/`;
-- on an applied machine, whether the command is already on `PATH` — and if so, where it resolves to.
+- whether the command is already on `PATH` on the machine to be configured, whether or not it has been applied yet —
+  and if so, where it resolves to.
+  When that machine is not the one you run on, ask the user instead.
 
 If the command resolves into the Nix store (directly or via `~/.nix-profile`),
 the tool is already provided; only the personal settings need to be layered on top.
@@ -52,7 +58,8 @@ Follow the existing pattern: the shared files are loaded first, personal additio
 If the command resolves outside the Nix store, find out how it was installed —
 the user may not remember or even know it is there.
 Check the usual suspects: `dpkg -S` for `apt`, `~/.cargo/bin` for `cargo install`,
-`uv tool list` / `~/.local/bin` for `uv tool install`, and `npm list -g` for `npm install -g`.
+`~/.local/bin` for user-local installs (`uv tool install`, `pipx`, and installers that put their binary there;
+`uv tool list` tells which came from `uv`), and `npm list -g` for `npm install -g`.
 Then offer to migrate it into this configuration, except system-level `apt` packages, which stay with `apt`.
 The old installation is removed only at the very end (see step 8).
 
@@ -69,6 +76,10 @@ For a new tool:
 
 - Look the package up in Nixpkgs at the pinned revision:
   read the `nixpkgs` entry's `locked.rev` from `flake.lock` and run `nix search github:NixOS/nixpkgs/<rev> <name>`.
+  A search evaluates the whole package set and takes a lot of memory;
+  when the attribute name is known, `nix eval github:NixOS/nixpkgs/<rev>#<name>.version` is enough.
+  The shared configuration replaces some packages with newer ones through an overlay, such as the coding agents;
+  `nix eval --impure .#homeConfigurations.user.pkgs.<name>.version` shows the version the configuration actually uses.
   Without Nix, use <https://search.nixos.org/packages>, noting that its channel may differ from the pin.
 - Check whether Home Manager has a matching module (`programs.<tool>` or `services.<tool>`):
   on an applied machine `man home-configuration.nix` documents the installed version and is the source of truth;
@@ -97,6 +108,11 @@ Apply the README's conventions:
   in `home-modules/desktop/desktop.nix`, which is already gated,
   or, where a module already covers its subject, in that module wrapped in `lib.mkIf config.local.desktop.enable`.
   One that renders through OpenGL also needs `targets.genericLinux.gpu.enable` turned on behind the same gate.
+  Signs that it does: its package wraps or links libGL or Mesa, it is built on Electron, Chromium, or Firefox,
+  or it is a GPU-accelerated terminal.
+  When unsure, tell the user that turning it on asks each machine for a one-time privileged setup, and let them decide.
+  Some graphical applications are better left to the distribution, such as ones that depend on its input methods:
+  check the "Host integration" criterion of the package management practices, and tell the user when it applies.
 - A new module directory under `home-modules/` is imported automatically, but it has to be tracked by Git.
   The directory and the Nix file inside it carry the same name,
   and a configuration file the module deploys sits beside that file.
@@ -105,6 +121,17 @@ Apply the README's conventions:
   and `lib.mkIf config.issl.zsh.enable` for the Zsh-only ones, as `home-modules/zsh/zsh.nix` does.
   Never define `local.desktop.enable` itself in a module; `flake.nix` sets it per configuration,
   and the flake check rejects any module definition that would change it.
+
+A `programs.<tool>` module can do more than install the tool:
+it can take over a configuration file as a read-only link, or turn on integrations such as shell key bindings by default.
+The existing setup already steers around this where it matters:
+the shared environment installs Git as a package only and leaves the Git configuration to the user,
+and the Claude Code recipe leaves `programs.claude-code.settings` unset,
+since Claude Code writes `~/.claude/settings.json` itself.
+Codex writes its `config.toml` the same way, which `programs.codex.settings` would make read-only.
+Before using such a module, check what it deploys and enables by default, in its options and in the build result's `home-files`.
+When it takes over a file the tool writes itself, or turns on what the user did not ask for,
+present the trade-off before editing.
 
 If more than one placement is reasonable, present the options briefly with a recommendation
 and let the user choose before editing.
@@ -118,6 +145,8 @@ Read the dotfiles the user wants to port and go through their content together:
 - Keep the rest as verbatim blocks in the matching extra hooks (e.g. `bashrcExtra`, `initContent`) or as `home.file` content.
 - Preserve the layering: shared settings load first, ported personal settings after.
 - Filter out secrets and machine-specific leftovers; confirm anything questionable with the user.
+- Tell the user which original files to move aside once the change is applied:
+  a leftover `~/.gitconfig`, for example, is read after `~/.config/git/config` and overrides it.
 
 ## 6. Implement and validate
 
@@ -134,7 +163,8 @@ Then validate:
   nix build --impure .#homeConfigurations.user.activationPackage
   ```
 
-  Build `.#homeConfigurations.user-desktop.activationPackage` instead for a desktop-only change.
+  For a desktop-only change, build `.#homeConfigurations.user-desktop.activationPackage` as well,
+  and compare the two to confirm that the change stays out of `.#user`.
 
   The build result shows what the configuration actually produces:
 
