@@ -59,8 +59,9 @@ For a Bash-only environment:
 Mention that `home-modules/zsh/zsh.nix` stays in place but takes effect only when Zsh is enabled,
 so undoing both edits brings Zsh back.
 
-To keep Zsh, delete `home-modules/shell/shell.nix`; it carries nothing but the opt-out.
-Mention that turning Zsh off later means putting `issl.zsh.enable = false;` back in a module under `home-modules/`
+To keep Zsh, leave `home-modules/shell/shell.nix` as it is:
+its commented line is where Zsh is turned off later, and recipes under `examples/` add their lines to that file.
+Mention that turning Zsh off later means uncommenting that line
 and adding `zsh-enabled: false` to `.github/workflows/test.yaml`.
 
 Either way, delete the `home-bash-only` entry from `checks` in `flake.nix`:
@@ -70,7 +71,8 @@ Leave the `extraModules` argument of `mkHomeConfiguration` alone; the module lis
 ## 3. Install pre-commit hooks
 
 If the Git hooks are already installed
-(`.git/hooks/pre-commit`, `.git/hooks/commit-msg`, and `.git/hooks/pre-push` all exist), skip this step.
+(`pre-commit`, `commit-msg`, and `pre-push` all exist in the directory that `git rev-parse --git-path hooks` prints),
+skip this step.
 
 Otherwise, ask the user whether to install them now.
 If yes, run:
@@ -127,14 +129,15 @@ Ask the user which they prefer:
 
 ## 7. Update README for the new repository
 
-Now that all opt-in decisions have been made, update `README.md` to reflect the actual state of this repository.
+Now that all opt-in decisions have been made,
+update `README.md` (and the `flake.nix` description) to reflect the actual state of this repository.
 This step does not require a separate opt-in; it is a consistency fix.
 Skip this step entirely if every item below is already up to date.
 
 Detect the owner and repo from the `origin` remote URL
 (handle both SSH and HTTPS forms, and strip a trailing `.git` suffix if present).
 If `origin` is not set or already matches `ut-issl/personal-nix-config-template`,
-skip the owner/repo-specific items (H1, badges) but still check the remaining items.
+skip the owner/repo-specific items (H1, badges, clone command) but still check the remaining items.
 
 Update the following as needed:
 
@@ -142,9 +145,17 @@ Update the following as needed:
 - In the badge block near the top, find the CI and Test badge lines (the ones whose URLs contain `ut-issl/personal-nix-config-template/actions/workflows/`).
   Replace all four occurrences of `ut-issl/personal-nix-config-template`
   (one in the image URL and one in the link URL of each badge) with the user's `<owner>/<repo>`.
+- Remove the `[!WARNING]` callout that describes the repository as an early-stage prototype.
+  It describes the template, not this repository.
 - Remove the paragraph above the numbered steps of "Getting Started"
   that tells the reader to create their own repository from this template.
   This repository has already been created from it.
+- In the clone command of "Getting Started",
+  replace `<your-account>/<your-repository>` with `<owner>/<repo>` and `<your-repository>` with `<repo>`.
+- If the `user.name` and `user.email` lines in `home-modules/git/git.nix` are set
+  but "Configure Your Git Identity" still tells the reader to uncomment them,
+  rewrite that step to say the identity is already set in `home-modules/git/git.nix`, which is where to change it.
+- In `flake.nix`, drop "template" from the `description` (`Personal Home Manager configuration template for …`).
 - Check the "Development Tooling" section intro sentence
   "Pre-commit hooks are part of the everyday workflow, while Renovate and Conventional Commits enforcement are opt-in."
   If the actual state of Renovate (`.github/renovate.json5`) or Conventional Commits
@@ -155,18 +166,18 @@ Update the following as needed:
   replace that sentence with a note that Renovate is enabled
   and the Renovate GitHub App must be installed for this repository to take effect.
 - If all three Conventional Commits blocks are uncommented (both CI jobs and the `commitizen` pre-commit hook)
-  but the "Conventional Commits" subsection still contains the sentence that begins with
-  "This is opt-in: uncomment `lint-commit-messages` in `ci.yaml`…",
+  but the "Conventional Commits" subsection still contains the sentence that begins with "This is opt-in:",
   replace it with a note that the enforcement is enabled (the CI jobs and the pre-commit hook are already configured).
-- If `home-modules/shell/shell.nix` was deleted but the "Choose Your Shell" subsection is still there,
-  remove that subsection and the paragraph in "Apply the Configuration" beginning "Zsh is enabled by default",
-  and make the startup-file caution above it list `~/.zshenv` unconditionally.
-- If the `issl.zsh.enable = false;` line in `home-modules/shell/shell.nix` is uncommented
-  but "Choose Your Shell" still reads as an instruction,
-  rewrite that subsection and the paragraph in "Apply the Configuration" beginning "Zsh is enabled by default",
-  so that they state this repository is Bash-only and that going back means commenting the line out again
-  and dropping `zsh-enabled: false` from `.github/workflows/test.yaml`;
-  then drop `~/.zshenv` and the `zsh/zsh.nix` parenthetical from the startup-file caution.
+- If Zsh was kept (the `issl.zsh.enable = false;` line in `home-modules/shell/shell.nix` is still commented out),
+  leave "Choose Your Shell", the paragraph in "Apply the Configuration" beginning "Zsh is enabled by default",
+  and the startup-file caution as shipped: they already describe Zsh and how to turn it off.
+- If that line is uncommented but "Choose Your Shell" still reads as an instruction,
+  rewrite that subsection to state that this repository is Bash-only and that going back means
+  commenting the line out again, dropping `zsh-enabled: false` from `.github/workflows/test.yaml`,
+  and putting `~/.zshenv` and the `zsh/zsh.nix` parenthetical back into the startup-file caution.
+  Reduce the paragraph in "Apply the Configuration" beginning "Zsh is enabled by default"
+  to one sentence that says so and links to "Choose Your Shell",
+  and drop `~/.zshenv` and the `zsh/zsh.nix` parenthetical from the startup-file caution.
 - If `lint-reuse-compliance.yaml` was deleted but the "REUSE Compliance" subsection still references it,
   remove the entire subsection.
 - If the `if` guard was removed from `lint-reuse-compliance.yaml`
@@ -175,7 +186,8 @@ Update the following as needed:
   (from "This check is scoped…" through "…remove the `if` guard from the `lint-reuse-compliance` job.")
   with a short note that the check now runs in this repository.
 - Review the rest of `README.md` for any remaining template-specific wording
-  (e.g. phrasing that describes the template repository rather than the user's own repository)
+  (e.g. phrasing that describes the template repository rather than the user's own repository,
+  such as "configuration template" or "This template imports" in the introduction)
   and adjust it to reflect that this is now the user's personal configuration repository.
 
 ## 8. Clean up the setup skill (opt-in)
@@ -194,4 +206,6 @@ If yes:
 Show a summary of everything that was changed or skipped.
 Offer to run `prek run --all-files --skip no-commit-to-branch` (or the same via `uvx prek`)
 to verify the edited files pass the hooks (`no-commit-to-branch` must be skipped when working on `main`).
+Without `nix` on `PATH`, also skip `nixfmt`, `deadnix`, and `statix`, which call it;
+the `run-prek-hooks` CI job runs them on the pull request.
 Leave all changes uncommitted; committing and pushing are up to the user unless explicitly requested.

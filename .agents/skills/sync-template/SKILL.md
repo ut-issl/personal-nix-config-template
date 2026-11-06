@@ -28,7 +28,7 @@ a remote named `upstream` outranks `origin`, and `gh` would silently act on the 
 
 Where the template and this repository share content, the merge settles it:
 intervene only to resolve what Git reports as conflicting.
-Step 7 names the single exception, where a clean merge can undo a decision this repository already made.
+Step 7 names the only exceptions, where a clean merge can undo a decision this repository already made.
 
 **Where the template has no counterpart, the merge settled nothing.**
 
@@ -62,7 +62,9 @@ Its base has not reached `main` yet, so a second sync would repeat the same merg
 ## 2. Work out the base to merge from
 
 This step only decides which commit the base is; step 4 puts it in place.
-Run it from `main`, not behind `origin`, since step 4 branches from `HEAD`.
+Run it from `main`, not behind `origin`, since step 4 branches from `HEAD`:
+after `git fetch --prune origin`, `git merge-base --is-ancestor origin/main HEAD` has to succeed,
+and otherwise ask the user to update `main` first.
 The merge needs a clean working tree, so ask the user to commit or stash anything outstanding first.
 
 Add the remote unless one already points at the template, in which case use that name throughout.
@@ -126,7 +128,13 @@ If there is nothing new, say so and stop.
 ## 4. Merge
 
 An earlier run leaves the branch behind, locally where `git switch -c` refuses to recreate it,
-or on `origin` alone where nothing stops it, so look for both before doing anything else.
+or on `origin` alone where nothing stops it, so look for both before doing anything else:
+
+```sh
+git branch --list chore/sync-template
+git branch --remotes --list origin/chore/sync-template
+```
+
 Either is safe to overwrite once its sync has landed, which is true when `main` carries the same `.template-base`:
 
 ```sh
@@ -137,6 +145,8 @@ git show <the leftover branch>:.template-base
 Do not test this with `--is-ancestor`, which only a merge-commit landing satisfies.
 `git show` reports `fatal:` where the file does not exist, which counts as differing rather than as breakage.
 When the two differ, stop and ask: the branch holds conflict resolutions that never reached `main`.
+When they agree, delete a local leftover with `git branch -D chore/sync-template` before the commands below;
+a leftover on `origin` alone is overwritten by the push in step 9.
 
 The graft below makes the template an ordinary merge source; step 8 folds it away again.
 
@@ -160,6 +170,9 @@ Confirm it first with `git merge-base --is-ancestor <it> HEAD`, the containment 
 ## 5. Resolve the conflicts
 
 Resolve only what Git reports as conflicting, and leave everything else exactly as the merge produced it.
+Read the merge output as well as `git status`:
+a `CONFLICT` line that leaves no unmerged path behind, such as `directory rename split`,
+means Git left files this repository added in a directory the template moved, and step 6 decides where they go.
 Taking one side of a conflict wholesale can leave a hunk the merge placed cleanly in the same file contradicting it;
 read the resolved file through once, and drop only what the side you chose already says.
 Anything not covered below is a genuine content conflict: read both sides and explain the choice to the user.
@@ -175,8 +188,11 @@ Keep them together; never take the structural change while restoring the old ver
 
 ### Wording specific to this repository
 
-Keep this repository's version: its name, its badge URLs, and anything describing it as a personal configuration.
+Keep this repository's version: its name, its badge URLs, and anything describing it as a personal configuration,
+in `README.md` and in the `description` of `flake.nix` alike.
 The same holds for the sections `repo-setup` rewrote to match the choices made during setup.
+Where the template's side of the same hunk also changes what the wording says, such as the name of a renamed project,
+carry that change into this repository's wording rather than dropping it.
 
 ### A copyright header
 
@@ -262,6 +278,7 @@ nix eval --apply 'map (p: p.name)' --json --impure .#homeConfigurations.user.con
 ```
 
 Run it for each configuration the mechanism distinguishes, and hold the results against what the distinction promises;
+an output that fails to evaluate is a result as well, so record the error and show it with the verdicts;
 content in an output the distinction promises to keep it out of is a verdict the crossing got wrong,
 whichever file declares it.
 Run it again once the edits are in, so the step 9 summary reports what the outputs became and not only what they were.
@@ -296,11 +313,21 @@ When a version pin changed for a tool whose hook was skipped,
 check its configuration by hand for a constraint that the pin no longer satisfies.
 
 One more failure has no command behind it: wording that assumes this repository is still in its template state.
-`repo-setup` rewrote the README sections falsified by the choices made during setup.
+`repo-setup` rewrote the README sections falsified by the choices made during setup, and the `flake.nix` description.
 Step 7 of that skill lists them, and its step 8 removes the entry for the skill itself once it is deleted.
 Setup may have deleted the skill: read it from the template remote, with `git show template/main:.agents/skills/repo-setup/SKILL.md`.
 A later merge can bring the template's original wording back; where it did, restore what this repository had.
-This is the one place to overrule what a clean merge decided:
+
+The choices `repo-setup` made in configuration files can come back the same way,
+when the template moves or rewrites the line that a choice deleted or uncommented:
+the `enabled: false` line of `.github/renovate.json5`, the three Conventional Commits blocks,
+the `if` guard of the REUSE workflow, the shell choice in `home-modules/shell/shell.nix` and `.github/workflows/test.yaml`,
+and the `home-bash-only` check in `flake.nix`.
+Compare each against `<branch point>` (e.g. `git diff <branch point> -- .github/renovate.json5`),
+and where the merge reverted one, restore the choice in the form the template now gives that content:
+a block this repository had uncommented stays uncommented, in its new form.
+
+These are the only places to overrule what a clean merge decided:
 step 5 drops only what the side it chose already says, and step 6 edits only what the merge never reached.
 
 A code block illustrating file contents is not covered by that.
@@ -339,6 +366,10 @@ Commit the merge with a Conventional Commits subject,
 and explain in the body what was taken and why anything was resolved against the template.
 Mark the subject breaking when the sync withdraws or renames something the user applies by name,
 since the command they have been running stops working.
+Mark it breaking as well when that command keeps working but stops doing what it did:
+when content moves from the output a host applies to another one,
+so that the host has to apply a different output to keep it,
+or when a placement this repository's modules relied on now fails to evaluate.
 
 Then fold the merge into a single ordinary commit, which keeps that tree and that message:
 
