@@ -125,7 +125,8 @@ Apply the README's conventions:
 A `programs.<tool>` module can do more than install the tool:
 it can take over a configuration file as a read-only link, or turn on integrations such as shell key bindings by default.
 The existing setup already steers around this where it matters:
-the shared environment installs Git as a package only and leaves the Git configuration to the user,
+the shared environment sets Git up with `home.packages` and a file under `~/.config/issl` rather than `programs.git`,
+so that `~/.config/git/config` stays the user's,
 and the Claude Code recipe leaves `programs.claude-code.settings` unset,
 since Claude Code writes `~/.claude/settings.json` itself.
 Codex writes its `config.toml` the same way, which `programs.codex.settings` would make read-only.
@@ -163,8 +164,14 @@ Then validate:
   nix build --impure .#homeConfigurations.user.activationPackage
   ```
 
-  For a desktop-only change, build `.#homeConfigurations.user-desktop.activationPackage` as well,
-  and compare the two to confirm that the change stays out of `.#user`.
+  For a desktop-only change, also build the desktop configuration into a second link,
+  and compare the two to confirm that the change stays out of `.#user`:
+
+  ```sh
+  nix build --impure -o result-desktop .#homeConfigurations.user-desktop.activationPackage
+  diff -r result/home-files result-desktop/home-files
+  diff <(ls result/home-path/bin) <(ls result-desktop/home-path/bin)
+  ```
 
   The build result shows what the configuration actually produces:
 
@@ -173,7 +180,7 @@ Then validate:
     so a deployed file can be compared against its source with `cmp`.
   - `result/activate` is the activation script that Home Manager runs on `switch`.
 
-  Remove the `result` symlink when done.
+  Remove the `result` symlink (and `result-desktop`) when done.
 
 ## 7. Offer to apply
 
