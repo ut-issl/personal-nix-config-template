@@ -168,17 +168,16 @@ Update the following as needed:
 - If all three Conventional Commits blocks are uncommented (both CI jobs and the `commitizen` pre-commit hook)
   but the "Conventional Commits" subsection still contains the sentence that begins with "This is opt-in:",
   replace it with a note that the enforcement is enabled (the CI jobs and the pre-commit hook are already configured).
-- If the `home-bash-only` check is gone from `flake.nix` but "Choose Your Shell" still reads as an instruction,
-  rewrite that subsection to state which shell this repository uses and how to switch to the other one,
-  and reduce the paragraph in "Apply the Configuration" beginning "Zsh is enabled by default"
-  to one sentence that names the shell and links to "Choose Your Shell":
-  - Zsh (the `issl.zsh.enable = false;` line in `home-modules/shell/shell.nix` is still commented out):
-    turning Zsh off means uncommenting that line and adding `zsh-enabled: false` to `.github/workflows/test.yaml`.
-    Leave the startup-file caution as it is.
-  - Bash only (that line is uncommented):
-    going back means commenting the line out again, dropping `zsh-enabled: false` from `.github/workflows/test.yaml`,
-    and putting `~/.zshenv` and the `zsh/zsh.nix` parenthetical back into the startup-file caution,
-    from which this step drops them.
+- If Zsh was kept (the `issl.zsh.enable = false;` line in `home-modules/shell/shell.nix` is still commented out),
+  leave "Choose Your Shell", the paragraph in "Apply the Configuration" beginning "Zsh is enabled by default",
+  and the startup-file caution as shipped: they already describe Zsh and how to turn it off.
+- If that line is uncommented but "Choose Your Shell" still reads as an instruction,
+  rewrite that subsection to state that this repository is Bash-only and that going back means
+  commenting the line out again, dropping `zsh-enabled: false` from `.github/workflows/test.yaml`,
+  and putting `~/.zshenv` and the `zsh/zsh.nix` parenthetical back into the startup-file caution.
+  Reduce the paragraph in "Apply the Configuration" beginning "Zsh is enabled by default"
+  to one sentence that says so and links to "Choose Your Shell",
+  and drop `~/.zshenv` and the `zsh/zsh.nix` parenthetical from the startup-file caution.
 - If `lint-reuse-compliance.yaml` was deleted but the "REUSE Compliance" subsection still references it,
   remove the entire subsection.
 - If the `if` guard was removed from `lint-reuse-compliance.yaml`
