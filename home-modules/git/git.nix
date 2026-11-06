@@ -3,20 +3,20 @@
 #
 # SPDX-License-Identifier: MIT OR Apache-2.0
 
-{ config, ... }:
+{ config, lib, ... }:
 
 let
   isslConfigHome = "${config.xdg.configHome}/issl";
 in
 {
+  xdg.configFile."git/config".text = lib.mkBefore (
+    lib.generators.toGitINI {
+      include.path = "${isslConfigHome}/git/.gitconfig";
+    }
+  );
+
   programs.git = {
     enable = true;
-
-    includes = [
-      {
-        path = "${isslConfigHome}/git/.gitconfig";
-      }
-    ];
 
     settings = {
       # Personal identity:
