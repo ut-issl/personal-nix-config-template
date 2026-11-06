@@ -184,7 +184,8 @@ Keep them together; never take the structural change while restoring the old ver
 
 ### Wording specific to this repository
 
-Keep this repository's version: its name, its badge URLs, and anything describing it as a personal configuration.
+Keep this repository's version: its name, its badge URLs, and anything describing it as a personal configuration,
+in `README.md` and in the `description` of `flake.nix` alike.
 The same holds for the sections `repo-setup` rewrote to match the choices made during setup.
 Where the template's side of the same hunk also changes what the wording says, such as the name of a renamed project,
 carry that change into this repository's wording rather than dropping it.
@@ -308,7 +309,7 @@ When a version pin changed for a tool whose hook was skipped,
 check its configuration by hand for a constraint that the pin no longer satisfies.
 
 One more failure has no command behind it: wording that assumes this repository is still in its template state.
-`repo-setup` rewrote the README sections falsified by the choices made during setup.
+`repo-setup` rewrote the README sections falsified by the choices made during setup, and the `flake.nix` description.
 Step 7 of that skill lists them, and its step 8 removes the entry for the skill itself once it is deleted.
 Setup may have deleted the skill: read it from the template remote, with `git show template/main:.agents/skills/repo-setup/SKILL.md`.
 A later merge can bring the template's original wording back; where it did, restore what this repository had.
