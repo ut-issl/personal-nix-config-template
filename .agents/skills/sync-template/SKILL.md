@@ -129,8 +129,9 @@ An earlier run leaves the branch behind, locally where `git switch -c` refuses t
 or on `origin` alone where nothing stops it, so look for both before doing anything else:
 
 ```sh
+git fetch --prune origin
 git branch --list chore/sync-template
-git ls-remote --heads origin chore/sync-template
+git branch --remotes --list origin/chore/sync-template
 ```
 
 Either is safe to overwrite once its sync has landed, which is true when `main` carries the same `.template-base`:
