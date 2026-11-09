@@ -105,7 +105,8 @@ Linting the PR title is especially useful with squash merging, since the PR titl
 
 If the user opts in, uncomment all of the following blocks:
 
-- the `lint-commit-messages` job in `.github/workflows/ci.yaml`
+- the `lint-commit-messages` job in `.github/workflows/ci.yaml`,
+  together with its entry in the `needs` of the `check-ci-results` job
 - the `lint-pull-request-title` job in `.github/workflows/manage-pull-requests.yaml`
 - the `commitizen` repo block in `.pre-commit-config.yaml`
 
@@ -159,13 +160,16 @@ Update the following as needed:
 - Check the "Development Tooling" section intro sentence
   "Pre-commit hooks are part of the everyday workflow, while Renovate and Conventional Commits enforcement are opt-in."
   If the actual state of Renovate (`.github/renovate.json5`) or Conventional Commits
-  (the CI jobs and `commitizen` block) no longer matches the "opt-in" claim,
+  (the CI jobs, the `lint-commit-messages` entry in the `needs` of `check-ci-results`, and the `commitizen` block)
+  no longer matches the "opt-in" claim,
   update the sentence to reflect which features are now enabled and which remain opt-in.
 - If Renovate was enabled (no `enabled: false` line in `.github/renovate.json5`)
   but the "Renovate" subsection still says "It is disabled by default",
   replace that sentence with a note that Renovate is enabled
   and the Renovate GitHub App must be installed for this repository to take effect.
-- If all three Conventional Commits blocks are uncommented (both CI jobs and the `commitizen` pre-commit hook)
+- If all three Conventional Commits blocks are uncommented
+  (both CI jobs with the `lint-commit-messages` entry in the `needs` of `check-ci-results`,
+  and the `commitizen` pre-commit hook)
   but the "Conventional Commits" subsection still contains the sentence that begins with "This is opt-in:",
   replace it with a note that the enforcement is enabled (the CI jobs and the pre-commit hook are already configured).
 - If Zsh was kept (the `issl.zsh.enable = false;` line in `home-modules/shell/shell.nix` is still commented out),

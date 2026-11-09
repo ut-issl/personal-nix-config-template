@@ -379,6 +379,8 @@ Commit messages and pull request titles can be checked against [Conventional Com
 This is opt-in: uncomment [`lint-commit-messages` in `ci.yaml`](.github/workflows/ci.yaml),
 [`lint-pull-request-title` in `manage-pull-requests.yaml`](.github/workflows/manage-pull-requests.yaml),
 and the `commitizen` hooks in [`.pre-commit-config.yaml`](.pre-commit-config.yaml) to enable it.
+Also uncomment the `lint-commit-messages` entry in the `needs` of the `check-ci-results` job,
+so that a failure of that job also fails `check-ci-results`.
 Linting the PR title is especially useful with squash merging,
 since the PR title becomes the subject of the squashed commit by default.
 
