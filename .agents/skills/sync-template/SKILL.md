@@ -326,6 +326,10 @@ and the `home-bash-only` check in `flake.nix`.
 Compare each against `<branch point>` (e.g. `git diff <branch point> -- .github/renovate.json5`),
 and where the merge reverted one, restore the choice in the form the template now gives that content:
 a block this repository had uncommented stays uncommented, in its new form.
+The `lint-commit-messages` block in `.github/workflows/ci.yaml`
+includes its entry in the `needs` of the `check-ci-results` job.
+Where this repository has the `lint-commit-messages` job uncommented but that entry is still commented,
+as when the merge first brings the entry in, uncomment the entry as well.
 
 These are the only places to overrule what a clean merge decided:
 step 5 drops only what the side it chose already says, and step 6 edits only what the merge never reached.

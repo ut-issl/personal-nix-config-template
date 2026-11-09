@@ -6,29 +6,52 @@ on:
       - opened
       - synchronize
       - reopened
-    paths:
-      - '.github/workflows/test.yaml'
-      - 'flake.nix'
-      - 'flake.lock'
-      - 'home-modules/**'
   push:
     branches:
       - 'main'
-    paths:
-      - '.github/workflows/test.yaml'
-      - 'flake.nix'
-      - 'flake.lock'
-      - 'home-modules/**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+defaults:
+  run:
+    shell: bash
+
 permissions: {}
 
 jobs:
+  determine-changes:
+    name: Determine changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    outputs:
+      test: ${{ steps.changed-files.outputs.test_any_changed }}
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Determine changed files
+        id: changed-files
+        uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96 # v47.0.6
+        with:
+          files_yaml: |
+            test:
+              - 'home-modules/**'
+              - 'flake.nix'
+              - 'flake.lock'
+              - '.github/workflows/test.yaml'
+
   user-repo:
     name: Test config-repository-based setup
+    needs: determine-changes
+    if: needs.determine-changes.outputs.test == 'true'
     strategy:
       fail-fast: false
       matrix:
@@ -51,3 +74,29 @@ jobs:
       user-ref: ${{ github.sha }}
       override-issl-input: false
       timeout-minutes: 10
+
+  check-test-results:
+    name: Check test results
+    needs:
+      - determine-changes
+      - user-repo
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check the job results
+        env:
+          JOB_RESULTS: ${{ toJSON(needs) }}
+        run: |
+          failed_jobs="$(jq --raw-output '
+              to_entries[]
+              | select(.value.result != "success" and .value.result != "skipped")
+              | "\(.key) finished with \(.value.result)."
+            ' <<< "${JOB_RESULTS}")"
+          if [[ -n ${failed_jobs} ]]; then
+            while IFS= read -r failed_job; do
+              echo "::error title=check-test-results::${failed_job}"
+            done <<< "${failed_jobs}"
+            exit 1
+          fi
