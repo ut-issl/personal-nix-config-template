@@ -23,8 +23,8 @@ The ISSL shared files are deployed under `~/.config/issl` by the imported shared
 The personal modules source or include those files from the Home Manager-managed user files.
 
 For how this path fits into the shared environment, and for what that shared module provides, see
-[setup with a personal config repository](https://github.com/ut-issl/issl-environment/blob/v0.11.0/docs/11-setup-with-a-personal-config-repository.md).
-For the platforms the shared environment supports, see [supported platforms](https://github.com/ut-issl/issl-environment/blob/v0.11.0/docs/10-user-guide.md#supported-platforms).
+[setup with a personal config repository](https://github.com/ut-issl/issl-environment/blob/v0.11.2/docs/11-setup-with-a-personal-config-repository.md).
+For the platforms the shared environment supports, see [supported platforms](https://github.com/ut-issl/issl-environment/blob/v0.11.2/docs/10-user-guide.md#supported-platforms).
 
 > [!WARNING]
 > This repository is an early-stage prototype and is under active development.
@@ -42,7 +42,7 @@ then follow the steps below in it.
 Run the shared host bootstrap script:
 
 ```bash
-bash <(curl -fsSL https://github.com/ut-issl/issl-environment/releases/download/v0.11.0/bootstrap-host.sh)
+bash <(curl -fsSL https://github.com/ut-issl/issl-environment/releases/download/v0.11.2/bootstrap-host.sh)
 ```
 
 The bootstrap script installs Nix and starts `nix-daemon` on systems without systemd.
@@ -243,7 +243,7 @@ For example, `home-modules/media/media.nix`:
 
 > [!NOTE]
 > The shared ISSL configuration enables `allowUnfree`, so unfree packages install without extra setup.
-> See [package management practices](https://github.com/ut-issl/issl-environment/blob/v0.11.0/docs/13-package-management-practices.md#unfree-packages).
+> See [package management practices](https://github.com/ut-issl/issl-environment/blob/v0.11.2/docs/13-package-management-practices.md#unfree-packages).
 
 The directory and the file have to carry the same name.
 A directory holding no `<name>.nix`, and a Nix file placed directly under `home-modules/`,
@@ -299,7 +299,7 @@ Run it again whenever a switch reports that the drivers need an update.
 
 > [!NOTE]
 > Applications the desktop already provides, such as the browser and the mail client, are best left as they are.
-> See [package management practices](https://github.com/ut-issl/issl-environment/blob/v0.11.0/docs/13-package-management-practices.md#gui-applications) for the other cases that are better left to the distribution.
+> See [package management practices](https://github.com/ut-issl/issl-environment/blob/v0.11.2/docs/13-package-management-practices.md#gui-applications) for the other cases that are better left to the distribution.
 
 ## Apply and Maintain Your Configuration
 
