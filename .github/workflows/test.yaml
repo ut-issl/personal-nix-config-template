@@ -48,7 +48,7 @@ jobs:
               - 'flake.lock'
               - '.github/workflows/test.yaml'
 
-  user-repo:
+  repository-based:
     name: Test config-repository-based setup
     needs: determine-changes
     if: needs.determine-changes.outputs.test == 'true'
@@ -79,7 +79,7 @@ jobs:
     name: Check test results
     needs:
       - determine-changes
-      - user-repo
+      - repository-based
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 10

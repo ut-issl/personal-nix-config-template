@@ -179,7 +179,7 @@ If you want a Bash-only environment, uncomment the line in [`home-modules/shell/
 issl.zsh.enable = false;
 ```
 
-Then add `zsh-enabled: false` to the `with:` block of the `user-repo` job in [`.github/workflows/test.yaml`](.github/workflows/test.yaml).
+Then add `zsh-enabled: false` to the `with:` block of the `repository-based` job in [`.github/workflows/test.yaml`](.github/workflows/test.yaml).
 Without it the environment tests still look for Zsh and fail.
 
 ### Extend an Existing Module

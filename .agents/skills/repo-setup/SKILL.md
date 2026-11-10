@@ -53,7 +53,7 @@ Ask which shell the user wants.
 For a Bash-only environment:
 
 - Uncomment the `issl.zsh.enable = false;` line in `home-modules/shell/shell.nix`.
-- Add `zsh-enabled: false` to the `with:` block of the `user-repo` job in `.github/workflows/test.yaml`,
+- Add `zsh-enabled: false` to the `with:` block of the `repository-based` job in `.github/workflows/test.yaml`,
   so that the environment tests expect a Bash-only result.
 
 Mention that `home-modules/zsh/zsh.nix` stays in place but takes effect only when Zsh is enabled,
