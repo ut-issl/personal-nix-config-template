@@ -65,23 +65,15 @@
           ]
           ++ extraModules;
         };
-      exampleNames = nixpkgs.lib.optionals (builtins.pathExists ./examples) (
-        builtins.attrNames (
-          nixpkgs.lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./examples)
-        )
-      );
-      exampleModules =
-        name:
-        let
-          dir = ./examples + "/${name}";
-        in
-        map (file: dir + "/${file}") (
-          builtins.attrNames (
-            nixpkgs.lib.filterAttrs (file: type: type == "regular" && nixpkgs.lib.hasSuffix ".nix" file) (
-              builtins.readDir dir
-            )
-          )
-        );
+      mkCheckArgs =
+        system: args:
+        {
+          inherit system;
+          username = "user";
+          homeDirectory = "/tmp/user-home";
+        }
+        // args;
+      mkCheck = system: args: (mkHomeConfiguration (mkCheckArgs system args)).activationPackage;
     in
     {
       packages = forAllSystems (system: {
@@ -94,27 +86,22 @@
         user-desktop = mkHomeConfiguration { enableDesktop = true; };
       };
 
+      lib = {
+        inherit mkCheck;
+      };
+
       formatter = forAllSystems (system: (mkPkgs system).nixfmt);
 
       checks = forAllSystems (
         system:
         let
-          mkArgs =
-            args:
-            {
-              inherit system;
-              username = "user";
-              homeDirectory = "/tmp/user-home";
-            }
-            // args;
-          mkCheck = args: (mkHomeConfiguration (mkArgs args)).activationPackage;
-          mkConfig = args: (mkHomeConfiguration (mkArgs args)).config;
+          mkConfig = args: (mkHomeConfiguration (mkCheckArgs system args)).config;
         in
         {
-          home = mkCheck { };
-          home-desktop = mkCheck { enableDesktop = true; };
-          home-bash-only = mkCheck { extraModules = [ { issl.zsh.enable = false; } ]; };
-          home-desktop-gpu = mkCheck {
+          home = mkCheck system { };
+          home-desktop = mkCheck system { enableDesktop = true; };
+          home-bash-only = mkCheck system { extraModules = [ { issl.zsh.enable = false; } ]; };
+          home-desktop-gpu = mkCheck system {
             enableDesktop = true;
             extraModules = [ { targets.genericLinux.gpu.enable = true; } ];
           };
@@ -124,14 +111,6 @@
               "local.desktop.enable is switched by the configuration you apply, not by a definition in a module.";
             (mkPkgs system).emptyFile;
         }
-        // nixpkgs.lib.genAttrs (map (name: "example-${name}") exampleNames) (
-          check:
-          mkCheck {
-            enableDesktop = true;
-            includeUserModules = false;
-            extraModules = exampleModules (nixpkgs.lib.removePrefix "example-" check);
-          }
-        )
       );
     };
 }

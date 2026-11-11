@@ -496,6 +496,10 @@ jobs:
       - name: Check the flake
         run: nix flake check --all-systems --show-trace
 
+      - name: Check the recipes
+        if: github.repository == 'ut-issl/personal-nix-config-template'
+        run: nix flake check ./examples --all-systems --no-write-lock-file --show-trace
+
   format-python:
     name: Format Python
     needs: determine-changes
