@@ -44,7 +44,6 @@
           username ? requireEnv "USER",
           homeDirectory ? requireEnv "HOME",
           enableDesktop ? false,
-          includeUserModules ? true,
           extraModules ? [ ],
         }:
         let
@@ -54,7 +53,7 @@
           inherit pkgs;
           modules = [
             issl.homeModules.default
-            (if includeUserModules then ./home-modules else ./home-modules/base.nix)
+            ./home-modules
             {
               local.desktop.enable = enableDesktop;
               home = {

@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: MIT OR Apache-2.0
 
 {
-  description = "Checks that build every recipe against the shared configuration";
+  description = "Checks that build every recipe on top of the shared configuration and the modules under home-modules";
 
   inputs.root.url = "path:..";
 
@@ -30,7 +30,6 @@
           name: _:
           root.lib.mkCheck system {
             enableDesktop = true;
-            includeUserModules = false;
             extraModules = fragments name;
           }
         ) recipes
