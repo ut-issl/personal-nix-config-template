@@ -28,14 +28,11 @@
         system:
         lib.mapAttrs (
           name: _:
-          (root.lib.mkHomeConfiguration {
-            inherit system;
-            username = "user";
-            homeDirectory = "/tmp/user-home";
+          root.lib.mkCheck system {
             enableDesktop = true;
             includeUserModules = false;
             extraModules = fragments name;
-          }).activationPackage
+          }
         ) recipes
       );
     };

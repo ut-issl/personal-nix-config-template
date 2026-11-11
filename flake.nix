@@ -65,6 +65,15 @@
           ]
           ++ extraModules;
         };
+      mkCheckArgs =
+        system: args:
+        {
+          inherit system;
+          username = "user";
+          homeDirectory = "/tmp/user-home";
+        }
+        // args;
+      mkCheck = system: args: (mkHomeConfiguration (mkCheckArgs system args)).activationPackage;
     in
     {
       packages = forAllSystems (system: {
@@ -78,7 +87,7 @@
       };
 
       lib = {
-        inherit mkHomeConfiguration;
+        inherit mkCheck;
       };
 
       formatter = forAllSystems (system: (mkPkgs system).nixfmt);
@@ -86,22 +95,13 @@
       checks = forAllSystems (
         system:
         let
-          mkArgs =
-            args:
-            {
-              inherit system;
-              username = "user";
-              homeDirectory = "/tmp/user-home";
-            }
-            // args;
-          mkCheck = args: (mkHomeConfiguration (mkArgs args)).activationPackage;
-          mkConfig = args: (mkHomeConfiguration (mkArgs args)).config;
+          mkConfig = args: (mkHomeConfiguration (mkCheckArgs system args)).config;
         in
         {
-          home = mkCheck { };
-          home-desktop = mkCheck { enableDesktop = true; };
-          home-bash-only = mkCheck { extraModules = [ { issl.zsh.enable = false; } ]; };
-          home-desktop-gpu = mkCheck {
+          home = mkCheck system { };
+          home-desktop = mkCheck system { enableDesktop = true; };
+          home-bash-only = mkCheck system { extraModules = [ { issl.zsh.enable = false; } ]; };
+          home-desktop-gpu = mkCheck system {
             enableDesktop = true;
             extraModules = [ { targets.genericLinux.gpu.enable = true; } ];
           };
