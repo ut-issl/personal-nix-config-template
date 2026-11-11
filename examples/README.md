@@ -25,5 +25,6 @@ Every fragment is evaluated by `nix flake check`, so a recipe that no longer wor
 
 - [`claude-code`](claude-code/) — install [Claude Code](https://code.claude.com/docs) with instructions, rules, and a skill of your own.
 - [`gnuplot`](gnuplot/) — install [gnuplot](http://www.gnuplot.info) with a startup file of plotting defaults.
+- [`latex`](latex/) — install [TeX Live](https://tug.org/texlive/) with Japanese support and a latexmk configuration file.
 - [`pdf`](pdf/) — install a command-line PDF tool on every host and a graphical one on a desktop host.
 - [`starship`](starship/) — replace the shared prompt with [Starship](https://starship.rs).
