@@ -19,9 +19,10 @@ and MIT-0 asks for none to be carried over when you adopt them.
 If your repository enforces REUSE compliance,
 give the module you end up with a header of the same shape as the other modules under `home-modules/`.
 
-The CI of the template builds every recipe against the shared configuration,
-so a recipe that no longer works with it fails there.
-To build them yourself, run `nix flake check ./examples` at the root of this repository.
+The CI of the template builds every recipe on top of the shared configuration and the modules under `home-modules/`,
+so a recipe that no longer works with them fails there.
+To build them yourself in the template, or in your repository before you adopt a recipe,
+run `nix flake check ./examples` at the root of the repository.
 
 ## Recipes
 
