@@ -65,23 +65,6 @@
           ]
           ++ extraModules;
         };
-      exampleNames = nixpkgs.lib.optionals (builtins.pathExists ./examples) (
-        builtins.attrNames (
-          nixpkgs.lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./examples)
-        )
-      );
-      exampleModules =
-        name:
-        let
-          dir = ./examples + "/${name}";
-        in
-        map (file: dir + "/${file}") (
-          builtins.attrNames (
-            nixpkgs.lib.filterAttrs (file: type: type == "regular" && nixpkgs.lib.hasSuffix ".nix" file) (
-              builtins.readDir dir
-            )
-          )
-        );
     in
     {
       packages = forAllSystems (system: {
@@ -92,6 +75,10 @@
       homeConfigurations = {
         user = mkHomeConfiguration { };
         user-desktop = mkHomeConfiguration { enableDesktop = true; };
+      };
+
+      lib = {
+        inherit mkHomeConfiguration;
       };
 
       formatter = forAllSystems (system: (mkPkgs system).nixfmt);
@@ -124,14 +111,6 @@
               "local.desktop.enable is switched by the configuration you apply, not by a definition in a module.";
             (mkPkgs system).emptyFile;
         }
-        // nixpkgs.lib.genAttrs (map (name: "example-${name}") exampleNames) (
-          check:
-          mkCheck {
-            enableDesktop = true;
-            includeUserModules = false;
-            extraModules = exampleModules (nixpkgs.lib.removePrefix "example-" check);
-          }
-        )
       );
     };
 }
