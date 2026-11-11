@@ -60,7 +60,7 @@ Mention that `home-modules/zsh/zsh.nix` stays in place but takes effect only whe
 so undoing both edits brings Zsh back.
 
 To keep Zsh, leave `home-modules/shell/shell.nix` as it is:
-its commented line is where Zsh is turned off later, and recipes under `examples/` add their lines to that file.
+its commented line is where Zsh is turned off later, and the recipes add their lines to that file.
 Mention that turning Zsh off later means uncommenting that line
 and adding `zsh-enabled: false` to `.github/workflows/test.yaml`.
 

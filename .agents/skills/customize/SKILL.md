@@ -63,10 +63,10 @@ Check the usual suspects: `dpkg -S` for `apt`, `~/.cargo/bin` for `cargo install
 Then offer to migrate it into this configuration, except system-level `apt` packages, which stay with `apt`.
 The old installation is removed only at the very end (see step 8).
 
-If a recipe under `examples/` covers the request, follow it instead of working the setup out again.
+If a recipe under `recipes/` covers the request, follow it instead of working the setup out again.
 Its `README.md` states what the setup needs outside this repository,
 and its Nix fragments name the modules their lines belong to.
-Merge those lines into the modules, and leave `examples/` itself untouched:
+Merge those lines into the modules, and leave `recipes/` itself untouched:
 it comes from the template, so edits there conflict on the next sync.
 Copy any file a fragment deploys into the module directory as well, at the relative path that the fragment refers to.
 
