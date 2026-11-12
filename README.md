@@ -369,8 +369,8 @@ The `run-prek-hooks` CI job runs the same hooks on every pull request.
 [Renovate](https://docs.renovatebot.com) is preconfigured in [`.github/renovate.json5`](.github/renovate.json5)
 to track the pinned ISSL environment version, Action SHAs,
 pinned tool versions inside [`ci.yaml`](.github/workflows/ci.yaml), and pre-commit hooks.
-It is disabled by default; to opt in, change the `enabled: false` line to `true` (or remove it),
-and make sure the Renovate GitHub App is installed for the repository.
+It is silent by default: Renovate scans the repository but opens no pull requests or issues.
+To opt in, remove the `mode: 'silent'` line, and make sure the Renovate GitHub App is installed for the repository.
 Some updates are configured to merge automatically,
 which waits for the checks to pass only when they are required (see [Required Status Checks](#required-status-checks)).
 The `validate-renovate-config` CI job checks the configuration whenever it changes.

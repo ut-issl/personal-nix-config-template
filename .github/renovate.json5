@@ -4,7 +4,7 @@
     'config:best-practices',
     ':semanticCommitTypeAll(build)',
   ],
-  enabled: false,
+  mode: 'silent',
   minimumReleaseAge: '3 days',
   labels: [
     'automated',
@@ -221,6 +221,13 @@
       packageNameTemplate: 'yamllint',
     },
   ],
+  lockFileMaintenance: {
+    description: 'Skip the release-age gate, as nix flake update looks up no releases, so its updates carry no release timestamp and would otherwise keep the stability check pending forever; and refresh flake.lock at any time rather than weekly, so that it follows an update of the shared environment as soon as that is merged',
+    minimumReleaseAge: '0 days',
+    schedule: [
+      'at any time',
+    ],
+  },
   packageRules: [
     {
       description: 'Follow full semver release tags of GitHub Actions references, as a moving major tag such as v7 can be picked ahead of its release while minimumReleaseAge holds the release back, leaving a pin comment like # v7',
@@ -273,22 +280,13 @@
       groupName: 'commitizen',
     },
     {
-      description: 'Take only full vX.Y.Z releases of the shared environment without the release-age gate, and re-lock flake.lock in the same branch to match the new pin',
+      description: 'Take only full vX.Y.Z releases of the shared environment without the release-age gate',
       matchDepNames: [
         'ut-issl/issl-environment',
       ],
       allowedVersions: '/^v\\d+\\.\\d+\\.\\d+$/',
       minimumReleaseAge: '0 days',
       groupName: 'issl environment',
-      postUpgradeTasks: {
-        commands: [
-          'nix flake update issl',
-        ],
-        fileFilters: [
-          'flake.lock',
-        ],
-        executionMode: 'branch',
-      },
     },
     {
       description: 'Compare lychee hook versions by their lychee-vX.Y.Z tags, as the default semver-coerced versioning takes them for unstable and never offers a version update',

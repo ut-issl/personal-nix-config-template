@@ -86,18 +86,19 @@ If `uv` is not available either, skipping this step is fine.
 
 ## 4. Enable Renovate (opt-in)
 
-If the `enabled: false` line is already gone from `.github/renovate.json5`, skip this step.
+If the `mode: 'silent'` line is already gone from `.github/renovate.json5`, skip this step.
 
 Explain: Renovate is preconfigured in `.github/renovate.json5` to track the pinned ISSL environment version,
 Action SHAs, tool versions pinned in `.github/workflows/ci.yaml`, and pre-commit hooks.
+Until the user opts in, it runs in silent mode: it scans the repository but opens no pull requests or issues.
 Some updates are configured to merge automatically,
 which waits for the checks to pass only when they are required (see "Required Status Checks" in `README.md`).
 Requiring checks is optional; step 9 points to it.
 
 If the user opts in:
 
-- Delete the `enabled: false,` line from `.github/renovate.json5`.
-- Remind the user that the Renovate GitHub App must be installed for this repository to take effect.
+- Delete the `mode: 'silent',` line from `.github/renovate.json5`.
+- Remind the user that the Renovate GitHub App must be installed for this repository for Renovate to take effect.
 
 ## 5. Enforce Conventional Commits (opt-in)
 
@@ -164,7 +165,7 @@ Update the following as needed:
 - In the intro of the "Development Tooling" section,
   replace "This template ships a few quality and maintenance tools." with
   "This repository ships a few quality and maintenance tools."
-  If Renovate (no `enabled: false` line in `.github/renovate.json5`) or Conventional Commits
+  If Renovate (no `mode: 'silent'` line in `.github/renovate.json5`) or Conventional Commits
   (both CI jobs with the `lint-commit-messages` entry in the `needs` of `check-ci-results`,
   and the `commitizen` pre-commit hook) is enabled,
   replace the sentence that follows with the line for what is enabled, word for word
@@ -184,8 +185,8 @@ Update the following as needed:
   while Renovate is opt-in.
   ```
 
-- If Renovate was enabled but the "Renovate" subsection still says "It is disabled by default",
-  replace the lines from "It is disabled by default" through "…installed for the repository." with:
+- If Renovate was enabled but the "Renovate" subsection still says "It is silent by default",
+  replace the lines from "It is silent by default" through "…installed for the repository." with:
 
   ```markdown
   It is enabled in this repository and takes effect once the Renovate GitHub App is installed for it.
