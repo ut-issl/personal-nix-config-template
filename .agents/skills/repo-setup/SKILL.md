@@ -105,7 +105,9 @@ Recommend opting in.
 If the user opts in:
 
 - Delete the `mode: 'silent',` line from `.github/renovate.json5`.
-- Remind the user that the Renovate GitHub App must be installed for this repository for Renovate to take effect.
+- Remind the user to install the Renovate GitHub App for this repository if it is not installed yet.
+  - Renovate takes effect only with the app.
+  - Word the reminder as conditional rather than as a required step, since the app may well be installed already.
 
 ## 5. Enforce Conventional Commits (opt-in)
 
