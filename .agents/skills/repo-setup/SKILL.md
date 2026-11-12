@@ -30,7 +30,11 @@ confirm with the user that they want to run the setup now before touching anythi
 
 Follow the steps below in order, one step at a time.
 Before each step, briefly explain what it does, then ask the user how to proceed.
-Never enable an opt-in feature without an explicit yes from the user; if the user declines a step, skip it and move on.
+When offering choices, work out the recommended one before presenting them,
+then list it first, whatever order the step lists the options in, and mark it as recommended;
+each step that offers a choice names its recommendation.
+Never enable an opt-in feature without an explicit yes from the user, even a recommended one;
+if the user declines a step, skip it and move on.
 Converse in the language the user writes in, but keep all edits (comments, commit messages, etc.) in English.
 
 ## 1. Configure your Git identity
@@ -48,7 +52,7 @@ Explain: the shared ISSL environment enables Zsh by default, and its Bash config
 This is a repository-wide choice rather than a per-host one,
 on the assumption that the user uses the same shell on every machine.
 
-Ask which shell the user wants.
+Ask which shell the user wants, recommending Zsh.
 
 For a Bash-only environment:
 
@@ -74,15 +78,17 @@ If the Git hooks are already installed
 (`pre-commit`, `commit-msg`, and `pre-push` all exist in the directory that `git rev-parse --git-path hooks` prints),
 skip this step.
 
-Otherwise, ask the user whether to install them now.
+Otherwise, check whether `prek` is on `PATH`, or failing that, whether `uv` is available to run it as `uvx prek`.
+If neither is, tell the user that this step is skipped because neither is available, and move on.
+
+Otherwise, ask the user whether to install them now, recommending yes.
 If yes, run:
 
 ```sh
 prek install
 ```
 
-If `prek` is not on PATH, run the same command via `uvx prek` instead.
-If `uv` is not available either, skipping this step is fine.
+Run the same command via `uvx prek` instead when `prek` is not on `PATH`.
 
 ## 4. Enable Renovate (opt-in)
 
@@ -95,6 +101,7 @@ Some updates are configured to merge automatically,
 which waits for the checks to pass only when they are required (see "Required Status Checks" in `README.md`).
 Requiring checks is optional; step 9 points to it.
 
+Recommend opting in.
 If the user opts in:
 
 - Delete the `mode: 'silent',` line from `.github/renovate.json5`.
@@ -107,6 +114,7 @@ If all three blocks below are already uncommented, skip this step.
 Explain: this enforces [Conventional Commits](https://www.conventionalcommits.org) on commit messages and PR titles via [Commitizen](https://github.com/commitizen-tools/commitizen).
 Linting the PR title is especially useful with squash merging, since the PR title becomes the squashed commit subject.
 
+Recommend opting in.
 If the user opts in, uncomment all of the following blocks:
 
 - the `lint-commit-messages` job in `.github/workflows/ci.yaml`,
@@ -124,14 +132,19 @@ Explain: `.github/workflows/lint-reuse-compliance.yaml` checks [REUSE](https://r
 but its `lint-reuse-compliance` job is guarded to run only in the upstream template repository,
 so it does nothing in this repository and can safely be left in place.
 
-Ask the user which they prefer:
+Check the visibility with `gh repo view <owner>/<repo> --json visibility`,
+taking `<owner>/<repo>` from the `origin` remote as step 7 describes.
+Ask the user whether the repository is public instead
+when `origin` is not set or still points to `ut-issl/personal-nix-config-template`, or when the command fails.
+Recommend enforcing REUSE compliance when the repository is public and deleting the workflow otherwise.
+Ask the user which they prefer.
 
-- Leave it as is (default; nothing to do).
 - Delete `.github/workflows/lint-reuse-compliance.yaml` to drop the workflow entirely.
 - Remove the `if` guard from the `lint-reuse-compliance` job to enforce REUSE compliance in this repository.
   In that case, remind the user that every file they add must carry REUSE-compliant licensing information
   (the `customize` skill adds it to the files it creates),
   and add `.template-base` to the CC0 annotation in `REUSE.toml` when that file exists.
+- Leave it as is (nothing to do).
 
 ## 7. Update README for the new repository
 
@@ -248,7 +261,7 @@ Update the following as needed:
 
 ## 8. Clean up the setup skill (opt-in)
 
-Ask whether to remove this skill now that setup is complete.
+Ask whether to remove this skill now that setup is complete, recommending yes.
 This concerns `repo-setup` only; leave `customize` and `sync-template` in place, since both stay useful afterwards.
 If yes:
 
@@ -278,11 +291,15 @@ Then mention what the user can do outside the repository, as options rather than
   `Lint pull request title` runs on pull requests only, so it appears with the next pull request after that.
   Do not suggest requiring them before then.
 
-Ask whether to run `prek run --all-files --skip no-commit-to-branch` (or the same via `uvx prek`)
+Then check whether `prek` is on `PATH`, or failing that, whether `uv` is available to run it as `uvx prek`.
+If neither is, tell the user that checking the edited files with the hooks is skipped because neither is available,
+and that the `run-prek-hooks` CI job runs them on the pull request.
+
+Otherwise, ask whether to run `prek run --all-files --skip no-commit-to-branch` (or the same via `uvx prek`)
 to verify the edited files pass the hooks (`no-commit-to-branch` must be skipped when working on `main`),
-and run it only on an explicit yes.
-Without `nix` on `PATH`, also skip `nixfmt`, `deadnix`, and `statix`, which call it;
-the `run-prek-hooks` CI job runs them on the pull request.
+recommending yes, and run it only on an explicit yes.
+Without `nix` on `PATH`, also skip `nixfmt`, `deadnix`, and `statix`, which call it,
+and say so when asking, adding that the `run-prek-hooks` CI job runs them on the pull request.
 Do not run the hooks at any earlier point of the setup either:
 some of them, such as `rumdl-check` and `pretty-format-json`, fix files in place.
 Leave all changes uncommitted; committing and pushing are up to the user unless explicitly requested.
