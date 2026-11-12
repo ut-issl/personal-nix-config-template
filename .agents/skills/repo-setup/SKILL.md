@@ -99,7 +99,7 @@ Action SHAs, tool versions pinned in `.github/workflows/ci.yaml`, and pre-commit
 Until the user opts in, it runs in silent mode: it scans the repository but opens no pull requests or issues.
 Some updates are configured to merge automatically,
 which waits for the checks to pass only when they are required (see "Required Status Checks" in `README.md`).
-Requiring checks is optional; step 9 points to it.
+Requiring checks is optional; step 11 points to it.
 
 Recommend opting in.
 If the user opts in:
@@ -274,9 +274,61 @@ If yes:
 - Remove the `repo-setup` entry from the "Agent Skills" section of `README.md`, since it points to the deleted skill.
 - Remove the `.agents/**` and `.claude/**` entries from `REUSE.toml` if no other skills remain there.
 
-## 9. Wrap up
+## 9. Check the edited files with the hooks
 
-Show a summary of everything that was changed or skipped.
+Check whether `prek` is on `PATH`, or failing that, whether `uv` is available to run it as `uvx prek`.
+If neither is, tell the user that checking the edited files with the hooks is skipped because neither is available,
+and that the `run-prek-hooks` CI job runs them on the pull request.
+
+Otherwise, ask whether to run `prek run --all-files --skip no-commit-to-branch` (or the same via `uvx prek`)
+to verify the edited files pass the hooks (`no-commit-to-branch` must be skipped when working on `main`),
+recommending yes, and run it only on an explicit yes.
+Without `nix` on `PATH`, also skip `nixfmt`, `deadnix`, and `statix`, which call it,
+and say so when asking, adding that the `run-prek-hooks` CI job runs them on the pull request.
+Do not run the hooks at any earlier point of the setup either:
+some of them, such as `rumdl-check` and `pretty-format-json`, fix files in place.
+
+## 10. Commit and open a pull request (opt-in)
+
+If no step changed any file, skip this step.
+
+Ask whether to commit the changes on a branch, push it and open a pull request, recommending yes.
+If the user declines, leave all changes uncommitted.
+If yes:
+
+- Create the branch `chore/initial-setup` from the current branch and commit there.
+  - Do so only when the current branch is the default branch and has no commits that `origin` lacks
+    (with `origin` unset, the default branch as it is);
+    otherwise ask the user which base to use.
+  - If `chore/initial-setup` already exists locally or on `origin`, ask the user instead of overwriting it.
+- Commit the changes in one commit per step that changed files, each with a Conventional Commits subject.
+  - Stage only the files this run changed, including the step 8 deletions, and stage whole files rather than hunks.
+  - If anything else is staged or modified, ask the user before committing.
+  - If step 5 changed `.pre-commit-config.yaml`, commit the step 5 changes first,
+    since the hooks refuse to commit while that file has unstaged changes.
+  - Commit the remaining steps in their order.
+  - A file that several steps changed goes into the first of their commits, whose body then mentions the other changes.
+  - A step whose files all went into earlier commits gets no commit of its own.
+  - If step 6 deleted `lint-reuse-compliance.yaml`, commit that deletion together with the step 7 changes,
+    since `README.md` links to the file until step 7 edits it and the `lychee` hook checks every commit.
+  - Files that only step 9 changed go into a last commit of their own.
+  - Without `nix` on `PATH`, set `SKIP=nixfmt,deadnix,statix` for the commits, as step 9 skips them.
+    Mention it in the step 11 summary.
+  - If a hook modifies files and the commit fails, review the changes, stage them and retry the same commit.
+  - Never bypass the hooks with `--no-verify`.
+- If `origin` is not set or still points to `ut-issl/personal-nix-config-template`, stop after the commits.
+- Otherwise, push the branch to `origin`,
+  and open a pull request with `gh pr create`, titled with a Conventional Commits subject.
+  - Pass `--repo <owner>/<repo>`, taken from the `origin` remote URL as step 7 does.
+  - If `chore/initial-setup` was created from a branch other than the default branch, pass that branch with `--base`.
+  - Write the body to a temporary file outside the repository and pass it with `--body-file`.
+  - If `gh` is not available or fails, stop after the push and tell the user to open the pull request themselves.
+- Do not merge the pull request unless the user asks.
+
+## 11. Wrap up
+
+Show a summary of everything that was changed or skipped, and where step 10 left the changes:
+the pull request URL, the branch the changes were committed or pushed to, or a note that they are left uncommitted.
 
 Then mention what the user can do outside the repository, as options rather than required steps:
 
@@ -292,16 +344,3 @@ Then mention what the user can do outside the repository, as options rather than
   and each workflow has run with them.
   `Lint pull request title` runs on pull requests only, so it appears with the next pull request after that.
   Do not suggest requiring them before then.
-
-Then check whether `prek` is on `PATH`, or failing that, whether `uv` is available to run it as `uvx prek`.
-If neither is, tell the user that checking the edited files with the hooks is skipped because neither is available,
-and that the `run-prek-hooks` CI job runs them on the pull request.
-
-Otherwise, ask whether to run `prek run --all-files --skip no-commit-to-branch` (or the same via `uvx prek`)
-to verify the edited files pass the hooks (`no-commit-to-branch` must be skipped when working on `main`),
-recommending yes, and run it only on an explicit yes.
-Without `nix` on `PATH`, also skip `nixfmt`, `deadnix`, and `statix`, which call it,
-and say so when asking, adding that the `run-prek-hooks` CI job runs them on the pull request.
-Do not run the hooks at any earlier point of the setup either:
-some of them, such as `rumdl-check` and `pretty-format-json`, fix files in place.
-Leave all changes uncommitted; committing and pushing are up to the user unless explicitly requested.
