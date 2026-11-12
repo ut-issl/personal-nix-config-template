@@ -498,7 +498,7 @@ jobs:
 
       - name: Check the recipes
         if: github.repository == 'ut-issl/personal-nix-config-template'
-        run: nix flake check ./examples --all-systems --no-write-lock-file --show-trace
+        run: nix flake check ./recipes --all-systems --no-write-lock-file --show-trace
 
   format-python:
     name: Format Python

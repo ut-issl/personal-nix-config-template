@@ -1,4 +1,4 @@
-# Examples
+# Recipes
 
 Optional setups that this template does not apply by default.
 
@@ -22,9 +22,9 @@ give the module you end up with a header of the same shape as the other modules 
 The CI of the template builds every recipe on top of the shared configuration and the modules under `home-modules/`,
 so a recipe that no longer works with them fails there.
 To build them yourself in the template, or in your repository before you adopt a recipe,
-run `nix flake check ./examples` at the root of the repository.
+run `nix flake check ./recipes` at the root of the repository.
 
-## Recipes
+## Available Recipes
 
 - [`claude-code`](claude-code/) — install [Claude Code](https://code.claude.com/docs) with instructions, rules, and a skill of your own.
 - [`gnuplot`](gnuplot/) — install [gnuplot](http://www.gnuplot.info) with a startup file of plotting defaults.

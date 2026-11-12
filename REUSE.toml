@@ -10,7 +10,7 @@
 version = 1
 
 [[annotations]]
-path = ["examples/**"]
+path = ["recipes/**"]
 SPDX-FileCopyrightText = [
   "2026 Intelligent Space Systems Laboratory, The University of Tokyo",
   "2026 Riki Nakamura",
@@ -31,10 +31,10 @@ path = [
   ".shellcheckrc",
   ".typos.toml",
   ".yamllint.yaml",
-  "examples/*/README.md",
-  "examples/README.md",
   "home-modules/.shellcheckrc",
   "lychee.toml",
+  "recipes/*/README.md",
+  "recipes/README.md",
 ]
 SPDX-FileCopyrightText = [
   "2026 Intelligent Space Systems Laboratory, The University of Tokyo",

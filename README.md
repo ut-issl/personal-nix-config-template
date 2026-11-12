@@ -155,7 +155,7 @@ Any change you make here takes effect only after you re-apply your configuration
 
 The `customize` skill can assist with these customizations interactively; see [Agent Skills](#agent-skills).
 
-Recipes for optional setups live in [`examples/`](examples/).
+Recipes for optional setups live in [`recipes/`](recipes/).
 Each recipe says where its lines belong:
 some are merged into the modules you already have, and some become a module of your own.
 
@@ -258,7 +258,7 @@ Such an application is only worth installing on a host you actually use graphica
 so it goes behind `config.local.desktop.enable`, which sends it to `.#user-desktop` and keeps it out of `.#user`.
 [`home-modules/desktop/desktop.nix`](home-modules/desktop/desktop.nix) is already gated and is where it goes by default.
 Where a module of yours already covers the subject, put it there instead and wrap the graphical part in `lib.mkIf config.local.desktop.enable`.
-The [`pdf`](examples/pdf/) recipe shows such a module.
+The [`pdf`](recipes/pdf/) recipe shows such a module.
 
 An application that renders through OpenGL needs one more setting,
 because distributions other than NixOS, such as Ubuntu,
@@ -409,7 +409,7 @@ Conversely, to enforce REUSE compliance in your own repository, remove the `if` 
 The scaffolding provided by this template is licensed under either [MIT](LICENSES/MIT.txt) or [Apache-2.0](LICENSES/Apache-2.0.txt)
 at your option, declared per file following the [REUSE](https://reuse.software) specification (see [REUSE.toml](REUSE.toml)).
 
-The Nix fragments under [`examples/`](examples/), and the files they deploy, are licensed under [MIT-0](LICENSES/MIT-0.txt) instead,
+The Nix fragments under [`recipes/`](recipes/), and the files they deploy, are licensed under [MIT-0](LICENSES/MIT-0.txt) instead,
 so that you can take them into your own modules without carrying a notice along.
 
 Files you add to your personal configuration are yours, and you may license them however you like.
