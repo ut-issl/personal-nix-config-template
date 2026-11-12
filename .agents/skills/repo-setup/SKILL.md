@@ -31,7 +31,8 @@ confirm with the user that they want to run the setup now before touching anythi
 Follow the steps below in order, one step at a time.
 Before each step, briefly explain what it does, then ask the user how to proceed.
 When offering choices, work out the recommended one before presenting them,
-then list it first and mark it as recommended; each step that offers a choice names its recommendation.
+then list it first, whatever order the step lists the options in, and mark it as recommended;
+each step that offers a choice names its recommendation.
 Never enable an opt-in feature without an explicit yes from the user, even a recommended one;
 if the user declines a step, skip it and move on.
 Converse in the language the user writes in, but keep all edits (comments, commit messages, etc.) in English.
