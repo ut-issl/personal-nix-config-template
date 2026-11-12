@@ -320,7 +320,7 @@ A later merge can bring the template's original wording back; where it did, rest
 
 The choices `repo-setup` made in configuration files can come back the same way,
 when the template moves or rewrites the line that a choice deleted or uncommented:
-the `enabled: false` line of `.github/renovate.json5`, the three Conventional Commits blocks,
+the `mode: 'silent'` line of `.github/renovate.json5`, the three Conventional Commits blocks,
 the `if` guard of the REUSE workflow, the shell choice in `home-modules/shell/shell.nix` and `.github/workflows/test.yaml`,
 and the `home-bash-only` check in `flake.nix`.
 Compare each against `<branch point>` (e.g. `git diff <branch point> -- .github/renovate.json5`),
