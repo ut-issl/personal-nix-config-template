@@ -29,16 +29,16 @@
         "nixpkgs-unstable": "nixpkgs-unstable"
       },
       "locked": {
-        "lastModified": 1794462428,
-        "narHash": "sha256-fEuqHIS7dpvrPE5nWQdUYxD7fx64bWMKL7bxhIG1U9s=",
+        "lastModified": 1794465215,
+        "narHash": "sha256-lfH6vDqZYITQVgoFKltn7+kTZdDwqIaIBH6J4NKv+Mk=",
         "owner": "ut-issl",
         "repo": "issl-environment",
-        "rev": "1fb83532e8ace658161a2c3dddbb8d2b70e4f392",
+        "rev": "d34e865b71100245e024f3d3e889c5c72def54fb",
         "type": "github"
       },
       "original": {
         "owner": "ut-issl",
-        "ref": "v0.12.0",
+        "ref": "v0.13.0",
         "repo": "issl-environment",
         "type": "github"
       }
