@@ -28,8 +28,8 @@ jobs:
     permissions:
       contents: read
     outputs:
-      recipe: ${{ steps.changed-files.outputs.recipe_any_changed }}
-      test: ${{ steps.changed-files.outputs.test_any_changed }}
+      recipe: ${{ steps.changed-files.outputs.recipe_any_modified }}
+      test: ${{ steps.changed-files.outputs.test_any_modified }}
 
     steps:
       - name: Check out the repository
@@ -42,6 +42,7 @@ jobs:
         id: changed-files
         uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96 # v47.0.6
         with:
+          output_renamed_files_as_deleted_and_added: true
           files_yaml: |
             recipe:
               - 'recipes/**'
