@@ -273,7 +273,7 @@
       groupName: 'commitizen',
     },
     {
-      description: 'Take only full vX.Y.Z releases of the shared environment, which its pins name, without the release-age gate, as these releases come from the same organization; flake.lock is re-locked in the branch only by self-hosted Renovate',
+      description: 'Take only full vX.Y.Z releases of the shared environment without the release-age gate, and re-lock flake.lock in the same branch to match the new pin',
       matchDepNames: [
         'ut-issl/issl-environment',
       ],
