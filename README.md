@@ -371,6 +371,8 @@ to track the pinned ISSL environment version, Action SHAs,
 pinned tool versions inside [`ci.yaml`](.github/workflows/ci.yaml), and pre-commit hooks.
 It is disabled by default; to opt in, change the `enabled: false` line to `true` (or remove it),
 and make sure the Renovate GitHub App is installed for the repository.
+Some updates are configured to merge automatically,
+which waits for the checks to pass only when they are required (see [Required Status Checks](#required-status-checks)).
 The `validate-renovate-config` CI job checks the configuration whenever it changes.
 
 ### Conventional Commits
@@ -403,6 +405,19 @@ This check is scoped to the template repository itself: an `if` guard on the `li
 so it does nothing in repositories derived from this template and can be left in place.
 If you would rather not keep it, delete [`lint-reuse-compliance.yaml`](.github/workflows/lint-reuse-compliance.yaml).
 Conversely, to enforce REUSE compliance in your own repository, remove the `if` guard from the `lint-reuse-compliance` job.
+
+### Required Status Checks
+
+The CI and Test workflows each end with a job that fails if any other job in the workflow failed or was cancelled:
+`Check CI results` and `Check test results`.
+Where your GitHub plan supports it for this repository,
+require these two checks in a branch ruleset for the default branch instead of listing each job.
+These two checks cover only the CI and Test workflows;
+checks from other workflows, such as `Lint pull request title`, have to be required separately.
+
+When you add a job to [`ci.yaml`](.github/workflows/ci.yaml) or [`test.yaml`](.github/workflows/test.yaml),
+also add it to the `needs` of the `check-ci-results` or `check-test-results` job.
+Otherwise, the new job does not block merging when it fails.
 
 ## License
 
