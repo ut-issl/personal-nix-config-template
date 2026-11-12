@@ -90,6 +90,9 @@ If the `enabled: false` line is already gone from `.github/renovate.json5`, skip
 
 Explain: Renovate is preconfigured in `.github/renovate.json5` to track the pinned ISSL environment version,
 Action SHAs, tool versions pinned in `.github/workflows/ci.yaml`, and pre-commit hooks.
+Some updates are configured to merge automatically,
+which waits for the checks to pass only when they are required (see "Required Status Checks" in `README.md`).
+Requiring checks is optional; step 9 points to it.
 
 If the user opts in:
 
@@ -125,7 +128,8 @@ Ask the user which they prefer:
 - Leave it as is (default; nothing to do).
 - Delete `.github/workflows/lint-reuse-compliance.yaml` to drop the workflow entirely.
 - Remove the `if` guard from the `lint-reuse-compliance` job to enforce REUSE compliance in this repository.
-  In that case, remind the user that every file they add must carry REUSE-compliant licensing information,
+  In that case, remind the user that every file they add must carry REUSE-compliant licensing information
+  (the `customize` skill adds it to the files it creates),
   and add `.template-base` to the CC0 annotation in `REUSE.toml` when that file exists.
 
 ## 7. Update README for the new repository
@@ -157,21 +161,47 @@ Update the following as needed:
   but "Configure Your Git Identity" still tells the reader to uncomment them,
   rewrite that step to say the identity is already set in `home-modules/git/git.nix`, which is where to change it.
 - In `flake.nix`, drop "template" from the `description` (`Personal Home Manager configuration template for …`).
-- Check the "Development Tooling" section intro sentence
-  "Pre-commit hooks are part of the everyday workflow, while Renovate and Conventional Commits enforcement are opt-in."
-  If the actual state of Renovate (`.github/renovate.json5`) or Conventional Commits
-  (the CI jobs, the `lint-commit-messages` entry in the `needs` of `check-ci-results`, and the `commitizen` block)
-  no longer matches the "opt-in" claim,
-  update the sentence to reflect which features are now enabled and which remain opt-in.
-- If Renovate was enabled (no `enabled: false` line in `.github/renovate.json5`)
-  but the "Renovate" subsection still says "It is disabled by default",
-  replace that sentence with a note that Renovate is enabled
-  and the Renovate GitHub App must be installed for this repository to take effect.
-- If all three Conventional Commits blocks are uncommented
+- In the intro of the "Development Tooling" section,
+  replace "This template ships a few quality and maintenance tools." with
+  "This repository ships a few quality and maintenance tools."
+  If Renovate (no `enabled: false` line in `.github/renovate.json5`) or Conventional Commits
   (both CI jobs with the `lint-commit-messages` entry in the `needs` of `check-ci-results`,
-  and the `commitizen` pre-commit hook)
+  and the `commitizen` pre-commit hook) is enabled,
+  replace the sentence that follows with the line for what is enabled, word for word
+  (the comments only label the variants).
+  That sentence is the shipped one,
+  "Pre-commit hooks are part of the everyday workflow, while Renovate and Conventional Commits enforcement are opt-in.",
+  or a variant below that an earlier run left and that no longer matches what is enabled:
+
+  ```markdown
+  <!-- Both enabled -->
+  Pre-commit hooks are part of the everyday workflow, and Renovate and Conventional Commits enforcement are enabled.
+  <!-- Renovate only -->
+  Pre-commit hooks are part of the everyday workflow and Renovate is enabled,
+  while Conventional Commits enforcement is opt-in.
+  <!-- Conventional Commits only -->
+  Pre-commit hooks are part of the everyday workflow and Conventional Commits enforcement is enabled,
+  while Renovate is opt-in.
+  ```
+
+- If Renovate was enabled but the "Renovate" subsection still says "It is disabled by default",
+  replace the lines from "It is disabled by default" through "…installed for the repository." with:
+
+  ```markdown
+  It is enabled in this repository and takes effect once the Renovate GitHub App is installed for it.
+  ```
+
+- If all three Conventional Commits blocks are uncommented
   but the "Conventional Commits" subsection still contains the sentence that begins with "This is opt-in:",
-  replace it with a note that the enforcement is enabled (the CI jobs and the pre-commit hook are already configured).
+  change "can be checked against" in its first sentence to "are checked against",
+  and replace the lines from "This is opt-in:" through "…also fails `check-ci-results`." with:
+
+  ```markdown
+  The checks run in [`lint-commit-messages` in `ci.yaml`](.github/workflows/ci.yaml),
+  [`lint-pull-request-title` in `manage-pull-requests.yaml`](.github/workflows/manage-pull-requests.yaml),
+  and the `commitizen` hooks in [`.pre-commit-config.yaml`](.pre-commit-config.yaml).
+  ```
+
 - If Zsh was kept (the `issl.zsh.enable = false;` line in `home-modules/shell/shell.nix` is still commented out),
   leave "Choose Your Shell", the paragraph in "Apply the Configuration" beginning "Zsh is enabled by default",
   and the startup-file caution as shipped: they already describe Zsh and how to turn it off.
@@ -187,8 +217,29 @@ Update the following as needed:
 - If the `if` guard was removed from `lint-reuse-compliance.yaml`
   but the "REUSE Compliance" subsection still says "This check is scoped to the template repository itself",
   replace the paragraph about the scoping and the `if` guard
-  (from "This check is scoped…" through "…remove the `if` guard from the `lint-reuse-compliance` job.")
-  with a short note that the check now runs in this repository.
+  (from "This check is scoped…" through "…remove the `if` guard from the `lint-reuse-compliance` job.") with:
+
+  ```markdown
+  The check runs in this repository, so every file you add must carry copyright and licensing information,
+  either in an SPDX header or in an annotation in [`REUSE.toml`](REUSE.toml).
+  ```
+
+- Check the clause of the "Required Status Checks" subsection
+  that runs from "checks from other workflows" through "have to be required separately.", over one line or two.
+  Unless it is already the variant below for the current state,
+  replace the whole clause with that variant (the comments only label the variants).
+  The REUSE check runs when `lint-reuse-compliance.yaml` is present without the `if` guard:
+
+  ```markdown
+  <!-- The REUSE check runs, and the lint-pull-request-title job is uncommented -->
+  checks from other workflows, such as `Lint pull request title` and `Lint REUSE compliance`,
+  have to be required separately.
+  <!-- The REUSE check runs, and the lint-pull-request-title job is commented out -->
+  checks from other workflows, such as `Lint REUSE compliance`, have to be required separately.
+  <!-- The REUSE check does not run (as shipped) -->
+  checks from other workflows, such as `Lint pull request title`, have to be required separately.
+  ```
+
 - Review the rest of `README.md` for any remaining template-specific wording
   (e.g. phrasing that describes the template repository rather than the user's own repository,
   such as "configuration template" or "This template imports" in the introduction)
@@ -202,14 +253,35 @@ If yes:
 
 - Delete the `.agents/skills/repo-setup/` directory and the `.claude/skills/repo-setup` symlink,
   and remove `.agents/` and `.claude/` entirely if they are empty afterwards.
+  Delete them with `rm`, not `git rm`, and leave the index alone (no `git reset` either),
+  so that nothing the user has staged is affected.
 - Remove the `repo-setup` entry from the "Agent Skills" section of `README.md`, since it points to the deleted skill.
 - Remove the `.agents/**` and `.claude/**` entries from `REUSE.toml` if no other skills remain there.
 
 ## 9. Wrap up
 
 Show a summary of everything that was changed or skipped.
-Offer to run `prek run --all-files --skip no-commit-to-branch` (or the same via `uvx prek`)
-to verify the edited files pass the hooks (`no-commit-to-branch` must be skipped when working on `main`).
+
+Then mention what the user can do outside the repository, as options rather than required steps:
+
+- Requiring status checks is optional, and possible only where the GitHub plan supports it for this repository.
+  To have checks block merging, require `Check CI results` and `Check test results`
+  in a branch ruleset for the default branch (see "Required Status Checks" in `README.md`).
+- Judge from the repository as it stands, not from which steps ran this time,
+  whether `Lint pull request title` (its job in `.github/workflows/manage-pull-requests.yaml` is uncommented)
+  and `Lint REUSE compliance` (`.github/workflows/lint-reuse-compliance.yaml` is present without the `if` guard)
+  are enabled.
+  Name the enabled ones, and add that they come from workflows outside CI and Test and have to be required separately,
+  and that a ruleset can select them only once the changes that enable them are on the default branch
+  and each workflow has run with them.
+  `Lint pull request title` runs on pull requests only, so it appears with the next pull request after that.
+  Do not suggest requiring them before then.
+
+Ask whether to run `prek run --all-files --skip no-commit-to-branch` (or the same via `uvx prek`)
+to verify the edited files pass the hooks (`no-commit-to-branch` must be skipped when working on `main`),
+and run it only on an explicit yes.
 Without `nix` on `PATH`, also skip `nixfmt`, `deadnix`, and `statix`, which call it;
 the `run-prek-hooks` CI job runs them on the pull request.
+Do not run the hooks at any earlier point of the setup either:
+some of them, such as `rumdl-check` and `pretty-format-json`, fix files in place.
 Leave all changes uncommitted; committing and pushing are up to the user unless explicitly requested.

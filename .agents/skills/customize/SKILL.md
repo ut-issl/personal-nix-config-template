@@ -153,9 +153,32 @@ Read the dotfiles the user wants to port and go through their content together:
 
 Match the style of the existing modules (formatting is enforced by nixfmt via the pre-commit hooks).
 
+When this repository enforces REUSE compliance
+(`.github/workflows/lint-reuse-compliance.yaml` is present
+and its job no longer carries `if: github.repository == 'ut-issl/personal-nix-config-template'`),
+every file the change creates needs copyright and licensing information.
+A file that only changes keeps the information it has, including one that takes in lines from a recipe.
+
+- Give a file that takes comments an SPDX header in the layout `home-modules/git/git.nix` uses,
+  with the holders and license below rather than the ones that file names.
+  Declare a file that cannot take one, such as JSON, in a new `[[annotations]]` table of `REUSE.toml`
+  with those holders and license, not by adding its path to an existing table.
+- A file the user writes is theirs:
+  name `user.name` from `home-modules/git/git.nix` as its only copyright holder, with the current year,
+  and ask the user for the name when it is not set there.
+  For the license, follow the files whose only copyright holder is that name;
+  when there are none yet, or they differ, ask the user which license to use,
+  suggesting `MIT OR Apache-2.0`, which the template uses (see "License" in `README.md`).
+- A file copied from a recipe stays the recipe authors' work:
+  take its holders and license (`MIT-0`) from the `recipes/**` table of `REUSE.toml`,
+  and add the user as a further holder only when they change the copy beyond what the recipe says to fill in.
+- After adding the information, run `reuse download --all` (or `uvx reuse download --all`),
+  which adds the text of each license the files name that `LICENSES/` does not hold yet.
+
 Then validate:
 
 - Run `prek run --files <changed files> --skip no-commit-to-branch` (or via `uvx prek`) and fix what it reports.
+- When REUSE compliance is enforced, also run `reuse lint` (or `uvx reuse lint`), which the hooks do not cover.
 - With Nix, run `nix flake check --show-trace`;
   this builds the activation packages in `checks`, so it also catches build failures.
 - Then build the activation package to inspect the result:
