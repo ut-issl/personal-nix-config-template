@@ -28,6 +28,7 @@ jobs:
     permissions:
       contents: read
     outputs:
+      recipe: ${{ steps.changed-files.outputs.recipe_any_changed }}
       test: ${{ steps.changed-files.outputs.test_any_changed }}
 
     steps:
@@ -42,11 +43,63 @@ jobs:
         uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96 # v47.0.6
         with:
           files_yaml: |
+            recipe:
+              - 'recipes/**'
+              - '!recipes/README.md'
+              - '!recipes/*/README.md'
             test:
               - 'home-modules/**'
               - 'flake.nix'
               - 'flake.lock'
               - '.github/workflows/test.yaml'
+
+  check-flake:
+    name: Check the flake
+    needs: determine-changes
+    if: needs.determine-changes.outputs.test == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@75c75c31ebece974e48ebc36b4ad125bd97bd97b # 31.11.3
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check the flake
+        run: nix flake check --all-systems --show-trace
+
+  check-recipes:
+    name: Check the recipes
+    needs: determine-changes
+    if: >-
+      github.repository == 'ut-issl/personal-nix-config-template'
+      && (needs.determine-changes.outputs.recipe == 'true' || needs.determine-changes.outputs.test == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@75c75c31ebece974e48ebc36b4ad125bd97bd97b # 31.11.3
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check the recipes
+        run: nix flake check ./recipes --all-systems --no-write-lock-file --show-trace
 
   repository-based:
     name: Test config-repository-based setup
@@ -79,6 +132,8 @@ jobs:
     name: Check test results
     needs:
       - determine-changes
+      - check-flake
+      - check-recipes
       - repository-based
     if: always()
     runs-on: ubuntu-latest
