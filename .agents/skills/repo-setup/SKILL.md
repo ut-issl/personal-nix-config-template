@@ -320,6 +320,7 @@ If yes:
 - Otherwise, push the branch to `origin`,
   and open a pull request with `gh pr create`, titled with a Conventional Commits subject.
   - Pass `--repo <owner>/<repo>`, taken from the `origin` remote URL as step 7 does.
+  - If `chore/initial-setup` was created from a branch other than the default branch, pass that branch with `--base`.
   - Write the body to a temporary file outside the repository and pass it with `--body-file`.
   - If `gh` is not available or fails, stop after the push and tell the user to open the pull request themselves.
 - Do not merge the pull request unless the user asks.
