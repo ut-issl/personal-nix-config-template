@@ -354,15 +354,8 @@ recording a commit that was not merged would skip everything between the two, si
 The comment is the only explanation a reader gets at the point of discovery, so keep it.
 Nothing else may live in the file: step 2 reads the first line that is exactly forty hexadecimal characters.
 
-The template does not ship this file, which is why it never conflicts
-and why the template's own `REUSE.toml` does not mention it.
-When `.github/workflows/lint-reuse-compliance.yaml` is present and no longer guarded by `if: github.repository == 'ut-issl/personal-nix-config-template'`,
-add it to the `path` list of the CC0 entry that already covers `flake.lock`, so the same pull request stays compliant,
-unless it is there already:
-
-```toml
-path = ["flake.lock", ".template-base"]
-```
+The template does not ship this file, which is why it never conflicts.
+Its licensing is declared in advance by the CC0 entry of `REUSE.toml`, so the file needs no REUSE edit.
 
 Stage the file along with everything else that was edited, since `git commit` records the index alone
 and would otherwise leave a newly created `.template-base` out of the commit entirely.
