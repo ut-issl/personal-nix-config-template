@@ -144,8 +144,7 @@ Ask the user which they prefer.
 - Delete `.github/workflows/lint-reuse-compliance.yaml` to drop the workflow entirely.
 - Remove the `if` guard from the `lint-reuse-compliance` job to enforce REUSE compliance in this repository.
   In that case, remind the user that every file they add must carry REUSE-compliant licensing information
-  (the `customize` skill adds it to the files it creates),
-  and add `.template-base` to the CC0 annotation in `REUSE.toml` when that file exists.
+  (the `customize` skill adds it to the files it creates).
 - Leave it as is (nothing to do).
 
 ## 7. Update README for the new repository
