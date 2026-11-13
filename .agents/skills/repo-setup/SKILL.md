@@ -174,7 +174,12 @@ Update the following as needed:
   replace `<your-account>/<your-repository>` with `<owner>/<repo>` and `<your-repository>` with `<repo>`.
 - If the `user.name` and `user.email` lines in `home-modules/git/git.nix` are set
   but "Configure Your Git Identity" still tells the reader to uncomment them,
-  rewrite that step to say the identity is already set in `home-modules/git/git.nix`, which is where to change it.
+  replace that step's text from "Edit [`home-modules/git/git.nix`]…" through the end of the `nix` block with:
+
+  ```markdown
+  Your Git identity is already set in [`home-modules/git/git.nix`](home-modules/git/git.nix), which is where to change it.
+  ```
+
 - In `flake.nix`, drop "template" from the `description` (`Personal Home Manager configuration template for …`).
 - In the intro of the "Development Tooling" section,
   replace "This template ships a few quality and maintenance tools." with
@@ -255,10 +260,26 @@ Update the following as needed:
   checks from other workflows, such as `Lint pull request title`, have to be required separately.
   ```
 
-- Review the rest of `README.md` for any remaining template-specific wording
-  (e.g. phrasing that describes the template repository rather than the user's own repository,
-  such as "configuration template" or "This template imports" in the introduction)
-  and adjust it to reflect that this is now the user's personal configuration repository.
+- Replace the remaining wording that describes the template rather than this repository.
+  In each pair below, replace the text of the `-` line with that of the `+` line, word for word,
+  and leave the rest of the README line as it is:
+
+  ```diff
+  - Personal Home Manager configuration template for the ISSL environment.
+  + Personal Home Manager configuration for the ISSL environment.
+  - This template imports the shared configuration from
+  + This repository imports the shared configuration from
+  - This template provides one configuration per kind of host:
+  + This repository provides one configuration per kind of host:
+  - Merges later improvements to this template into your repository.
+  + Merges later improvements to the template into this repository.
+  - This template uses [prek]
+  + This repository uses [prek]
+  - The scaffolding provided by this template is licensed
+  + The scaffolding provided by the template is licensed
+  ```
+
+  Leave the other mentions of the template as they are, since they refer to the template itself.
 
 ## 8. Clean up the setup skill (opt-in)
 
