@@ -2,7 +2,8 @@
 name: repo-setup
 description: >-
   Interactive setup of a personal configuration repository newly created from this template:
-  Git identity check, shell choice, development tooling setup (pre-commit hooks, Renovate, Conventional Commits, REUSE),
+  Git identity check, shell choice, choice of the Ubuntu releases and configurations to test,
+  development tooling setup (pre-commit hooks, Renovate, Conventional Commits, REUSE),
   and README update to match the new repository.
   Use when the user asks to set up, initialize, or bootstrap the repository or its tooling.
   May also be used proactively,
@@ -72,7 +73,30 @@ Either way, delete the `home-bash-only` entry from `checks` in `flake.nix`:
 this repository now runs one shell, so the check would either duplicate `home` or build a configuration nobody here applies.
 Leave the `extraModules` argument of `mkHomeConfiguration` alone; the module list still references it.
 
-## 3. Install pre-commit hooks
+## 3. Choose the Ubuntu releases and configurations to test
+
+Explain: the `repository-based` job in `.github/workflows/test.yaml` applies the configuration on GitHub-hosted runners
+and runs the shared environment tests against it,
+in one job for each pair of an entry in its `os` list and an entry in its `flake-target` list.
+Jobs for a release or a configuration the user never applies only cost CI time.
+`Check the flake` builds every configuration regardless,
+so a configuration dropped from `flake-target` is still built, though not applied or tested.
+
+If each list already has a single entry, skip this step.
+Otherwise nothing records whether an earlier run already chose, so do not skip it:
+show the current entries of both lists,
+and ask which releases the user applies the configuration on and which configurations they apply,
+recommending to keep only those.
+The user may keep several entries in each list, so let them pick more than one rather than a single answer.
+`user` is for a host used without its graphical desktop, and `user-desktop` for one used through it.
+Each list keeps at least one entry.
+If the user is unsure or does not answer, leave the lists as they are.
+
+Delete the entries the user does not keep.
+Mention that a release used later is tested again by adding its entry back
+(see "Environment Tests" in `README.md`), and that step 8 updates the Ubuntu badge in `README.md` to match.
+
+## 4. Install pre-commit hooks
 
 If the Git hooks are already installed
 (`pre-commit`, `commit-msg`, and `pre-push` all exist in the directory that `git rev-parse --git-path hooks` prints),
@@ -90,7 +114,7 @@ prek install
 
 Run the same command via `uvx prek` instead when `prek` is not on `PATH`.
 
-## 4. Enable Renovate (opt-in)
+## 5. Enable Renovate (opt-in)
 
 If the `mode: 'silent'` line is already gone from `.github/renovate.json5`, skip this step.
 
@@ -99,7 +123,7 @@ Action SHAs, tool versions pinned in `.github/workflows/ci.yaml`, and pre-commit
 Until the user opts in, it runs in silent mode: it scans the repository but opens no pull requests or issues.
 Some updates are configured to merge automatically,
 which waits for the checks to pass only when they are required (see "Required Status Checks" in `README.md`).
-Requiring checks is optional; step 11 points to it.
+Requiring checks is optional; step 12 points to it.
 
 Recommend opting in.
 If the user opts in:
@@ -109,7 +133,7 @@ If the user opts in:
   - Renovate takes effect only with the app.
   - Word the reminder as conditional rather than as a required step, since the app may well be installed already.
 
-## 5. Enforce Conventional Commits (opt-in)
+## 6. Enforce Conventional Commits (opt-in)
 
 If all three blocks below are already uncommented, skip this step.
 
@@ -124,9 +148,9 @@ If the user opts in, uncomment all of the following blocks:
 - the `lint-pull-request-title` job in `.github/workflows/manage-pull-requests.yaml`
 - the `commitizen` repo block in `.pre-commit-config.yaml`
 
-The `commitizen` hooks run at the `commit-msg` and `pre-push` stages, which step 3 already installs.
+The `commitizen` hooks run at the `commit-msg` and `pre-push` stages, which step 4 already installs.
 
-## 6. Decide how to handle the REUSE workflow (opt-in)
+## 7. Decide how to handle the REUSE workflow (opt-in)
 
 If `.github/workflows/lint-reuse-compliance.yaml` is already deleted or its `if` guard is already removed, skip this step.
 
@@ -135,7 +159,7 @@ but its `lint-reuse-compliance` job is guarded to run only in the upstream templ
 so it does nothing in this repository and can safely be left in place.
 
 Check the visibility with `gh repo view <owner>/<repo> --json visibility`,
-taking `<owner>/<repo>` from the `origin` remote as step 7 describes.
+taking `<owner>/<repo>` from the `origin` remote as step 8 describes.
 Ask the user whether the repository is public instead
 when `origin` is not set or still points to `ut-issl/personal-nix-config-template`, or when the command fails.
 Recommend enforcing REUSE compliance when the repository is public and deleting the workflow otherwise.
@@ -147,7 +171,7 @@ Ask the user which they prefer.
   (the `customize` skill adds it to the files it creates).
 - Leave it as is (nothing to do).
 
-## 7. Update README for the new repository
+## 8. Update README for the new repository
 
 Now that all opt-in decisions have been made,
 update `README.md` (and the `flake.nix` description) to reflect the actual state of this repository.
@@ -157,7 +181,7 @@ Skip this step entirely if every item below is already up to date.
 Detect the owner and repo from the `origin` remote URL
 (handle both SSH and HTTPS forms, and strip a trailing `.git` suffix if present).
 If `origin` is not set or already matches `ut-issl/personal-nix-config-template`,
-skip the owner/repo-specific items (H1, badges, clone command) but still check the remaining items.
+skip the owner/repo-specific items (H1, CI and Test badges, clone command) but still check the remaining items.
 
 Update the following as needed:
 
@@ -165,6 +189,12 @@ Update the following as needed:
 - In the badge block near the top, find the CI and Test badge lines (the ones whose URLs contain `ut-issl/personal-nix-config-template/actions/workflows/`).
   Replace all four occurrences of `ut-issl/personal-nix-config-template`
   (one in the image URL and one in the link URL of each badge) with the user's `<owner>/<repo>`.
+- If the Ubuntu badge near the top
+  lists other releases than the `os` list of the `repository-based` job in `.github/workflows/test.yaml`,
+  make it list those:
+  replace the part of its image URL between `Ubuntu-` and `-E95420`
+  with the version numbers of the `os` entries (without `ubuntu-`), in the order of the list, joined by `%20%7C%20`.
+  For example, `ubuntu-24.04` and `ubuntu-26.04` give `Ubuntu-24.04%20%7C%2026.04-E95420`.
 - Remove the `[!WARNING]` callout that describes the repository as an early-stage prototype.
   It describes the template, not this repository.
 - Remove the paragraph above the numbered steps of "Getting Started"
@@ -281,7 +311,7 @@ Update the following as needed:
 
   Leave the other mentions of the template as they are, since they refer to the template itself.
 
-## 8. Clean up the setup skill (opt-in)
+## 9. Clean up the setup skill (opt-in)
 
 Ask whether to remove this skill now that setup is complete, recommending yes.
 This concerns `repo-setup` only; leave `customize` and `sync-template` in place, since both stay useful afterwards.
@@ -294,7 +324,7 @@ If yes:
 - Remove the `repo-setup` entry from the "Agent Skills" section of `README.md`, since it points to the deleted skill.
 - Remove the `.agents/**` and `.claude/**` entries from `REUSE.toml` if no other skills remain there.
 
-## 9. Check the edited files with the hooks
+## 10. Check the edited files with the hooks
 
 Check whether `prek` is on `PATH`, or failing that, whether `uv` is available to run it as `uvx prek`.
 If neither is, tell the user that checking the edited files with the hooks is skipped because neither is available,
@@ -308,7 +338,7 @@ and say so when asking, adding that the `run-prek-hooks` CI job runs them on the
 Do not run the hooks at any earlier point of the setup either:
 some of them, such as `rumdl-check` and `pretty-format-json`, fix files in place.
 
-## 10. Commit and open a pull request (opt-in)
+## 11. Commit and open a pull request (opt-in)
 
 If no step changed any file, skip this step.
 
@@ -322,32 +352,32 @@ If yes:
     otherwise ask the user which base to use.
   - If `chore/initial-setup` already exists locally or on `origin`, ask the user instead of overwriting it.
 - Commit the changes in one commit per step that changed files, each with a Conventional Commits subject.
-  - Stage only the files this run changed, including the step 8 deletions, and stage whole files rather than hunks.
+  - Stage only the files this run changed, including the step 9 deletions, and stage whole files rather than hunks.
   - If anything else is staged or modified, ask the user before committing.
-  - If step 5 changed `.pre-commit-config.yaml`, commit the step 5 changes first,
+  - If step 6 changed `.pre-commit-config.yaml`, commit the step 6 changes first,
     since the hooks refuse to commit while that file has unstaged changes.
   - Commit the remaining steps in their order.
   - A file that several steps changed goes into the first of their commits, whose body then mentions the other changes.
   - A step whose files all went into earlier commits gets no commit of its own.
-  - If step 6 deleted `lint-reuse-compliance.yaml`, commit that deletion together with the step 7 changes,
-    since `README.md` links to the file until step 7 edits it and the `lychee` hook checks every commit.
-  - Files that only step 9 changed go into a last commit of their own.
-  - Without `nix` on `PATH`, set `SKIP=nixfmt,deadnix,statix` for the commits, as step 9 skips them.
-    Mention it in the step 11 summary.
+  - If step 7 deleted `lint-reuse-compliance.yaml`, commit that deletion together with the step 8 changes,
+    since `README.md` links to the file until step 8 edits it and the `lychee` hook checks every commit.
+  - Files that only step 10 changed go into a last commit of their own.
+  - Without `nix` on `PATH`, set `SKIP=nixfmt,deadnix,statix` for the commits, as step 10 skips them.
+    Mention it in the step 12 summary.
   - If a hook modifies files and the commit fails, review the changes, stage them and retry the same commit.
   - Never bypass the hooks with `--no-verify`.
 - If `origin` is not set or still points to `ut-issl/personal-nix-config-template`, stop after the commits.
 - Otherwise, push the branch to `origin`,
   and open a pull request with `gh pr create`, titled with a Conventional Commits subject.
-  - Pass `--repo <owner>/<repo>`, taken from the `origin` remote URL as step 7 does.
+  - Pass `--repo <owner>/<repo>`, taken from the `origin` remote URL as step 8 does.
   - If `chore/initial-setup` was created from a branch other than the default branch, pass that branch with `--base`.
   - Write the body to a temporary file outside the repository and pass it with `--body-file`.
   - If `gh` is not available or fails, stop after the push and tell the user to open the pull request themselves.
 - Do not merge the pull request unless the user asks.
 
-## 11. Wrap up
+## 12. Wrap up
 
-Show a summary of everything that was changed or skipped, and where step 10 left the changes:
+Show a summary of everything that was changed or skipped, and where step 11 left the changes:
 the pull request URL, the branch the changes were committed or pushed to, or a note that they are left uncommitted.
 
 Then mention what the user can do outside the repository, as options rather than required steps:
