@@ -30,10 +30,14 @@ If this skill was triggered proactively rather than by an explicit request,
 confirm with the user that they want to run the setup now before touching anything.
 
 Follow the steps below in order, one step at a time.
-Before each step, briefly explain what it does, then ask the user how to proceed.
+Before each step, briefly explain what it does, then ask the user how to proceed;
+step 8 is the exception: it is a consistency fix and goes ahead after the explanation.
 When offering choices, work out the recommended one before presenting them,
 then list it first, whatever order the step lists the options in, and mark it as recommended;
 each step that offers a choice names its recommendation.
+Where the recommendation is not one of the options, as when the user picks several entries of a list,
+state it in the question instead.
+When telling the user about a step, describe what it does rather than its number in this skill.
 Never enable an opt-in feature without an explicit yes from the user, even a recommended one;
 if the user declines a step, skip it and move on.
 Converse in the language the user writes in, but keep all edits (comments, commit messages, etc.) in English.
@@ -59,6 +63,7 @@ For a Bash-only environment:
 
 - Uncomment the `issl.zsh.enable = false;` line in `home-modules/shell/shell.nix`.
 - Add `zsh-enabled: false` to the `with:` block of the `repository-based` job in `.github/workflows/test.yaml`,
+  right after the `flake-target: ${{ matrix.flake-target }}` line of that block,
   so that the environment tests expect a Bash-only result.
 
 Mention that `home-modules/zsh/zsh.nix` stays in place but takes effect only when Zsh is enabled,
@@ -82,19 +87,23 @@ Jobs for a release or a configuration the user never applies only cost CI time.
 `Check the flake` builds every configuration regardless,
 so a configuration dropped from `flake-target` is still built, though not applied or tested.
 
-If each list already has a single entry, skip this step.
-Otherwise nothing records whether an earlier run already chose, so do not skip it:
-show the current entries of both lists,
-and ask which releases the user applies the configuration on and which configurations they apply,
-recommending to keep only those.
+If both lists already have a single entry each, skip this step.
+Otherwise nothing records whether an earlier run already chose, so do not skip it.
+Ask one question per list that has more than one entry, showing its current entries:
+which releases the user applies the configuration on, and which configurations they apply.
+Recommend keeping only those, and state that recommendation in each question.
 The user may keep several entries in each list, so let them pick more than one rather than a single answer.
 `user` is for a host used without its graphical desktop, and `user-desktop` for one used through it.
 Each list keeps at least one entry.
-If the user is unsure or does not answer, leave the lists as they are.
+If one is empty, as after a partial edit, ask which entries to put back,
+offering the releases in the Ubuntu badge of `README.md` for `os`
+and the configurations in `homeConfigurations` of `flake.nix` for `flake-target`.
+If the user is unsure about a list or does not answer for it, leave that list as it is,
+unless it is empty: an empty list needs an answer before the setup goes on.
 
 Delete the entries the user does not keep.
 Mention that a release used later is tested again by adding its entry back
-(see "Environment Tests" in `README.md`), and that step 8 updates the Ubuntu badge in `README.md` to match.
+(see "Environment Tests" in `README.md`).
 
 ## 4. Install pre-commit hooks
 
@@ -123,7 +132,7 @@ Action SHAs, tool versions pinned in `.github/workflows/ci.yaml`, and pre-commit
 Until the user opts in, it runs in silent mode: it scans the repository but opens no pull requests or issues.
 Some updates are configured to merge automatically,
 which waits for the checks to pass only when they are required (see "Required Status Checks" in `README.md`).
-Requiring checks is optional; step 12 points to it.
+Requiring checks is optional; the wrap-up points to it.
 
 Recommend opting in.
 If the user opts in:
@@ -178,8 +187,9 @@ update `README.md` (and the `flake.nix` description) to reflect the actual state
 This step does not require a separate opt-in; it is a consistency fix.
 Skip this step entirely if every item below is already up to date.
 
-Detect the owner and repo from the `origin` remote URL
+Detect the owner and repo from the `origin` remote URL that `git remote get-url origin` prints
 (handle both SSH and HTTPS forms, and strip a trailing `.git` suffix if present).
+Wherever this skill says `origin` points somewhere, it means this URL.
 If `origin` is not set or already matches `ut-issl/personal-nix-config-template`,
 skip the owner/repo-specific items (H1, CI and Test badges, clone command) but still check the remaining items.
 
@@ -314,6 +324,9 @@ Update the following as needed:
 ## 9. Clean up the setup skill (opt-in)
 
 Ask whether to remove this skill now that setup is complete, recommending yes.
+If the owner/repo-specific items of step 8 are still undone,
+as when `origin` is not set or still points to `ut-issl/personal-nix-config-template`, recommend keeping it instead,
+so that a later run, once `origin` points to the user's repository, completes them.
 This concerns `repo-setup` only; leave `customize` and `sync-template` in place, since both stay useful afterwards.
 If yes:
 
@@ -342,7 +355,10 @@ some of them, such as `rumdl-check` and `pretty-format-json`, fix files in place
 
 If no step changed any file, skip this step.
 
-Ask whether to commit the changes on a branch, push it and open a pull request, recommending yes.
+If `origin` is not set or still points to `ut-issl/personal-nix-config-template`,
+ask whether to commit the changes on a branch, since there is nothing to push to yet;
+otherwise ask whether to commit them on a branch, push it and open a pull request.
+Recommend yes either way.
 If the user declines, leave all changes uncommitted.
 If yes:
 
@@ -352,6 +368,13 @@ If yes:
     otherwise ask the user which base to use.
   - If `chore/initial-setup` already exists locally or on `origin`, ask the user instead of overwriting it.
 - Commit the changes in one commit per step that changed files, each with a Conventional Commits subject.
+  - Git takes the author from its own configuration,
+    which the identity in `home-modules/git/git.nix` reaches only once the configuration is applied.
+    If `git config user.name` or `git config user.email` prints nothing or an empty value,
+    pass each missing one with the value set in that file on every commit, retries included,
+    quoting each value: `git -c "user.name=<name>" -c "user.email=<email>" commit …`.
+    Ask the user for a value that the file does not set either, and mention the fallback in the step 12 summary.
+    Where Git's own values differ from that file, the commits take Git's; name that author in the step 12 summary.
   - Stage only the files this run changed, including the step 9 deletions, and stage whole files rather than hunks.
   - If anything else is staged or modified, ask the user before committing.
   - If step 6 changed `.pre-commit-config.yaml`, commit the step 6 changes first,
@@ -363,15 +386,18 @@ If yes:
     since `README.md` links to the file until step 8 edits it and the `lychee` hook checks every commit.
   - Files that only step 10 changed go into a last commit of their own.
   - Without `nix` on `PATH`, set `SKIP=nixfmt,deadnix,statix` for the commits, as step 10 skips them.
-    Mention it in the step 12 summary.
+    Where the hooks are installed, mention it in the step 12 summary.
   - If a hook modifies files and the commit fails, review the changes, stage them and retry the same commit.
   - Never bypass the hooks with `--no-verify`.
 - If `origin` is not set or still points to `ut-issl/personal-nix-config-template`, stop after the commits.
 - Otherwise, push the branch to `origin`,
   and open a pull request with `gh pr create`, titled with a Conventional Commits subject.
+  - If `git remote get-url --push --all origin` lists any repository other than the one `git remote get-url origin` names,
+    show them all and ask the user before pushing, recommending not to push until they have checked the URLs.
   - Pass `--repo <owner>/<repo>`, taken from the `origin` remote URL as step 8 does.
   - If `chore/initial-setup` was created from a branch other than the default branch, pass that branch with `--base`.
   - Write the body to a temporary file outside the repository and pass it with `--body-file`.
+  - If the push fails, stop there, show the error, and tell the user to push the branch and open the pull request themselves.
   - If `gh` is not available or fails, stop after the push and tell the user to open the pull request themselves.
 - Do not merge the pull request unless the user asks.
 
@@ -379,6 +405,9 @@ If yes:
 
 Show a summary of everything that was changed or skipped, and where step 11 left the changes:
 the pull request URL, the branch the changes were committed or pushed to, or a note that they are left uncommitted.
+If step 8 left the owner/repo-specific items undone because `origin` was not set or still pointed to the template,
+name them, and say that running this skill again once `origin` points to the user's repository completes them,
+or, where the skill was removed, that they have to be edited by hand.
 
 Then mention what the user can do outside the repository, as options rather than required steps:
 
