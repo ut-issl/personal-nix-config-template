@@ -115,7 +115,8 @@ Invoke a skill with `$<name>` in Codex or `/<name>` in Claude Code.
 
 ### `repo-setup`
 
-Interactively walks you through the repository setup: it checks your Git identity, asks which shell you want,
+Interactively walks you through the repository setup: it checks your Git identity, asks which shell you want
+and which Ubuntu releases and configurations the [environment tests](#environment-tests) cover,
 and sets up the [development tooling](#development-tooling) (pre-commit hooks and the opt-in features).
 
 You can run it on the host you just set up, where Codex is installed by the applied configuration,
@@ -405,6 +406,17 @@ This check is scoped to the template repository itself: an `if` guard on the `li
 so it does nothing in repositories derived from this template and can be left in place.
 If you would rather not keep it, delete [`lint-reuse-compliance.yaml`](.github/workflows/lint-reuse-compliance.yaml).
 Conversely, to enforce REUSE compliance in your own repository, remove the `if` guard from the `lint-reuse-compliance` job.
+
+### Environment Tests
+
+The `repository-based` job of [`test.yaml`](.github/workflows/test.yaml) applies this configuration on GitHub-hosted runners
+and runs the shared environment tests against it,
+in one job for each Ubuntu release in its `os` list and each configuration in its `flake-target` list.
+To save CI time, keep only the releases and configurations you apply,
+and keep the Ubuntu badge at the top of this README in line with the `os` list.
+`Check the flake` builds every configuration regardless,
+so one dropped from `flake-target` is still built, though not applied or tested.
+Add a release back before you apply the configuration on it.
 
 ### Required Status Checks
 

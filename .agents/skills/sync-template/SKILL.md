@@ -314,7 +314,7 @@ check its configuration by hand for a constraint that the pin no longer satisfie
 
 One more failure has no command behind it: wording that assumes this repository is still in its template state.
 `repo-setup` rewrote the README sections falsified by the choices made during setup, and the `flake.nix` description.
-Step 7 of that skill lists them, and its step 8 removes the entry for the skill itself once it is deleted.
+Step 8 of that skill lists them, and its step 9 removes the entry for the skill itself once it is deleted.
 Setup may have deleted the skill: read it from the template remote, with `git show template/main:.agents/skills/repo-setup/SKILL.md`.
 A later merge can bring the template's original wording back; where it did, restore what this repository had.
 
@@ -322,6 +322,7 @@ The choices `repo-setup` made in configuration files can come back the same way,
 when the template moves or rewrites the line that a choice deleted or uncommented:
 the `mode: 'silent'` line of `.github/renovate.json5`, the three Conventional Commits blocks,
 the `if` guard of the REUSE workflow, the shell choice in `home-modules/shell/shell.nix` and `.github/workflows/test.yaml`,
+the `os` and `flake-target` entries dropped from the `repository-based` job in `.github/workflows/test.yaml`,
 and the `home-bash-only` check in `flake.nix`.
 Compare each against `<branch point>` (e.g. `git diff <branch point> -- .github/renovate.json5`),
 and where the merge reverted one, restore the choice in the form the template now gives that content:
@@ -330,6 +331,17 @@ The `lint-commit-messages` block in `.github/workflows/ci.yaml`
 includes its entry in the `needs` of the `check-ci-results` job.
 Where this repository has the `lint-commit-messages` job uncommented but that entry is still commented,
 as when the merge first brings the entry in, uncomment the entry as well.
+
+For the `os` and `flake-target` lists, an entry the template had at `<base>`
+but this repository did not have at `<branch point>` is one this repository dropped, and the restore above applies.
+An entry the template did not have at `<base>` is one it added since
+(`git diff <base> MERGE_HEAD -- .github/workflows/test.yaml` shows them).
+That is no choice of this repository, so keep it as the merge left it,
+and name it in the step 9 summary, so that the user can drop it as "Environment Tests" in `README.md` describes.
+Where the merge leaves either list empty, as when the template drops the only release this repository kept,
+ask the user which of the template's current entries to test;
+if nobody answers, take all of them and say so in the step 9 summary.
+Where the `os` list changed, keep the Ubuntu badge in `README.md` in line with it, as `repo-setup` step 8 describes.
 
 These are the only places to overrule what a clean merge decided:
 step 5 drops only what the side it chose already says, and step 6 edits only what the merge never reached.
