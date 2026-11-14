@@ -20,6 +20,8 @@ Follow the conventions of the "Customize Your Configuration" section of `README.
 Converse in the language the user writes in, but keep all edits (code, comments, commit messages, etc.) in English.
 Leave all changes uncommitted; committing and pushing are up to the user unless explicitly requested.
 Never run `home-manager switch` without an explicit yes from the user (see step 7).
+Run `nix` commands one at a time, never several at once.
+If one stops for exceeding the shared memory limit, which it reports, tell the user instead of retrying it.
 Never write secrets (tokens, private keys, credentials) into the repository.
 If the user pastes one into the conversation, recommend revoking it,
 and where the program supports it, have the configuration read it at run time from a file outside the repository.
@@ -74,13 +76,17 @@ Copy any file a fragment deploys into the module directory as well, at the relat
 
 For a new tool:
 
-- Look the package up in Nixpkgs at the pinned revision:
-  read the `nixpkgs` entry's `locked.rev` from `flake.lock` and run `nix search github:NixOS/nixpkgs/<rev> <name>`.
-  A search evaluates the whole package set and takes a lot of memory;
-  when the attribute name is known, `nix eval github:NixOS/nixpkgs/<rev>#<name>.version` is enough.
+- Find the package with `nix-search`, which the shared configuration installs.
+  It queries <https://search.nixos.org/packages> without evaluating Nixpkgs locally.
+  Search by words, `--name` or `--program`, on the channel of the pinned release.
+  That channel follows from the `original.ref` of the `nixpkgs` entry in `flake.lock`.
+  For example, `nixos-26.05` is `--channel 26.05`, and `nixos-unstable` is `--channel unstable`.
+  Without `nix-search`, use <https://search.nixos.org/packages> itself.
+  Never run `nix search`, which evaluates the whole package set and needs several GiB of memory.
+- Confirm the version at the pinned revision, since the search covers a channel that may have moved past the pin.
+  Take `locked.rev` of the `nixpkgs` entry in `flake.lock` and run `nix eval github:NixOS/nixpkgs/<rev>#<name>.version`.
   The shared configuration replaces some packages with newer ones through an overlay, such as the coding agents;
   `nix eval --impure .#homeConfigurations.user.pkgs.<name>.version` shows the version the configuration actually uses.
-  Without Nix, use <https://search.nixos.org/packages>, noting that its channel may differ from the pin.
 - Check whether Home Manager has a matching module (`programs.<tool>` or `services.<tool>`):
   on an applied machine `man home-configuration.nix` documents the installed version and is the source of truth;
   otherwise use the Home Manager manual for the matching release.
