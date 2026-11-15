@@ -408,7 +408,8 @@ jobs:
               | to_entries[]
               | (.key | ltrimstr("./")) as $file
               | .value[]
-              | (if $lines["\($file):\(.span.line)"] then "error" else "warning" end) as $level
+              | (if $lines["\($file):\(.span.line)"] or (.url | test("^(file://|error:)"))
+                 then "error" else "warning" end) as $level
               | "::\($level) file=\($file | escape_property),line=\(.span.line),col=\(.span.column),"
                 + "title=lychee::\("\(.url | ltrimstr($prefix)): \(.status.text)" | escape)"
             ' lychee/out.json > lychee/annotations.txt
