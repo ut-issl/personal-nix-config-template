@@ -144,18 +144,21 @@ If the user opts in:
 
 ## 6. Enforce Conventional Commits (opt-in)
 
-If all three blocks below are already uncommented, skip this step.
+If the `if` guard is already gone from both jobs below
+and the `commitizen` repo block is already uncommented, skip this step.
 
 Explain: this enforces [Conventional Commits](https://www.conventionalcommits.org) on commit messages and PR titles via [Commitizen](https://github.com/commitizen-tools/commitizen).
 Linting the PR title is especially useful with squash merging, since the PR title becomes the squashed commit subject.
+Its two CI jobs are guarded to run only in the upstream template repository, and its pre-commit hooks are commented out,
+so nothing is enforced in this repository until the user opts in.
 
-Recommend opting in.
-If the user opts in, uncomment all of the following blocks:
+Recommend leaving it off: a personal configuration is neither released nor consumed by others,
+so the commit type tells little, and most changes would be `feat` or `fix` anyway.
+If the user opts in:
 
-- the `lint-commit-messages` job in `.github/workflows/ci.yaml`,
-  together with its entry in the `needs` of the `check-ci-results` job
-- the `lint-pull-request-title` job in `.github/workflows/manage-pull-requests.yaml`
-- the `commitizen` repo block in `.pre-commit-config.yaml`
+- Remove the `if` guard from the `lint-commit-messages` job in `.github/workflows/ci.yaml`
+  and from the `lint-pull-request-title` job in `.github/workflows/manage-pull-requests.yaml`.
+- Uncomment the `commitizen` repo block in `.pre-commit-config.yaml`.
 
 The `commitizen` hooks run at the `commit-msg` and `pre-push` stages, which step 4 already installs.
 
@@ -225,8 +228,7 @@ Update the following as needed:
   replace "This template ships a few quality and maintenance tools." with
   "This repository ships a few quality and maintenance tools."
   If Renovate (no `mode: 'silent'` line in `.github/renovate.json5`) or Conventional Commits
-  (both CI jobs with the `lint-commit-messages` entry in the `needs` of `check-ci-results`,
-  and the `commitizen` pre-commit hook) is enabled,
+  (both CI jobs without the `if` guard, and the `commitizen` pre-commit hook uncommented) is enabled,
   replace the sentence that follows with the line for what is enabled, word for word
   (the comments only label the variants).
   That sentence is the shipped one,
@@ -251,10 +253,10 @@ Update the following as needed:
   It is enabled in this repository and takes effect once the Renovate GitHub App is installed for it.
   ```
 
-- If all three Conventional Commits blocks are uncommented
-  but the "Conventional Commits" subsection still contains the sentence that begins with "This is opt-in:",
+- If Conventional Commits is enforced as step 6 describes
+  but the "Conventional Commits" subsection still contains the sentence that begins with "These checks are scoped",
   change "can be checked against" in its first sentence to "are checked against",
-  and replace the lines from "This is opt-in:" through "…also fails `check-ci-results`." with:
+  and replace the lines from "These checks are scoped" through "…uncomment the `commitizen` hooks." with:
 
   ```markdown
   The checks run in [`lint-commit-messages` in `ci.yaml`](.github/workflows/ci.yaml),
@@ -288,16 +290,19 @@ Update the following as needed:
   that runs from "checks from other workflows" through "have to be required separately.", over one line or two.
   Unless it is already the variant below for the current state,
   replace the whole clause with that variant (the comments only label the variants).
-  The REUSE check runs when `lint-reuse-compliance.yaml` is present without the `if` guard:
+  The REUSE check runs when `lint-reuse-compliance.yaml` is present without the `if` guard,
+  and the pull request title check runs when the `lint-pull-request-title` job has no `if` guard:
 
   ```markdown
-  <!-- The REUSE check runs, and the lint-pull-request-title job is uncommented -->
+  <!-- Both checks run -->
   checks from other workflows, such as `Lint pull request title` and `Lint REUSE compliance`,
   have to be required separately.
-  <!-- The REUSE check runs, and the lint-pull-request-title job is commented out -->
+  <!-- Only the REUSE check runs -->
   checks from other workflows, such as `Lint REUSE compliance`, have to be required separately.
-  <!-- The REUSE check does not run (as shipped) -->
+  <!-- Only the pull request title check runs -->
   checks from other workflows, such as `Lint pull request title`, have to be required separately.
+  <!-- Neither check runs (as shipped) -->
+  checks from other workflows have to be required separately.
   ```
 
 - Replace the remaining wording that describes the template rather than this repository.
@@ -415,7 +420,7 @@ Then mention what the user can do outside the repository, as options rather than
   To have checks block merging, require `Check CI results` and `Check test results`
   in a branch ruleset for the default branch (see "Required Status Checks" in `README.md`).
 - Judge from the repository as it stands, not from which steps ran this time,
-  whether `Lint pull request title` (its job in `.github/workflows/manage-pull-requests.yaml` is uncommented)
+  whether `Lint pull request title` (its job in `.github/workflows/manage-pull-requests.yaml` has no `if` guard)
   and `Lint REUSE compliance` (`.github/workflows/lint-reuse-compliance.yaml` is present without the `if` guard)
   are enabled.
   Name the enabled ones, and add that they come from workflows outside CI and Test and have to be required separately,
