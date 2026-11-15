@@ -406,8 +406,7 @@ copyright and licensing information following the [REUSE](https://reuse.software
 
 This check is scoped to the template repository itself: an `if` guard on the `lint-reuse-compliance` job limits it to `ut-issl/personal-nix-config-template`,
 so it does nothing in repositories derived from this template and can be left in place.
-If you would rather not keep it, delete [`lint-reuse-compliance.yaml`](.github/workflows/lint-reuse-compliance.yaml).
-Conversely, to enforce REUSE compliance in your own repository, remove the `if` guard from the `lint-reuse-compliance` job.
+To enforce REUSE compliance in your own repository, remove the `if` guard from the `lint-reuse-compliance` job.
 
 ### Environment Tests
 

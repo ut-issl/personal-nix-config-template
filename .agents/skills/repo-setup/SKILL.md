@@ -162,7 +162,7 @@ If the user opts in:
 
 The `commitizen` hooks run at the `commit-msg` and `pre-push` stages, which step 4 already installs.
 
-## 7. Decide how to handle the REUSE workflow (opt-in)
+## 7. Enforce REUSE compliance (opt-in)
 
 If `.github/workflows/lint-reuse-compliance.yaml` is already deleted or its `if` guard is already removed, skip this step.
 
@@ -174,14 +174,10 @@ Check the visibility with `gh repo view <owner>/<repo> --json visibility`,
 taking `<owner>/<repo>` from the `origin` remote as step 8 describes.
 Ask the user whether the repository is public instead
 when `origin` is not set or still points to `ut-issl/personal-nix-config-template`, or when the command fails.
-Recommend enforcing REUSE compliance when the repository is public and deleting the workflow otherwise.
-Ask the user which they prefer.
-
-- Delete `.github/workflows/lint-reuse-compliance.yaml` to drop the workflow entirely.
-- Remove the `if` guard from the `lint-reuse-compliance` job to enforce REUSE compliance in this repository.
-  In that case, remind the user that every file they add must carry REUSE-compliant licensing information
-  (the `customize` skill adds it to the files it creates).
-- Leave it as is (nothing to do).
+Recommend enforcing REUSE compliance when the repository is public and leaving it off otherwise.
+If the user opts in, remove the `if` guard from the `lint-reuse-compliance` job,
+and remind the user that every file they add must carry REUSE-compliant licensing information
+(the `customize` skill adds it to the files it creates).
 
 ## 8. Update README for the new repository
 
@@ -274,8 +270,6 @@ Update the following as needed:
   Reduce the paragraph in "Apply the Configuration" beginning "Zsh is enabled by default"
   to one sentence that says so and links to "Choose Your Shell",
   and drop `~/.zshenv` and the `zsh/zsh.nix` parenthetical from the startup-file caution.
-- If `lint-reuse-compliance.yaml` was deleted but the "REUSE Compliance" subsection still references it,
-  remove the entire subsection.
 - If the `if` guard was removed from `lint-reuse-compliance.yaml`
   but the "REUSE Compliance" subsection still says "This check is scoped to the template repository itself",
   replace the paragraph about the scoping and the `if` guard
@@ -387,8 +381,6 @@ If yes:
   - Commit the remaining steps in their order.
   - A file that several steps changed goes into the first of their commits, whose body then mentions the other changes.
   - A step whose files all went into earlier commits gets no commit of its own.
-  - If step 7 deleted `lint-reuse-compliance.yaml`, commit that deletion together with the step 8 changes,
-    since `README.md` links to the file until step 8 edits it and the `lychee` hook checks every commit.
   - Files that only step 10 changed go into a last commit of their own.
   - Without `nix` on `PATH`, set `SKIP=nixfmt,deadnix,statix` for the commits, as step 10 skips them.
     Where the hooks are installed, mention it in the step 12 summary.
