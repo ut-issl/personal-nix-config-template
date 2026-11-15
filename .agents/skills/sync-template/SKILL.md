@@ -320,17 +320,14 @@ A later merge can bring the template's original wording back; where it did, rest
 
 The choices `repo-setup` made in configuration files can come back the same way,
 when the template moves or rewrites the line that a choice deleted or uncommented:
-the `mode: 'silent'` line of `.github/renovate.json5`, the three Conventional Commits blocks,
+the `mode: 'silent'` line of `.github/renovate.json5`,
+the `if` guards of the two Conventional Commits jobs and the `commitizen` block of `.pre-commit-config.yaml`,
 the `if` guard of the REUSE workflow, the shell choice in `home-modules/shell/shell.nix` and `.github/workflows/test.yaml`,
 the `os` and `flake-target` entries dropped from the `repository-based` job in `.github/workflows/test.yaml`,
 and the `home-bash-only` check in `flake.nix`.
 Compare each against `<branch point>` (e.g. `git diff <branch point> -- .github/renovate.json5`),
 and where the merge reverted one, restore the choice in the form the template now gives that content:
 a block this repository had uncommented stays uncommented, in its new form.
-The `lint-commit-messages` block in `.github/workflows/ci.yaml`
-includes its entry in the `needs` of the `check-ci-results` job.
-Where this repository has the `lint-commit-messages` job uncommented but that entry is still commented,
-as when the merge first brings the entry in, uncomment the entry as well.
 
 For the `os` and `flake-target` lists, an entry the template had at `<base>`
 but this repository did not have at `<branch point>` is one this repository dropped, and the restore above applies.
