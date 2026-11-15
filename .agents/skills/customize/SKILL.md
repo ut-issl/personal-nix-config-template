@@ -126,7 +126,7 @@ Apply the README's conventions:
   `lib.mkIf config.local.desktop.enable` for the desktop-only ones, as `home-modules/desktop/desktop.nix` does,
   and `lib.mkIf config.issl.zsh.enable` for the Zsh-only ones, as `home-modules/zsh/zsh.nix` does.
   Never define `local.desktop.enable` itself in a module; `flake.nix` sets it per configuration,
-  and the flake check rejects any module definition that would change it.
+  and the `desktop-axis` check in `flake.nix` rejects any module definition that would change it.
 
 A `programs.<tool>` module can do more than install the tool:
 it can take over a configuration file as a read-only link, or turn on integrations such as shell key bindings by default.
@@ -185,8 +185,20 @@ Then validate:
 
 - Run `prek run --files <changed files> --skip no-commit-to-branch` (or via `uvx prek`) and fix what it reports.
 - When REUSE compliance is enforced, also run `reuse lint` (or `uvx reuse lint`), which the hooks do not cover.
-- With Nix, run `nix flake check --show-trace`;
-  this builds the activation packages in `checks`, so it also catches build failures.
+- With Nix, build the `checks` of `flake.nix` one at a time, for the system of this machine:
+  `x86_64-linux` or `aarch64-linux`, matching the `x86_64` or `aarch64` that `uname -m` prints.
+  Do not run `nix flake check` for this: it evaluates every check in one process, which takes well over a GiB.
+  List the checks, then build each listed name in turn:
+
+  ```sh
+  nix eval --json .#checks.<system> --apply builtins.attrNames
+  nix build --no-link --show-trace .#checks.<system>.<name>
+  ```
+
+  The checks include the activation packages, so this also catches build failures.
+  If the change edits the `packages` or `formatter` outputs of `flake.nix`,
+  also evaluate `.#formatter.<system>.drvPath` and `.#packages.<system>.<name>.drvPath` for each package
+  with `nix eval --raw --show-trace`, which `nix flake check` would otherwise have covered.
 - Then build the activation package to inspect the result:
 
   ```sh
