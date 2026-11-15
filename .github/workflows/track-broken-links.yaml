@@ -1,0 +1,39 @@
+name: Track broken links
+
+on:
+  schedule:
+    - cron: '30 0 * * 1'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  track-broken-links:
+    name: Track broken links
+    if: github.repository == 'ut-issl/personal-nix-config-template'
+    concurrency:
+      group: broken-link-issues
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Check links
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
+        with:
+          args: --no-progress .
+          fail: false
+          format: json
+          lycheeVersion: 'v0.24.2'
+          output: lychee/out.json
+
+      - name: Sync the issues with the report
+        uses: conjikidow/lychee-issue-action@df64298c6362cd8bb8848210287b0ec04b65cfae # v0.5.0
