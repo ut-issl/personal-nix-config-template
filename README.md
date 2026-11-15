@@ -441,3 +441,5 @@ so that you can take them into your own modules without carrying a notice along.
 
 Files you add to your personal configuration are yours, and you may license them however you like.
 If you add files under paths already annotated in `REUSE.toml`, update the corresponding REUSE metadata as needed.
+
+Link check trial: [missing page](https://github.com/ut-issl/personal-nix-config-template/blob/main/does-not-exist.md) and [unresolvable host](https://example.invalid/).
