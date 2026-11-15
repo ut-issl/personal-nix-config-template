@@ -110,7 +110,7 @@ Use `.#user-desktop` in that command on a desktop host.
 
 ## Agent Skills
 
-This repository ships skills for coding agents that support [Agent Skills](https://agentskills.io) (e.g. Codex or Claude Code).
+This repository provides skills for coding agents that support [Agent Skills](https://agentskills.io) (e.g. Codex or Claude Code).
 Invoke a skill with `$<name>` in Codex or `/<name>` in Claude Code.
 
 ### `repo-setup`
