@@ -465,7 +465,7 @@ jobs:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Format Nix
-        run: git ls-files -z '*.nix' | xargs -0 -r nix fmt --
+        run: git ls-files -z '*.nix' | xargs -0 -r nix fmt --no-write-lock-file --
 
       - name: Suggest Nix formatting
         if: github.event_name == 'pull_request'
