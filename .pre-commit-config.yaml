@@ -43,7 +43,7 @@ repos:
     hooks:
       - id: nixfmt
         name: nixfmt
-        entry: nix fmt --
+        entry: nix fmt --no-write-lock-file --
         language: system
         files: '\.nix$'
         require_serial: true
