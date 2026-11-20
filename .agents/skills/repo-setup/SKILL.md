@@ -206,11 +206,11 @@ Update the following as needed:
   For example, `ubuntu-24.04` and `ubuntu-26.04` give `Ubuntu-24.04%20%7C%2026.04-E95420`.
 - Remove the `[!WARNING]` callout that describes the repository as an early-stage prototype.
   It describes the template, not this repository.
-- Remove the paragraph above the numbered steps of "Getting Started"
-  that tells the reader to create their own repository from this template.
+- Remove the whole paragraph above the numbered steps of "Getting Started",
+  both the sentence that tells the reader to create their own repository from this template
+  and the one that gives `nix-config` as an example repository name.
   This repository has already been created from it.
-- In the clone command of "Getting Started",
-  replace `<your-account>/<your-repository>` with `<owner>/<repo>` and `<your-repository>` with `<repo>`.
+- In the clone command of "Getting Started", replace `<your-account>/nix-config` with `<owner>/<repo>`.
 - If the `user.name` and `user.email` lines in `home-modules/git/git.nix` are set
   but "Configure Your Git Identity" still tells the reader to uncomment them,
   replace that step's text from "Edit [`home-modules/git/git.nix`]…" through the end of the `nix` block with:
