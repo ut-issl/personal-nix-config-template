@@ -36,6 +36,7 @@ For the platforms the shared environment supports, see [supported platforms](htt
 
 Create your own repository from this template using the **Use this template** button on GitHub,
 then follow the steps below in it.
+Any repository name works; this guide uses `nix-config` as an example.
 
 ### 1. Prepare the Host
 
@@ -52,12 +53,13 @@ Open a new shell afterward so that `nix` is available on your `PATH`.
 
 ### 2. Clone Your Repository
 
-Clone your repository using Git and OpenSSH provided through Nix:
+Clone your repository using Git and OpenSSH provided through Nix.
+Any location works; this guide uses `~/.config/home-manager`, the standard location for Home Manager configurations:
 
 ```sh
 nix --extra-experimental-features "nix-command flakes" shell nixpkgs#git nixpkgs#openssh_gssapi \
-  --command git clone git@github.com:<your-account>/<your-repository>.git
-cd <your-repository>
+  --command git clone git@github.com:<your-account>/nix-config.git ~/.config/home-manager
+cd ~/.config/home-manager
 ```
 
 ### 3. Configure Your Git Identity
