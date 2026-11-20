@@ -98,7 +98,8 @@ The same repository serves all of your machines, so apply whichever matches the 
 
 ```sh
 NIX_CONFIG="experimental-features = nix-command flakes" \
-  nix run .#home-manager -- switch --flake .#user --impure
+  nix run --no-write-lock-file .#home-manager -- \
+    switch --flake .#user --impure --no-write-lock-file
 ```
 
 Use `.#user-desktop` in that command on a desktop host.
