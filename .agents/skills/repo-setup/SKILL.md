@@ -195,22 +195,28 @@ skip the owner/repo-specific items (H1, CI and Test badges, clone command) but s
 Update the following as needed:
 
 - Replace the H1 heading (`# personal-nix-config-template`) with the repository name derived from `origin`.
+
 - In the badge block near the top, find the CI and Test badge lines (the ones whose URLs contain `ut-issl/personal-nix-config-template/actions/workflows/`).
   Replace all four occurrences of `ut-issl/personal-nix-config-template`
   (one in the image URL and one in the link URL of each badge) with the user's `<owner>/<repo>`.
+
 - If the Ubuntu badge near the top
   lists other releases than the `os` list of the `repository-based` job in `.github/workflows/test.yaml`,
   make it list those:
   replace the part of its image URL between `Ubuntu-` and `-E95420`
   with the version numbers of the `os` entries (without `ubuntu-`), in the order of the list, joined by `%20%7C%20`.
   For example, `ubuntu-24.04` and `ubuntu-26.04` give `Ubuntu-24.04%20%7C%2026.04-E95420`.
+
 - Remove the `[!WARNING]` callout that describes the repository as an early-stage prototype.
   It describes the template, not this repository.
+
 - Remove the whole paragraph above the numbered steps of "Getting Started",
   both the sentence that tells the reader to create their own repository from this template
   and the one that gives `nix-config` as an example repository name.
   This repository has already been created from it.
+
 - In the clone command of "Getting Started", replace `<your-account>/nix-config` with `<owner>/<repo>`.
+
 - If the `user.name` and `user.email` lines in `home-modules/git/git.nix` are set
   but "Configure Your Git Identity" still tells the reader to uncomment them,
   replace that step's text from "Edit [`home-modules/git/git.nix`]…" through the end of the `nix` block with:
@@ -220,6 +226,7 @@ Update the following as needed:
   ```
 
 - In `flake.nix`, drop "template" from the `description` (`Personal Home Manager configuration template for …`).
+
 - In the intro of the "Development Tooling" section,
   replace "This template ships a few quality and maintenance tools." with
   "This repository ships a few quality and maintenance tools."
@@ -263,6 +270,7 @@ Update the following as needed:
 - If Zsh was kept (the `issl.zsh.enable = false;` line in `home-modules/shell/shell.nix` is still commented out),
   leave "Choose Your Shell", the paragraph in "Apply the Configuration" beginning "Zsh is enabled by default",
   and the startup-file caution as shipped: they already describe Zsh and how to turn it off.
+
 - If that line is uncommented but "Choose Your Shell" still reads as an instruction,
   rewrite that subsection to state that this repository is Bash-only and that going back means
   commenting the line out again, dropping `zsh-enabled: false` from `.github/workflows/test.yaml`,
@@ -270,6 +278,7 @@ Update the following as needed:
   Reduce the paragraph in "Apply the Configuration" beginning "Zsh is enabled by default"
   to one sentence that says so and links to "Choose Your Shell",
   and drop `~/.zshenv` and the `zsh/zsh.nix` parenthetical from the startup-file caution.
+
 - If the `if` guard was removed from `lint-reuse-compliance.yaml`
   but the "REUSE Compliance" subsection still says "This check is scoped to the template repository itself",
   replace the paragraph about the scoping and the `if` guard
