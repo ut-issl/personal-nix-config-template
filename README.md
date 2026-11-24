@@ -46,6 +46,12 @@ Run the shared host bootstrap script:
 bash <(curl -fsSL https://github.com/ut-issl/issl-environment/releases/download/v0.15.0/bootstrap-host.sh)
 ```
 
+If `curl` is not installed, as on a fresh Ubuntu Desktop, use `wget` instead:
+
+```bash
+bash <(wget -nv -O- https://github.com/ut-issl/issl-environment/releases/download/v0.15.0/bootstrap-host.sh)
+```
+
 The bootstrap script installs Nix and starts `nix-daemon` on systems without systemd.
 Complete the GitHub SSH setup when prompted.
 
