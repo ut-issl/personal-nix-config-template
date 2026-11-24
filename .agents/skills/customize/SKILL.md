@@ -184,7 +184,9 @@ A file that only changes keeps the information it has, including one that takes 
 Then validate:
 
 - Run `prek run --files <changed files> --skip no-commit-to-branch` (or via `uvx prek`) and fix what it reports.
+
 - When REUSE compliance is enforced, also run `reuse lint` (or `uvx reuse lint`), which the hooks do not cover.
+
 - With Nix, build the `checks` of `flake.nix` one at a time, for the system of this machine:
   `x86_64-linux` or `aarch64-linux`, matching the `x86_64` or `aarch64` that `uname -m` prints.
   Do not run `nix flake check` for this: it evaluates every check in one process, which takes well over a GiB.
@@ -199,6 +201,7 @@ Then validate:
   If the change edits the `packages` or `formatter` outputs of `flake.nix`,
   also evaluate `.#formatter.<system>.drvPath` and `.#packages.<system>.<name>.drvPath` for each package
   with `nix eval --raw --show-trace`, which `nix flake check` would otherwise have covered.
+
 - Then build the activation package to inspect the result:
 
   ```sh
